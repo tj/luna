@@ -84,6 +84,7 @@ main(int argc, const char **argv){
     exit(1);
   }
 
+  // scan the input
   luna_lexer_t lex;
   luna_lexer_init(&lex, stream, path);
   
