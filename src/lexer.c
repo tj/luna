@@ -251,7 +251,10 @@ luna_lexer_next(luna_lexer_t *self) {
   if (self->outdents) return outdent(self);
 
   // scan
+scan:
   switch (c = next) {
+    case ' ':
+    case '\t': goto scan;
     case '(': return token(LPAREN);
     case ')': return token(RPAREN);
     case '{': return token(LBRACE);
