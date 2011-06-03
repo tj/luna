@@ -19,6 +19,10 @@
 #define LUNA_MAX_INDENTS 32
 #endif
 
+/*
+ * Lexer struct.
+ */
+
 typedef struct {
   char *error;
   int stash;
@@ -31,6 +35,8 @@ typedef struct {
   luna_token_t tok;
   char buf[LUNA_BUF_SIZE];
 } luna_lexer_t;
+
+// protos
 
 int
 luna_lexer_next(luna_lexer_t *self);

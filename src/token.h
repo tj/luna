@@ -95,4 +95,9 @@ luna_token_type_string(luna_token type) {
   return luna_token_strings[type];
 }
 
+// protos
+
+void
+luna_token_inspect(luna_token_t *tok);
+
 #endif /* __LUNA_TOKEN__ */

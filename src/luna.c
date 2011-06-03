@@ -70,23 +70,7 @@ main(int argc, const char **argv){
   luna_lexer_init(&lex, stdin, "stdin");
 
   while (luna_lexer_next(&lex)) {
-    switch (lex.tok.type) {
-      case LUNA_TOKEN_INT:
-        printf("integer %d\n", lex.tok.value.as_int);
-        break;
-      case LUNA_TOKEN_FLOAT:
-        printf("float %f\n", lex.tok.value.as_float);
-        break;
-      case LUNA_TOKEN_STRING:
-        printf("string '%s'\n", lex.tok.value.as_string);
-        break;
-      case LUNA_TOKEN_ID:
-        printf("identifier %s\n", lex.tok.value.as_string);
-        break;
-      default:
-        printf("%s\n", luna_token_type_string(lex.tok.type));
-        break;
-    }
+    luna_token_inspect(&lex.tok);
   }
 
   if (lex.tok.type != LUNA_TOKEN_EOS) {
