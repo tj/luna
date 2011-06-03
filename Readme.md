@@ -5,7 +5,7 @@
 
 ## About
 
- Luna is an expressive, minimalistic, elegant programming language with reactor based concurrency at the core, or at least it will be :). This project is _very_ much a work in progress, as I explore the wonderful world of VMs!
+ Luna is an expressive, minimalistic, elegant programming language with reactor based concurrency at the core, or at least it will be :). This project is _very_ much a work in progress, as I explore the wonderful world of VMs! feel free to join me!
 
 ## Goals
 
