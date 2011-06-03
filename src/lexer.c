@@ -262,11 +262,14 @@ luna_lexer_next(luna_lexer_t *self) {
     case ',': return token(COMMA);
     case '+': return token(OP_PLUS);
     case '-': return token(OP_MINUS);
-    case '*': return token(OP_MULT);
     case '/': return token(OP_DIV);
     case '%': return token(OP_MOD);
     case '^': return token(OP_BIT_XOR);
     case '~': return token(OP_BIT_NOT);
+    case '*':
+      return '*' == next
+        ? token(OP_EX)
+        : (undo, token(OP_MULT));
     case ':':
       return '=' == next
         ? token(OP_SLOT_ASSIGN)
