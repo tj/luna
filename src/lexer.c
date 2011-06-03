@@ -13,7 +13,8 @@
 
 #define next (self->stash = fgetc(self->stream))
 #define undo ungetc(self->stash, self->stream)
-#define token(t) self->tok.type = LUNA_TOKEN_##t
+#define token(t) (self->tok.type = LUNA_TOKEN_##t)
+#define accept(c) ((c) == next ? (c) : (undo, 0))
 
 /*
  * Initialize lexer with the given `stream` and `filename`.
@@ -53,17 +54,6 @@ hex(const char c) {
 }
 
 /*
- * Accept char `c`, returning it, or 0 otherwise.
- */
-
-static int
-accept(luna_lexer_t *self, int c) {
-  if (c == next) return c;
-  undo;
-  return 0;
-}
-
-/*
  * Perform an outdent.
  */
 
@@ -85,7 +75,7 @@ scan_newline(luna_lexer_t *self) {
 
   ++self->lineno;
 
-  while (accept(self, ' ')) ++curr;
+  while (accept(' ')) ++curr;
 
   if (curr > prev) {
     token(INDENT);
@@ -309,7 +299,7 @@ scan:
       return token(OP_GT);
     case '/':
       if ('/' == next) {
-        while ('\n' != (c = next) && EOF != c) ; undo;
+        while ((c = next) != '\n' && EOF != c) ; undo;
         goto scan;
       }
       return token(OP_DIV);
