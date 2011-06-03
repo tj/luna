@@ -23,6 +23,17 @@
   t(FLOAT, "float") \
   t(STRING, "string") \
   t(LBRACE, "{") \
+  t(NULL, "null") \
+  t(TRUE, "true") \
+  t(FALSE, "false") \
+  t(DO, "do") \
+  t(WHILE, "while") \
+  t(UNTIL, "until") \
+  t(IF, "if") \
+  t(UNLESS, "unless") \
+  t(ELSE, "else") \
+  t(FOR, "for") \
+  t(RETURN, "return") \
   t(RBRACE, "}") \
   t(LPAREN, "(") \
   t(RPAREN, ")") \

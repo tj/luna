@@ -106,10 +106,22 @@ scan_ident(luna_lexer_t *self, int c) {
   do {
     buf[len++] = c;
   } while (isalpha(c = next) || isdigit(c) || '_' == c);
+  undo;
 
   buf[len++] = 0;
+  // TODO: refactor this lameness when string api is implemented
+  if (0 == strcmp("if", buf)) return token(IF); 
+  else if (0 == strcmp("else", buf)) return token(ELSE); 
+  else if (0 == strcmp("unless", buf)) return token(UNLESS); 
+  else if (0 == strcmp("true", buf)) return token(TRUE); 
+  else if (0 == strcmp("false", buf)) return token(FALSE); 
+  else if (0 == strcmp("do", buf)) return token(DO); 
+  else if (0 == strcmp("while", buf)) return token(WHILE); 
+  else if (0 == strcmp("until", buf)) return token(UNTIL); 
+  else if (0 == strcmp("null", buf)) return token(NULL); 
+  else if (0 == strcmp("for", buf)) return token(FOR); 
+  else if (0 == strcmp("return", buf)) return token(RETURN); 
   self->tok.value.as_string = strdup(buf); // TODO: remove
-  undo;
   return 1;
 }
 
