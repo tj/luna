@@ -53,7 +53,9 @@
   t(OP_BIT_AND, "&") \
   t(OP_BIT_OR, "|") \
   t(OP_BIT_XOR, "^") \
-  t(OP_BIT_NOT, "~")
+  t(OP_BIT_NOT, "~") \
+  t(OP_BIT_SHL, "<<") \
+  t(OP_BIT_SHR, ">>")
 
 /*
  * Tokens enum.

@@ -288,14 +288,6 @@ luna_lexer_next(luna_lexer_t *self) {
       return '=' == next
         ? token(OP_EQ)
         : (undo, token(OP_ASSIGN));
-    case '<':
-      return '=' == next
-        ? token(OP_LTE)
-        : (undo, token(OP_LT));
-    case '>':
-      return '=' == next
-        ? token(OP_GTE)
-        : (undo, token(OP_GT));
     case '&':
       return '&' == next
         ? token(OP_AND)
@@ -304,6 +296,14 @@ luna_lexer_next(luna_lexer_t *self) {
       return '|' == next
         ? token(OP_OR)
         : (undo, token(OP_BIT_OR));
+    case '<':
+      if ('=' == next) return token(OP_LTE); undo;
+      if ('<' == next) return token(OP_BIT_SHL); undo;
+      return token(OP_LT);
+    case '>':
+      if ('=' == next) return token(OP_GTE); undo;
+      if ('>' == next) return token(OP_BIT_SHR); undo;
+      return token(OP_GT);
     case '\n':
       return scan_newline(self);
     case '"':
