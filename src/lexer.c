@@ -79,6 +79,7 @@ scan_newline(luna_lexer_t *self) {
 
   if (curr > prev) {
     token(INDENT);
+    self->indent_stack[++self->indents] = curr;
   } else if (curr < prev) {
     while (self->indent_stack[self->indents] > curr) {
       ++self->outdents;
@@ -89,7 +90,6 @@ scan_newline(luna_lexer_t *self) {
     token(NEWLINE);
   }
 
-  self->indent_stack[++self->indents] = curr;
   return 1;
 }
 
@@ -312,6 +312,10 @@ scan:
     case '\'':
       return scan_string(self, c);
     case EOF:
+      if (self->indents) {
+        --self->indents;
+        return token(OUTDENT);
+      }
       token(EOS);
       return 0;
     default:
