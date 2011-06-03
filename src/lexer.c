@@ -260,6 +260,7 @@ luna_lexer_next(luna_lexer_t *self) {
     case ']': return token(RBRACK);
     case ';': return token(SEMICOLON);
     case ',': return token(COMMA);
+    case '?': return token(QMARK);
     case '/': return token(OP_DIV);
     case '%': return token(OP_MOD);
     case '^': return token(OP_BIT_XOR);

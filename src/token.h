@@ -29,6 +29,7 @@
   t(LBRACK, "[") \
   t(RBRACK, "]") \
   t(COLON, ":") \
+  t(QMARK, "?") \
   t(SEMICOLON, ";") \
   t(COMMA, ",") \
   t(OP_SLOT_ASSIGN, ":=") \
