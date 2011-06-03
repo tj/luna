@@ -14,7 +14,7 @@
 #define next (self->stash = fgetc(self->stream))
 #define undo ungetc(self->stash, self->stream)
 #define token(t) (self->tok.type = LUNA_TOKEN_##t)
-#define accept(c) ((c) == next ? (c) : (undo, 0))
+#define accept(c) (c == next ? c : (undo, 0))
 
 /*
  * Initialize lexer with the given `stream` and `filename`.
