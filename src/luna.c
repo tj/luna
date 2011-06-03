@@ -89,11 +89,12 @@ main(int argc, const char **argv){
   // scan the input
   luna_lexer_t lex;
   luna_lexer_init(&lex, stream, path);
-  
+
   while (luna_lexer_next(&lex)) {
     luna_token_inspect(&lex.tok);
   }
-  
+
+  // lexical error
   if (lex.tok.type != LUNA_TOKEN_EOS) {
     fprintf(stderr
       , "luna(%s:%d): SyntaxError %s\n"
