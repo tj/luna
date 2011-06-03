@@ -19,7 +19,7 @@
 void
 usage() {
   fprintf(stderr, 
-    "\n  Usage: luna [options] <file>"
+    "\n  Usage: luna [options] [file]"
     "\n"
     "\n  Options:"
     "\n"
@@ -67,21 +67,23 @@ parse_args(int argc, const char **argv) {
 
 int
 main(int argc, const char **argv){
+  FILE *stream;
+  const char *path;
+
+  // parse arguments
   parse_args(argc, argv);
 
-  // ensure file is given
-  if (argc < 2) {
-    fprintf(stderr, "<file> is required\n");
-    exit(1);
-  }
-
-  const char *path = argv[1];
-
-  // open the file
-  FILE *stream = fopen(path, "r");
-  if (!stream) {
-    fprintf(stderr, "error reading %s:\n\n  %s\n\n", path, strerror(errno));
-    exit(1);
+  // file given
+  if (argc > 1) {
+    path = argv[1];
+    stream = fopen(path, "r");
+    if (!stream) {
+      fprintf(stderr, "error reading %s:\n\n  %s\n\n", path, strerror(errno));
+      exit(1);
+    }
+  } else {
+    stream = stdin;
+    path = "stdin";
   }
 
   // scan the input
