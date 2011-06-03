@@ -35,7 +35,9 @@
   t(OP_ASSIGN, "=") \
   t(OP_NOT, "!") \
   t(OP_PLUS, "+") \
+  t(OP_INCR, "++") \
   t(OP_MINUS, "-") \
+  t(OP_DECR, "--") \
   t(OP_MULT, "*") \
   t(OP_DIV, "/") \
   t(OP_MOD, "%") \
