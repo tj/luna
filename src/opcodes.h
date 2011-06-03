@@ -8,6 +8,10 @@
 #ifndef __LUNA_OPCODES_H__
 #define __LUNA_OPCODES_H__
 
+/*
+ * Opcodes.
+ */
+
 typedef enum {
     LUNA_OP_EQ
   , LUNA_OP_GT
