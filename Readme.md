@@ -13,6 +13,7 @@
   - prototypal inheritance
   - reflection capabilities
   - reactor concurrency model (event loop)
+  - callee evaluated messages
   - stack based VM
   - ...
 
