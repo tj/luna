@@ -258,7 +258,6 @@ luna_lexer_next(luna_lexer_t *self) {
     case '}': return token(RBRACE);
     case '[': return token(LBRACK);
     case ']': return token(RBRACK);
-    case ':': return token(COLON);
     case ';': return token(SEMICOLON);
     case ',': return token(COMMA);
     case '+': return token(OP_PLUS);
@@ -268,6 +267,10 @@ luna_lexer_next(luna_lexer_t *self) {
     case '%': return token(OP_MOD);
     case '^': return token(OP_BIT_XOR);
     case '~': return token(OP_BIT_NOT);
+    case ':':
+      return '=' == next
+        ? token(OP_SLOT_ASSIGN)
+        : (undo, token(COLON));
     case '!':
       return '=' == next
         ? token(OP_NEQ)

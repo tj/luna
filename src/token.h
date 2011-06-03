@@ -31,6 +31,7 @@
   t(COLON, ":") \
   t(SEMICOLON, ";") \
   t(COMMA, ",") \
+  t(OP_SLOT_ASSIGN, ":=") \
   t(OP_ASSIGN, "=") \
   t(OP_NOT, "!") \
   t(OP_PLUS, "+") \
