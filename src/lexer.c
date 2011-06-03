@@ -303,6 +303,9 @@ scan:
         goto scan;
       }
       return token(OP_DIV);
+    case '#':
+      while ((c = next) != '\n' && EOF != c) ; undo;
+      goto scan;
     case '\n':
       return scan_newline(self);
     case '"':
