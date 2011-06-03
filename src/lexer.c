@@ -264,7 +264,6 @@ scan:
     case ';': return token(SEMICOLON);
     case ',': return token(COMMA);
     case '?': return token(QMARK);
-    case '/': return token(OP_DIV);
     case '%': return token(OP_MOD);
     case '^': return token(OP_BIT_XOR);
     case '~': return token(OP_BIT_NOT);
@@ -308,6 +307,12 @@ scan:
       if ('=' == next) return token(OP_GTE); undo;
       if ('>' == next) return token(OP_BIT_SHR); undo;
       return token(OP_GT);
+    case '/':
+      if ('/' == next) {
+        while ('\n' != next) ; undo;
+        goto scan;
+      }
+      return token(OP_DIV);
     case '\n':
       return scan_newline(self);
     case '"':
