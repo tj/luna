@@ -309,7 +309,7 @@ scan:
       return token(OP_GT);
     case '/':
       if ('/' == next) {
-        while ('\n' != next) ; undo;
+        while ('\n' != (c = next) && EOF != c) ; undo;
         goto scan;
       }
       return token(OP_DIV);
