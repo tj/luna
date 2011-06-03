@@ -5,7 +5,9 @@
 // Copyright (c) 2011 TJ Holowaychuk <tj@vision-media.ca>
 //
 
+#include <stdio.h>
 #include <stdlib.h>
+#include <errno.h>
 #include <string.h>
 #include "luna.h"
 #include "lexer.h"
@@ -17,7 +19,7 @@
 void
 usage() {
   fprintf(stderr, 
-    "\n  Usage: luna [options]"
+    "\n  Usage: luna [options] <file>"
     "\n"
     "\n  Options:"
     "\n"
@@ -66,13 +68,29 @@ parse_args(int argc, const char **argv) {
 int
 main(int argc, const char **argv){
   parse_args(argc, argv);
-  luna_lexer_t lex;
-  luna_lexer_init(&lex, stdin, "stdin");
 
+  // ensure file is given
+  if (argc < 2) {
+    fprintf(stderr, "<file> is required\n");
+    exit(1);
+  }
+
+  const char *path = argv[1];
+
+  // open the file
+  FILE *stream = fopen(path, "r");
+  if (!stream) {
+    fprintf(stderr, "error reading %s:\n\n  %s\n\n", path, strerror(errno));
+    exit(1);
+  }
+
+  luna_lexer_t lex;
+  luna_lexer_init(&lex, stream, path);
+  
   while (luna_lexer_next(&lex)) {
     luna_token_inspect(&lex.tok);
   }
-
+  
   if (lex.tok.type != LUNA_TOKEN_EOS) {
     fprintf(stderr
       , "luna(%s:%d): SyntaxError %s\n"
