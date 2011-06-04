@@ -121,15 +121,29 @@ primary_expr(luna_parser_t *self) {
 }
 
 /*
- * primary_expr (('+ | '-') primary_expr)*
+ * primary_expr (('* | '/' | '%') primary_expr)*
+ */
+
+static int
+multiplicative_expr(luna_parser_t *self) {
+  debug("multiplicative_expr");
+  if (!primary_expr(self)) return 0;
+  while (accept(OP_MULT) || accept(OP_DIV) || accept(OP_MOD)) {
+    if (!primary_expr(self)) return 0;
+  }
+  return 1;
+}
+
+/*
+ * multiplicative_expr (('+ | '-') multiplicative_expr)*
  */
 
 static int
 additive_expr(luna_parser_t *self) {
   debug("additive_expr");
-  if (!primary_expr(self)) return 0;
+  if (!multiplicative_expr(self)) return 0;
   while (accept(OP_PLUS) || accept(OP_MINUS)) {
-    if (!primary_expr(self)) return 0;
+    if (!multiplicative_expr(self)) return 0;
   }
   return 1;
 }

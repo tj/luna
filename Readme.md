@@ -37,6 +37,7 @@
 
     operator     |  associativity
     -------------|---------------
+    * / %        |  left
     + -          |  left
     << >>        |  left
     < <= > >=    |  left
