@@ -16,6 +16,7 @@
 
 typedef struct {
   char *ctx;
+  char *err;
   luna_token expected;
   luna_token_t *la;
   luna_lexer_t *lex;

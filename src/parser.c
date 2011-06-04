@@ -45,6 +45,15 @@
 #define context(str) (self->ctx = str)
 
 /*
+ * Set error `str` when not previously set.
+ */
+
+#define error(str) \
+  ((self->err = self->err \
+    ? self->err \
+    : str), 0)
+
+/*
  * Expect a token, advancing the lexer,
  * or issuing an error.
  */
@@ -76,6 +85,7 @@ luna_parser_init(luna_parser_t *self, luna_lexer_t *lex) {
   self->lex = lex;
   self->la = NULL;
   self->ctx = NULL;
+  self->err = NULL;
   self->expected = -1;
 }
 
@@ -112,7 +122,6 @@ primitive_expr(luna_parser_t *self) {
 static int
 expr(luna_parser_t *self) {
   debug("expr");
-  context("expr");
   return primitive_expr(self);
 }
 
@@ -139,7 +148,7 @@ if_stmt(luna_parser_t *self) {
 
   accept(UNLESS) || expect(IF);
 
-  if (!expr(self)) return 0;
+  if (!expr(self)) return error("missing condition");
   if (!block(self)) return 0;
 
   // else
@@ -150,7 +159,7 @@ loop:
     // else if
     if (accept(IF)) {
       context("else if statement");
-      if (!expr(self)) return 0;
+      if (!expr(self)) return error("missing condition");
       if (!block(self)) return 0;
       goto loop;
     } else if (!block(self)) {
@@ -170,7 +179,7 @@ while_stmt(luna_parser_t *self) {
   debug("while_stmt");
   context("while statement");
   accept(UNTIL) || expect(WHILE);
-  if (!expr(self)) return 0;
+  if (!expr(self)) return error("missing condition");
   if (!block(self)) return 0;
   return 1;
 }

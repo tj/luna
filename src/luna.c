@@ -97,8 +97,11 @@ main(int argc, const char **argv){
   if (!luna_parse(&parser)) {
     char *err;
 
-    // expected
-    if (-1 != parser.expected) {
+    // error message
+    if (parser.err) {
+      err = parser.err;
+    // expected token
+    } else if (-1 != parser.expected) {
       char buf[64];
       snprintf(buf, 64, "expected token '%s'", luna_token_type_string(parser.expected));
       err = buf;
