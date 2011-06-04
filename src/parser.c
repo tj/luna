@@ -121,15 +121,29 @@ primary_expr(luna_parser_t *self) {
 }
 
 /*
- * primary_expr (('<<' | '>>') primary_expr)*
+ * primary_expr (('+ | '-') primary_expr)*
+ */
+
+static int
+additive_expr(luna_parser_t *self) {
+  debug("additive_expr");
+  if (!primary_expr(self)) return 0;
+  while (accept(OP_PLUS) || accept(OP_MINUS)) {
+    if (!primary_expr(self)) return 0;
+  }
+  return 1;
+}
+
+/*
+ * additive_expr (('<<' | '>>') additive_expr)*
  */
 
 static int
 shift_expr(luna_parser_t *self) {
   debug("shift_expr");
-  if (!primary_expr(self)) return 0;
+  if (!additive_expr(self)) return 0;
   while (accept(OP_BIT_SHL) || accept(OP_BIT_SHR)) {
-    if (!primary_expr(self)) return 0;
+    if (!additive_expr(self)) return 0;
   }
   return 1;
 }
