@@ -10,6 +10,7 @@
 
 #define next (luna_scan(self->lex), &self->lex->tok)
 #define peek (self->la ? self->la : (self->la = next))
+#define is(t) (peek->type == (LUNA_TOKEN_##t) ? 1 : 0)
 #define accept(t) (peek->type == (LUNA_TOKEN_##t) ? next : 0)
 
 // -DEBUG_PARSER
@@ -21,6 +22,10 @@
 #else
 #define debug(name)
 #endif
+
+// protos
+
+static int block(luna_parser_t *self);
 
 /*
  * Initialize with the given lexer.
@@ -90,13 +95,44 @@ expr_stmt(luna_parser_t *self) {
 }
 
 /*
- * expr_stmt
+ * 'if' expr block
+ */
+
+static int
+if_stmt(luna_parser_t *self) {
+  debug("if_stmt");
+  accept(IF);
+  if (!expr(self)) return error(self, "conditional missing expression");
+  if (!block(self)) return error(self, "conditional missing block");
+  return 1;
+}
+
+/*
+ *   if_stmt
+ * | expr_stmt
  */
 
 static int
 stmt(luna_parser_t *self) {
   debug("stmt");
+  if (is(IF)) return if_stmt(self);
   return expr_stmt(self);
+}
+
+/*
+ * INDENT ws (stmt ws)+ OUTDENT
+ */
+
+static int
+block(luna_parser_t *self) {
+  debug("block");
+  if (!accept(INDENT)) return error(self, "block missing indentation");
+  whitespace(self);
+  do {
+    if (!stmt(self)) return 0;
+    whitespace(self);
+  } while (!accept(OUTDENT));
+  return 1;
 }
 
 /*
