@@ -12,6 +12,8 @@
 #define peek (self->la ? self->la : (self->la = next))
 #define accept(t) (peek->type == (LUNA_TOKEN_##t) ? next : 0)
 
+// -DEBUG_PARSER
+
 #ifdef EBUG_PARSER
 #define debug(name) \
   fprintf(stderr, "\n\033[90m%s\033[0m\n", name); \
