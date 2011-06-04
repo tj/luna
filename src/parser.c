@@ -135,8 +135,7 @@ unary_expr(luna_parser_t *self) {
     || accept(OP_BIT_NOT)
     || accept(OP_PLUS)
     || accept(OP_MINUS)) {
-    if (!unary_expr(self)) return 0;
-    return 1;
+    return unary_expr(self);
   }
   return primary_expr(self);
 }
@@ -293,21 +292,33 @@ assignment_expr(luna_parser_t *self) {
   if (!logical_or_expr(self)) return 0;
   if (accept(OP_ASSIGN)) {
     if (!lval) return error("invalid left-hand side value in assignment");
-    if (!assignment_expr(self)) return 0;
+    if (!expr(self)) return 0;
   }
   return 1;
 }
 
 /*
- * assignment_expr (',' assignment_expr)*
+ *   'not' not_expr
+ * | assignment_expr
+ */
+
+static int
+not_expr(luna_parser_t *self) {
+  debug("not_expr");
+  if (accept(OP_LNOT)) return not_expr(self);
+  return assignment_expr(self);
+}
+
+/*
+ * not_expr (',' not_expr)*
  */
 
 static int
 expr(luna_parser_t *self) {
   debug("expr");
-  if (!assignment_expr(self)) return 0;
+  if (!not_expr(self)) return 0;
   while (accept(COMMA)) {
-    if (!assignment_expr(self)) return 0;
+    if (!not_expr(self)) return 0;
   }
   return 1;
 }
