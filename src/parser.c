@@ -114,22 +114,26 @@ static int
 assignment_expr(luna_parser_t *self) {
   debug("assignment_expr");
   int lval = is(ID);
-  primary_expr(self);
+  if (!primary_expr(self)) return 0;
   if (accept(OP_ASSIGN)) {
     if (!lval) return error("invalid left-hand side value in assignment");
-    expr(self);
+    assignment_expr(self);
   }
   return 1;
 }
 
 /*
- * assignment_expr
+ * assignment_expr (',' assignment_expr)*
  */
 
 static int
 expr(luna_parser_t *self) {
   debug("expr");
-  return assignment_expr(self);
+  if (!assignment_expr(self)) return 0;
+  while (accept(COMMA)) {
+    if (!assignment_expr(self)) return 0;
+  }
+  return 1;
 }
 
 /*
