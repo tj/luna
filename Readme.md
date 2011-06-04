@@ -34,10 +34,14 @@
   [√] lexer
   [√] parser
   [ ] virtual machine
+  [ ] opcode generation
   [ ] object model
   [ ] garbage collection
-  [ ] optimizations
+  [ ] optimizations (TCO etc)
   [ ] portability
+  [ ] closures
+  [ ] module system
+  [ ] website
 
 ## Operator Precedence Table
 
