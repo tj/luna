@@ -16,6 +16,7 @@
 
 typedef struct {
   luna_lexer_t *lex;
+  luna_token_t *la;
 } luna_parser_t;
 
 // protos
@@ -23,7 +24,7 @@ typedef struct {
 void
 luna_parser_init(luna_parser_t *self, luna_lexer_t *lex);
 
-void
+int
 luna_parse(luna_parser_t *self);
 
 #endif /* __LUNA_PARSER_H__ */
