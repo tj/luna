@@ -15,15 +15,15 @@
  */
 
 typedef struct {
-  
+  luna_lexer_t *lex;
 } luna_parser_t;
 
 // protos
 
 void
-luna_parser_init(luna_parser_t *self);
+luna_parser_init(luna_parser_t *self, luna_lexer_t *lex);
 
 void
-luna_parse(luna_parser_t *self, luna_token_t *tok);
+luna_parse(luna_parser_t *self);
 
 #endif /* __LUNA_PARSER_H__ */

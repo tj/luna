@@ -92,20 +92,8 @@ main(int argc, const char **argv){
   luna_lexer_init(&lex, stream, path);
 
   luna_parser_t parser;
-  luna_parser_init(&parser);
-
-  while (luna_scan(&lex)) {
-    luna_token_inspect(&lex.tok);
-  }
-
-  // lexical error
-  if (lex.tok.type != LUNA_TOKEN_EOS) {
-    fprintf(stderr
-      , "luna(%s:%d): SyntaxError %s\n"
-      , lex.filename
-      , lex.lineno
-      , lex.error);
-  }
+  luna_parser_init(&parser, &lex);
+  luna_parse(&parser);
 
   return 0;
 }
