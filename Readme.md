@@ -35,6 +35,9 @@
 
  Operator precedence from highest to lowest.
 
+    &
+    ^
+    |
     &&
     ||
     =

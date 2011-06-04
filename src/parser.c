@@ -121,15 +121,57 @@ primary_expr(luna_parser_t *self) {
 }
 
 /*
- * primary_expr ('&&' primary_expr)*
+ * primary_expr ('&' primary_expr)*
+ */
+
+static int
+bitwise_and_expr(luna_parser_t *self) {
+  debug("bitwise_and_expr");
+  if (!primary_expr(self)) return 0;
+  while (accept(OP_BIT_AND)) {
+    if (!primary_expr(self)) return 0;
+  }
+  return 1;
+}
+
+/*
+ * bitwise_and_expr ('^' bitwise_and_expr)*
+ */
+
+static int
+bitwise_xor_expr(luna_parser_t *self) {
+  debug("bitwise_xor_expr");
+  if (!bitwise_and_expr(self)) return 0;
+  while (accept(OP_BIT_XOR)) {
+    if (!bitwise_and_expr(self)) return 0;
+  }
+  return 1;
+}
+
+/*
+ * bitwise_xor_expr ('|' bitwise_xor_expr)*
+ */
+
+static int
+bitwise_or_expr(luna_parser_t *self) {
+  debug("bitwise_or_expr");
+  if (!bitwise_xor_expr(self)) return 0;
+  while (accept(OP_BIT_OR)) {
+    if (!bitwise_xor_expr(self)) return 0;
+  }
+  return 1;
+}
+
+/*
+ * bitwise_or_expr ('&&' bitwise_or_expr)*
  */
 
 static int
 logical_and_expr(luna_parser_t *self) {
   debug("logical_and_expr");
-  if (!primary_expr(self)) return 0;
+  if (!bitwise_or_expr(self)) return 0;
   while (accept(OP_AND)) {
-    if (!primary_expr(self)) return 0;
+    if (!bitwise_or_expr(self)) return 0;
   }
   return 1;
 }
