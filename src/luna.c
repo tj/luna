@@ -95,18 +95,26 @@ main(int argc, const char **argv){
 
   // oh noes!
   if (!luna_parse(&parser)) {
+    char *err;
+
+    // expected
+    if (-1 != parser.expected) {
+      char buf[64];
+      snprintf(buf, 64, "expected token '%s'", luna_token_type_string(parser.expected));
+      err = buf;
     // deduce
-    if (!parser.error && LUNA_TOKEN_EOS != lex.tok.type) {
-      char buf[256];
-      snprintf(buf, 256, "unexpected token '%s'", luna_token_type_string(lex.tok.type));
-      parser.error = buf;
-    }
+    } else if (LUNA_TOKEN_EOS != lex.tok.type) {
+      char buf[64];
+      snprintf(buf, 64, "unexpected token '%s'", luna_token_type_string(lex.tok.type));
+      err = buf;
+    } 
 
     fprintf(stderr
-      , "luna(%s:%d). parse error: %s\n"
+      , "luna(%s:%d). parse error in %s, %s.\n"
       , lex.filename
       , lex.lineno
-      , parser.error);
+      , parser.ctx
+      , err);
 
     exit(1);
   }

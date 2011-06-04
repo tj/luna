@@ -39,10 +39,10 @@
 #define is(t) (peek->type == (LUNA_TOKEN_##t))
 
 /*
- * Set error `msg`.
+ * Set error context `str`, used in error reporting.
  */
 
-#define error(msg) (self->error = msg, 0)
+#define context(str) (self->ctx = str)
 
 /*
  * Expect a token, advancing the lexer,
@@ -50,16 +50,16 @@
  */
 
 #define expect(t) \
-  (peek->type == (LUNA_TOKEN_##t) \
+  (peek->type == LUNA_TOKEN_##t \
     ? next \
-    : error("expected " # t))
+    : (self->expected = LUNA_TOKEN_##t, 0))
 
 /*
  * Accept a token, advancing the lexer.
  */
 
 #define accept(t) \
-  (peek->type == (LUNA_TOKEN_##t) \
+  (peek->type == LUNA_TOKEN_##t \
     ? next \
     : 0)
 
@@ -75,7 +75,8 @@ void
 luna_parser_init(luna_parser_t *self, luna_lexer_t *lex) {
   self->lex = lex;
   self->la = NULL;
-  self->error = NULL;
+  self->ctx = NULL;
+  self->expected = -1;
 }
 
 /*
@@ -111,6 +112,7 @@ primitive_expr(luna_parser_t *self) {
 static int
 expr(luna_parser_t *self) {
   debug("expr");
+  context("expr");
   return primitive_expr(self);
 }
 
@@ -133,6 +135,7 @@ expr_stmt(luna_parser_t *self) {
 static int
 if_stmt(luna_parser_t *self) {
   debug("if_stmt");
+  context("if statement");
 
   accept(UNLESS) || expect(IF);
 
@@ -142,8 +145,11 @@ if_stmt(luna_parser_t *self) {
   // else
 loop:
   if (accept(ELSE)) {
+    context("else statement");
+
     // else if
     if (accept(IF)) {
+      context("else if statement");
       if (!expr(self)) return 0;
       if (!block(self)) return 0;
       goto loop;
@@ -162,6 +168,7 @@ loop:
 static int
 while_stmt(luna_parser_t *self) {
   debug("while_stmt");
+  context("while statement");
   accept(UNTIL) || expect(WHILE);
   if (!expr(self)) return 0;
   if (!block(self)) return 0;
@@ -177,6 +184,7 @@ while_stmt(luna_parser_t *self) {
 static int
 stmt(luna_parser_t *self) {
   debug("stmt");
+  context("statement");
   if (is(IF) || is(UNLESS)) return if_stmt(self);
   if (is(WHILE) || is(UNTIL)) return while_stmt(self);
   return expr_stmt(self);
@@ -206,6 +214,7 @@ static int
 program(luna_parser_t *self) {
   whitespace(self);
   debug("program");
+  context("program");
   while (!accept(EOS)) {
     if (!stmt(self)) return 0;
     whitespace(self);
