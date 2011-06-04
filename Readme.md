@@ -35,25 +35,25 @@
 
  Operator precedence from highest to lowest.
 
-        operator       |  associativity
-        ---------------|---------------
-        []             |  left
-        ++ --          |  right
-        ! ~ + -        |  right
-        * / %          |  left
-        + -            |  left
-        << >>          |  left
-        < <= > >=      |  left
-        == !=          |  left
-        &              |  left
-        ^              |  left
-        |              |  left
-        &&             |  left
-        ||             |  left
-        ?:             |  right
-        =              |  right
-        not            |  right
-        ,              |  left
+    operator       |  associativity
+    ---------------|---------------
+    []             |  left
+    ++ --          |  right
+    ! ~ + -        |  right
+    * / %          |  left
+    + -            |  left
+    << >>          |  left
+    < <= > >=      |  left
+    == !=          |  left
+    &              |  left
+    ^              |  left
+    |              |  left
+    &&             |  left
+    \|\|           |  left
+    ?:             |  right
+    =              |  right
+    not            |  right
+    ,              |  left
 
 ## License 
 
