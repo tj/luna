@@ -23,9 +23,6 @@
   t(FLOAT, "float") \
   t(STRING, "string") \
   t(LBRACE, "{") \
-  t(NULL, "null") \
-  t(TRUE, "true") \
-  t(FALSE, "false") \
   t(DO, "do") \
   t(WHILE, "while") \
   t(UNTIL, "until") \
