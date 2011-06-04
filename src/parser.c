@@ -121,29 +121,43 @@ primary_expr(luna_parser_t *self) {
 }
 
 /*
- * primary_expr ('&' primary_expr)*
+ * primary_expr (('<' | '<=' | '>' | '>=') primary_expr)*
  */
 
 static int
 relational_expr(luna_parser_t *self) {
   debug("relational_expr");
   if (!primary_expr(self)) return 0;
-  while (accept(OP_EQ) || accept(OP_NEQ)) {
+  while (accept(OP_LT) || accept(OP_LTE) || accept(OP_GT) || accept(OP_GTE)) {
     if (!primary_expr(self)) return 0;
   }
   return 1;
 }
 
 /*
- * relational_expr ('&' relational_expr)*
+ * relational_expr (('==' | '!=') relational_expr)*
+ */
+
+static int
+equality_expr(luna_parser_t *self) {
+  debug("equality_expr");
+  if (!relational_expr(self)) return 0;
+  while (accept(OP_EQ) || accept(OP_NEQ)) {
+    if (!relational_expr(self)) return 0;
+  }
+  return 1;
+}
+
+/*
+ * equality_expr ('&' equality_expr)*
  */
 
 static int
 bitwise_and_expr(luna_parser_t *self) {
   debug("bitwise_and_expr");
-  if (!relational_expr(self)) return 0;
+  if (!equality_expr(self)) return 0;
   while (accept(OP_BIT_AND)) {
-    if (!relational_expr(self)) return 0;
+    if (!equality_expr(self)) return 0;
   }
   return 1;
 }
