@@ -25,6 +25,16 @@ luna_parser_init(luna_parser_t *self, luna_lexer_t *lex) {
 }
 
 /*
+ * Set error `msg` and return 0.
+ */
+
+static int
+error(luna_parser_t *self, char *msg) {
+  self->error = msg;
+  return 0;
+}
+
+/*
  * newline*
  */
 
@@ -34,23 +44,58 @@ whitespace(luna_parser_t *self) {
 }
 
 /*
- * ws
+ *   id
+ * | string
+ * | int
+ * | float
  */
 
 static int
-parse_stmt(luna_parser_t *self) {
-  whitespace(self);
-  return 1;
+primitive_expr(luna_parser_t *self) {
+  return accept(ID)
+    || accept(STRING)
+    || accept(INT)
+    || accept(FLOAT)
+    ;
 }
 
 /*
- * stmt+
+ * assignment_expr
  */
 
 static int
-parse_program(luna_parser_t *self) {
-  while (luna_scan(self->lex)) {
-    if (!parse_stmt(self)) return 0;
+expr(luna_parser_t *self) {
+  return primitive_expr(self);
+}
+
+/*
+ * expr
+ */
+
+static int
+expr_stmt(luna_parser_t *self) {
+  return expr(self);
+}
+
+/*
+ * expr_stmt
+ */
+
+static int
+stmt(luna_parser_t *self) {
+  return expr_stmt(self);
+}
+
+/*
+ * ws (stmt ws)*
+ */
+
+static int
+program(luna_parser_t *self) {
+  whitespace(self);
+  while (!accept(EOS)) {
+    if (!stmt(self)) return 0;
+    whitespace(self);
   }
   return 1;
 }
@@ -62,6 +107,6 @@ parse_program(luna_parser_t *self) {
 int
 luna_parse(luna_parser_t *self) {
   luna_lexer_t *lex = self->lex;
-  return parse_program(self);
+  return program(self);
 }
 

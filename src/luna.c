@@ -93,7 +93,14 @@ main(int argc, const char **argv){
 
   luna_parser_t parser;
   luna_parser_init(&parser, &lex);
-  luna_parse(&parser);
+  if (!luna_parse(&parser)) {
+    fprintf(stderr
+      , "luna(%s:%d). parse error: %s\n"
+      , lex.filename
+      , lex.lineno
+      , parser.error);
+    exit(1);
+  }
 
   return 0;
 }
