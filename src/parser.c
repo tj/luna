@@ -46,7 +46,7 @@ luna_parser_init(luna_parser_t *self, luna_lexer_t *lex) {
 
 static int
 error(luna_parser_t *self, char *msg) {
-  self->error = msg;
+  if (!self->error) self->error = msg;
   return 0;
 }
 
