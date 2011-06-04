@@ -15,6 +15,7 @@
  */
 
 typedef struct {
+  char *error;
   luna_lexer_t *lex;
   luna_token_t *la;
 } luna_parser_t;

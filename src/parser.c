@@ -21,6 +21,7 @@ void
 luna_parser_init(luna_parser_t *self, luna_lexer_t *lex) {
   self->lex = lex;
   self->la = NULL;
+  self->error = NULL;
 }
 
 /*
