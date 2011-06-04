@@ -122,7 +122,7 @@ static int
 expr_stmt(luna_parser_t *self) {
   debug("expr_stmt");
   if (!expr(self)) return 0;
-  if (!(accept(SEMICOLON) || accept(NEWLINE))) {
+  if (!(accept(SEMICOLON) || accept(NEWLINE) || is(OUTDENT))) {
     return error("missing newline or semi-colon");
   }
   return 1;
