@@ -38,6 +38,7 @@
   - ◦ object model
   - ◦ garbage collection
   - ◦ optimizations (TCO etc)
+  - ◦ libev integration
   - ◦ portability
   - ◦ closures
   - ◦ module system
