@@ -39,6 +39,12 @@
 #define is(t) (peek->type == (LUNA_TOKEN_##t))
 
 /*
+ * Set error `msg`.
+ */
+
+#define error(msg) (self->error = msg, 0)
+
+/*
  * Expect a token, advancing the lexer,
  * or issuing an error.
  */
@@ -46,7 +52,7 @@
 #define expect(t) \
   (peek->type == (LUNA_TOKEN_##t) \
     ? next \
-    : error(self, "expected " # t))
+    : error("expected " # t))
 
 /*
  * Accept a token, advancing the lexer.
@@ -70,16 +76,6 @@ luna_parser_init(luna_parser_t *self, luna_lexer_t *lex) {
   self->lex = lex;
   self->la = NULL;
   self->error = NULL;
-}
-
-/*
- * Set error `msg` and return 0.
- */
-
-static int
-error(luna_parser_t *self, char *msg) {
-  if (!self->error) self->error = msg;
-  return 0;
 }
 
 /*
@@ -140,7 +136,7 @@ if_stmt(luna_parser_t *self) {
 
   accept(UNLESS) || expect(IF);
 
-  if (!expr(self)) return error(self, "if missing condition");
+  if (!expr(self)) return 0;
   if (!block(self)) return 0;
 
   // else
@@ -148,7 +144,7 @@ loop:
   if (accept(ELSE)) {
     // else if
     if (accept(IF)) {
-      if (!expr(self)) return error(self, "else if missing condition");
+      if (!expr(self)) return 0;
       if (!block(self)) return 0;
       goto loop;
     } else if (!block(self)) {
@@ -167,7 +163,7 @@ static int
 while_stmt(luna_parser_t *self) {
   debug("while_stmt");
   accept(UNTIL) || expect(WHILE);
-  if (!expr(self)) return error(self, "while missing condition");
+  if (!expr(self)) return 0;
   if (!block(self)) return 0;
   return 1;
 }
