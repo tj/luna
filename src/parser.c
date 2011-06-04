@@ -121,15 +121,36 @@ primary_expr(luna_parser_t *self) {
 }
 
 /*
- * primary_expr (('* | '/' | '%') primary_expr)*
+ *   primary_expr
+ * | '!' unary_expr
+ * | '~' unary_expr
+ * | '+' unary_expr
+ * | '-' unary_expr
+ */
+
+static int
+unary_expr(luna_parser_t *self) {
+  debug("unary_expr");
+  if (accept(OP_NOT)
+    || accept(OP_BIT_NOT)
+    || accept(OP_PLUS)
+    || accept(OP_MINUS)) {
+    if (!unary_expr(self)) return 0;
+    return 1;
+  }
+  return primary_expr(self);
+}
+
+/*
+ * unary_expr (('* | '/' | '%') unary_expr)*
  */
 
 static int
 multiplicative_expr(luna_parser_t *self) {
   debug("multiplicative_expr");
-  if (!primary_expr(self)) return 0;
+  if (!unary_expr(self)) return 0;
   while (accept(OP_MULT) || accept(OP_DIV) || accept(OP_MOD)) {
-    if (!primary_expr(self)) return 0;
+    if (!unary_expr(self)) return 0;
   }
   return 1;
 }
