@@ -39,7 +39,7 @@ typedef struct {
 // protos
 
 int
-luna_lexer_next(luna_lexer_t *self);
+luna_scan(luna_lexer_t *self);
 
 void
 luna_lexer_init(luna_lexer_t *self, FILE *stream, const char *filename);

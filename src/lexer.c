@@ -242,7 +242,7 @@ scan_float: {
  */
 
 int
-luna_lexer_next(luna_lexer_t *self) {
+luna_scan(luna_lexer_t *self) {
   int c;
   token(ILLEGAL);
 

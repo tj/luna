@@ -94,7 +94,7 @@ main(int argc, const char **argv){
   luna_parser_t parser;
   luna_parser_init(&parser);
 
-  while (luna_lexer_next(&lex)) {
+  while (luna_scan(&lex)) {
     luna_token_inspect(&lex.tok);
   }
 
