@@ -31,17 +31,17 @@
 
   I _just_ started Luna, so don't expect much yet! Until the project reaches `0.0.1` there will be no tickets, just the simple todo list below:
 
-  [√] lexer
-  [√] parser
-  [ ] virtual machine
-  [ ] opcode generation
-  [ ] object model
-  [ ] garbage collection
-  [ ] optimizations (TCO etc)
-  [ ] portability
-  [ ] closures
-  [ ] module system
-  [ ] website
+  - [√] lexer
+  - [√] parser
+  - [ ] virtual machine
+  - [ ] opcode generation
+  - [ ] object model
+  - [ ] garbage collection
+  - [ ] optimizations (TCO etc)
+  - [ ] portability
+  - [ ] closures
+  - [ ] module system
+  - [ ] website
 
 ## Operator Precedence Table
 
