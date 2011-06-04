@@ -11,6 +11,7 @@
 #include <string.h>
 #include "luna.h"
 #include "lexer.h"
+#include "parser.h"
 
 /*
  * Output usage information.
@@ -86,9 +87,12 @@ main(int argc, const char **argv){
     path = "stdin";
   }
 
-  // scan the input
+  // parser the input
   luna_lexer_t lex;
   luna_lexer_init(&lex, stream, path);
+
+  luna_parser_t parser;
+  luna_parser_init(&parser);
 
   while (luna_lexer_next(&lex)) {
     luna_token_inspect(&lex.tok);
