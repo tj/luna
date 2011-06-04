@@ -49,7 +49,7 @@
     ^              |  left
     |              |  left
     &&             |  left
-    ||             |  left
+    \|\|           |  left
     ?:             |  right
     =              |  right
     not            |  right
