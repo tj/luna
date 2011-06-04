@@ -141,7 +141,7 @@ if_stmt(luna_parser_t *self) {
   accept(UNLESS) || expect(IF);
 
   if (!expr(self)) return error(self, "if missing condition");
-  if (!block(self)) return error(self, "if missing block");
+  if (!block(self)) return 0;
 
   // else
 loop:
@@ -149,10 +149,10 @@ loop:
     // else if
     if (accept(IF)) {
       if (!expr(self)) return error(self, "else if missing condition");
-      if (!block(self)) return error(self, "else if missing block");
+      if (!block(self)) return 0;
       goto loop;
     } else if (!block(self)) {
-      return error(self, "else missing block");
+      return 0;
     }
   }
 
@@ -168,7 +168,7 @@ while_stmt(luna_parser_t *self) {
   debug("while_stmt");
   accept(UNTIL) || expect(WHILE);
   if (!expr(self)) return error(self, "while missing condition");
-  if (!block(self)) return error(self, "while missing block");
+  if (!block(self)) return 0;
   return 1;
 }
 
