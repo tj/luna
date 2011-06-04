@@ -8,6 +8,8 @@
 #include <stdio.h>
 #include "parser.h"
 
+// TODO: emit for codegen
+
 #define next (luna_scan(self->lex), &self->lex->tok)
 #define peek (self->la ? self->la : (self->la = next))
 #define is(t) (peek->type == (LUNA_TOKEN_##t) ? 1 : 0)
@@ -95,18 +97,31 @@ expr_stmt(luna_parser_t *self) {
 }
 
 /*
- * 'if' expr block ('else' block)?
+ * 'if' expr block
+ *  ('else' 'if' block)*
+ *  ('else' block)?
  */
 
 static int
 if_stmt(luna_parser_t *self) {
   debug("if_stmt");
   accept(IF);
-  if (!expr(self)) return error(self, "conditional missing expression");
+  if (!expr(self)) return error(self, "conditional missing condition");
   if (!block(self)) return error(self, "conditional missing block");
+
+  // else
+loop:
   if (accept(ELSE)) {
-    if (!block(self)) return error(self, "else missing block");
+    // else if
+    if (accept(IF)) {
+      if (!expr(self)) return error(self, "else if missing condition");
+      if (!block(self)) return error(self, "else if missing block");
+      goto loop;
+    } else if (!block(self)) {
+      return error(self, "else missing block");
+    }
   }
+
   return 1;
 }
 
