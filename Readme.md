@@ -14,7 +14,7 @@
   - reflection capabilities
   - reactor concurrency model (event loop)
   - callee evaluated messages
-  - stack based VM
+  - register based VM
   - ...
 
 ## Build
@@ -29,7 +29,15 @@
 
 ## Status
 
-  I _just_ started Luna, so don't expect much yet! first up is lexical analysis; currently Luna will just spit out debugging information, nothing fancy.
+  I _just_ started Luna, so don't expect much yet! Until the project reaches `0.0.1` there will be no tickets, just the simple todo list below:
+
+  [√] lexer
+  [√] parser
+  [ ] virtual machine
+  [ ] object model
+  [ ] garbage collection
+  [ ] optimizations
+  [ ] portability
 
 ## Operator Precedence Table
 
