@@ -10,11 +10,6 @@
 
 // TODO: emit for codegen
 
-#define next (luna_scan(self->lex), &self->lex->tok)
-#define peek (self->la ? self->la : (self->la = next))
-#define is(t) (peek->type == (LUNA_TOKEN_##t) ? 1 : 0)
-#define accept(t) (peek->type == (LUNA_TOKEN_##t) ? next : 0)
-
 // -DEBUG_PARSER
 
 #ifdef EBUG_PARSER
@@ -24,6 +19,43 @@
 #else
 #define debug(name)
 #endif
+
+/*
+ * Return the next token.
+ */
+
+#define next (luna_scan(self->lex), &self->lex->tok)
+
+/*
+ * Single token look-ahead.
+ */
+
+#define peek (self->la ? self->la : (self->la = next))
+
+/*
+ * Check if the next token is `t`.
+ */
+
+#define is(t) (peek->type == (LUNA_TOKEN_##t))
+
+/*
+ * Expect a token, advancing the lexer,
+ * or issuing an error.
+ */
+
+#define expect(t) \
+  (peek->type == (LUNA_TOKEN_##t) \
+    ? next \
+    : error(self, "expected " # t))
+
+/*
+ * Accept a token, advancing the lexer.
+ */
+
+#define accept(t) \
+  (peek->type == (LUNA_TOKEN_##t) \
+    ? next \
+    : 0)
 
 // protos
 
@@ -106,7 +138,7 @@ static int
 if_stmt(luna_parser_t *self) {
   debug("if_stmt");
 
-  accept(IF) || accept(UNLESS);
+  accept(UNLESS) || expect(IF);
 
   if (!expr(self)) return error(self, "if missing condition");
   if (!block(self)) return error(self, "if missing block");
@@ -134,7 +166,7 @@ loop:
 static int
 while_stmt(luna_parser_t *self) {
   debug("while_stmt");
-  accept(WHILE) || accept(UNTIL);
+  accept(UNTIL) || expect(WHILE);
   if (!expr(self)) return error(self, "while missing condition");
   if (!block(self)) return error(self, "while missing block");
   return 1;
@@ -161,7 +193,7 @@ stmt(luna_parser_t *self) {
 static int
 block(luna_parser_t *self) {
   debug("block");
-  if (!accept(INDENT)) return error(self, "block missing indentation");
+  expect(INDENT);
   whitespace(self);
   do {
     if (!stmt(self)) return 0;
