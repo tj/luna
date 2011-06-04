@@ -106,8 +106,8 @@ whitespace(luna_parser_t *self) {
  */
 
 static int
-primitive_expr(luna_parser_t *self) {
-  debug("primitive_expr");
+primary_expr(luna_parser_t *self) {
+  debug("primary_expr");
   return accept(ID)
     || accept(STRING)
     || accept(INT)
@@ -116,13 +116,13 @@ primitive_expr(luna_parser_t *self) {
 }
 
 /*
- * assignment_expr
+ * primary_expr
  */
 
 static int
 expr(luna_parser_t *self) {
   debug("expr");
-  return primitive_expr(self);
+  return primary_expr(self);
 }
 
 /*
