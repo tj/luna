@@ -4,7 +4,7 @@ OBJ = ${SRC:.c=.o}
 
 PREFIX = /usr/local
 CC = clang
-CFLAGS = -Wall -std=c99
+CFLAGS = -Wall -std=c99 -DEBUG_PARSER
 
 luna: $(OBJ)
 	@mkdir -p build

@@ -8,10 +8,17 @@
 #include <stdio.h>
 #include "parser.h"
 
-#define inspect luna_token_inspect(&self->lex->tok);
 #define next (luna_scan(self->lex), &self->lex->tok)
 #define peek (self->la ? self->la : (self->la = next))
 #define accept(t) (peek->type == (LUNA_TOKEN_##t) ? next : 0)
+
+#ifdef EBUG_PARSER
+#define debug(name) \
+  fprintf(stderr, "\n\033[90m%s\033[0m\n", name); \
+  luna_token_inspect(&self->lex->tok);
+#else
+#define debug(name)
+#endif
 
 /*
  * Initialize with the given lexer.
@@ -52,6 +59,7 @@ whitespace(luna_parser_t *self) {
 
 static int
 primitive_expr(luna_parser_t *self) {
+  debug("primitive_expr");
   return accept(ID)
     || accept(STRING)
     || accept(INT)
@@ -65,6 +73,7 @@ primitive_expr(luna_parser_t *self) {
 
 static int
 expr(luna_parser_t *self) {
+  debug("expr");
   return primitive_expr(self);
 }
 
@@ -74,6 +83,7 @@ expr(luna_parser_t *self) {
 
 static int
 expr_stmt(luna_parser_t *self) {
+  debug("expr_stmt");
   return expr(self);
 }
 
@@ -83,6 +93,7 @@ expr_stmt(luna_parser_t *self) {
 
 static int
 stmt(luna_parser_t *self) {
+  debug("stmt");
   return expr_stmt(self);
 }
 
@@ -93,6 +104,7 @@ stmt(luna_parser_t *self) {
 static int
 program(luna_parser_t *self) {
   whitespace(self);
+  debug("program");
   while (!accept(EOS)) {
     if (!stmt(self)) return 0;
     whitespace(self);
