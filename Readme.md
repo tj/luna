@@ -31,6 +31,15 @@
 
   I _just_ started Luna, so don't expect much yet! first up is lexical analysis; currently Luna will just spit out debugging information, nothing fancy.
 
+## Operator Precedence Table
+
+ Operator precedence from highest to lowest.
+
+    &&
+    ||
+    =
+    , 
+
 ## License 
 
 (The MIT License)
