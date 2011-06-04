@@ -62,9 +62,10 @@
     ? next \
     : 0)
 
-// protos
+// forward declarations
 
 static int block(luna_parser_t *self);
+static int expr(luna_parser_t *self);
 
 /*
  * Initialize with the given lexer.
@@ -105,13 +106,30 @@ primary_expr(luna_parser_t *self) {
 }
 
 /*
- * primary_expr
+ *   primary_expr '=' assignment_expr
+ * | primary_expr
+ */
+
+static int
+assignment_expr(luna_parser_t *self) {
+  debug("assignment_expr");
+  int lval = is(ID);
+  primary_expr(self);
+  if (accept(OP_ASSIGN)) {
+    if (!lval) return error("invalid left-hand side value in assignment");
+    expr(self);
+  }
+  return 1;
+}
+
+/*
+ * assignment_expr
  */
 
 static int
 expr(luna_parser_t *self) {
   debug("expr");
-  return primary_expr(self);
+  return assignment_expr(self);
 }
 
 /*
