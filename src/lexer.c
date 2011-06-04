@@ -113,7 +113,6 @@ scan_ident(luna_lexer_t *self, int c) {
   if (0 == strcmp("if", buf)) return token(IF); 
   else if (0 == strcmp("else", buf)) return token(ELSE); 
   else if (0 == strcmp("unless", buf)) return token(UNLESS); 
-  else if (0 == strcmp("do", buf)) return token(DO); 
   else if (0 == strcmp("while", buf)) return token(WHILE); 
   else if (0 == strcmp("until", buf)) return token(UNTIL); 
   else if (0 == strcmp("for", buf)) return token(FOR); 
