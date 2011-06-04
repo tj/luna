@@ -117,6 +117,7 @@ scan_ident(luna_lexer_t *self, int c) {
   else if (0 == strcmp("until", buf)) return token(UNTIL); 
   else if (0 == strcmp("for", buf)) return token(FOR); 
   else if (0 == strcmp("return", buf)) return token(RETURN); 
+  else if (0 == strcmp("not", buf)) return token(OP_LNOT); 
   self->tok.value.as_string = strdup(buf); // TODO: remove
   return 1;
 }

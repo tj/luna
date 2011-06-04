@@ -37,6 +37,7 @@
 
     operator       |  associativity
     ---------------|---------------
+    []             |  left
     ++ --          |  right
     ! ~ + -        |  right
     * / %          |  left
@@ -50,6 +51,7 @@
     &&             |  left
     ||             |  left
     =              |  right
+    not            |  right
     ,              |  left
 
 ## License 
