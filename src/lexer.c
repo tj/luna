@@ -129,9 +129,7 @@ static int
 hex_literal(luna_lexer_t *self) {
   int a = hex(next)
     , b = hex(next);
-
   if (a > -1 && b > -1) return a << 4 | b;
-
   error(self, "string hex literal \\x contains invalid digits");
   return -1;
 }
