@@ -121,11 +121,11 @@ primary_expr(luna_parser_t *self) {
 }
 
 /*
- *   primary_expr
- * | '!' unary_expr
+ *   '!' unary_expr
  * | '~' unary_expr
  * | '+' unary_expr
  * | '-' unary_expr
+ * | primary_expr
  */
 
 static int
