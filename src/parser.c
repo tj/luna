@@ -89,10 +89,24 @@ whitespace(luna_parser_t *self) {
 }
 
 /*
+ * '(' expr ')'
+ */
+
+static int
+paren_expr(luna_parser_t *self) {
+  debug("paren_expr");
+  if (!accept(LPAREN)) return 0;
+  if (!expr(self)) return 0;
+  if (!accept(RPAREN)) return error("expression missing closing ')'");
+  return 1;
+}
+
+/*
  *   id
  * | string
  * | int
  * | float
+ * | paren_expr
  */
 
 static int
@@ -102,6 +116,7 @@ primary_expr(luna_parser_t *self) {
     || accept(STRING)
     || accept(INT)
     || accept(FLOAT)
+    || paren_expr(self);
     ;
 }
 
@@ -117,7 +132,7 @@ assignment_expr(luna_parser_t *self) {
   if (!primary_expr(self)) return 0;
   if (accept(OP_ASSIGN)) {
     if (!lval) return error("invalid left-hand side value in assignment");
-    assignment_expr(self);
+    if (!assignment_expr(self)) return 0;
   }
   return 1;
 }
