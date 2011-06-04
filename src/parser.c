@@ -115,7 +115,7 @@ expr(luna_parser_t *self) {
 }
 
 /*
- * expr
+ * expr (';' | newline)
  */
 
 static int
