@@ -90,15 +90,24 @@ main(int argc, const char **argv){
   // parser the input
   luna_lexer_t lex;
   luna_lexer_init(&lex, stream, path);
-
   luna_parser_t parser;
   luna_parser_init(&parser, &lex);
+
+  // oh noes!
   if (!luna_parse(&parser)) {
+    // deduce
+    if (!parser.error && LUNA_TOKEN_EOS != lex.tok.type) {
+      char buf[256];
+      snprintf(buf, 256, "unexpected token '%s'", luna_token_type_string(lex.tok.type));
+      parser.error = buf;
+    }
+
     fprintf(stderr
       , "luna(%s:%d). parse error: %s\n"
       , lex.filename
       , lex.lineno
       , parser.error);
+
     exit(1);
   }
 
