@@ -2,9 +2,9 @@
 SRC = $(shell find src/*.c)
 OBJ = ${SRC:.c=.o}
 
-PREFIX = /usr/local
 CC = clang
-CFLAGS = -Wall -std=c99 -DEBUG_PARSER
+PREFIX = /usr/local
+CFLAGS = -Wall -std=c99 -DEBUG_PARSER -g -O0
 
 luna: $(OBJ)
 	@mkdir -p build
