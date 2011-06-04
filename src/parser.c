@@ -36,7 +36,7 @@
  * Check if the next token is `t`.
  */
 
-#define is(t) (peek->type == (LUNA_TOKEN_##t))
+#define is(t) (peek->type == LUNA_TOKEN_##t)
 
 /*
  * Set error context `str`, used in error reporting.
