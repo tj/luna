@@ -108,7 +108,7 @@ if_stmt(luna_parser_t *self) {
 
   accept(IF) || accept(UNLESS);
 
-  if (!expr(self)) return error(self, "conditional missing condition");
+  if (!expr(self)) return error(self, "conditional missing expression");
   if (!block(self)) return error(self, "conditional missing block");
 
   // else
@@ -116,7 +116,7 @@ loop:
   if (accept(ELSE)) {
     // else if
     if (accept(IF)) {
-      if (!expr(self)) return error(self, "else if missing condition");
+      if (!expr(self)) return error(self, "else if missing expression");
       if (!block(self)) return error(self, "else if missing block");
       goto loop;
     } else if (!block(self)) {
