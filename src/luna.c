@@ -100,11 +100,6 @@ main(int argc, const char **argv){
     // error message
     if (parser.err) {
       err = parser.err;
-    // expected token
-    } else if (-1 != parser.expected) {
-      char buf[64];
-      snprintf(buf, 64, "expected token '%s'", luna_token_type_string(parser.expected));
-      err = buf;
     // deduce
     } else if (LUNA_TOKEN_EOS != lex.tok.type) {
       char buf[64];

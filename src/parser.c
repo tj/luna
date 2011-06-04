@@ -54,16 +54,6 @@
     : str), 0)
 
 /*
- * Expect a token, advancing the lexer,
- * or issuing an error.
- */
-
-#define expect(t) \
-  (peek->type == LUNA_TOKEN_##t \
-    ? next \
-    : (self->expected = LUNA_TOKEN_##t, 0))
-
-/*
  * Accept a token, advancing the lexer.
  */
 
@@ -86,7 +76,6 @@ luna_parser_init(luna_parser_t *self, luna_lexer_t *lex) {
   self->la = NULL;
   self->ctx = NULL;
   self->err = NULL;
-  self->expected = -1;
 }
 
 /*
@@ -210,7 +199,7 @@ stmt(luna_parser_t *self) {
 static int
 block(luna_parser_t *self) {
   debug("block");
-  if (!expect(INDENT)) return 0;
+  if (!accept(INDENT)) return error("block expected");
   whitespace(self);
   do {
     if (!stmt(self)) return 0;
