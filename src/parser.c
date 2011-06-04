@@ -125,11 +125,25 @@ primary_expr(luna_parser_t *self) {
  */
 
 static int
+relational_expr(luna_parser_t *self) {
+  debug("relational_expr");
+  if (!primary_expr(self)) return 0;
+  while (accept(OP_EQ) || accept(OP_NEQ)) {
+    if (!primary_expr(self)) return 0;
+  }
+  return 1;
+}
+
+/*
+ * relational_expr ('&' relational_expr)*
+ */
+
+static int
 bitwise_and_expr(luna_parser_t *self) {
   debug("bitwise_and_expr");
-  if (!primary_expr(self)) return 0;
+  if (!relational_expr(self)) return 0;
   while (accept(OP_BIT_AND)) {
-    if (!primary_expr(self)) return 0;
+    if (!relational_expr(self)) return 0;
   }
   return 1;
 }
