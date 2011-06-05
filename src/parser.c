@@ -292,6 +292,15 @@ slot_access_expr(luna_parser_t * self) {
 }
 
 /*
+ * (expr (',' expr)*)?
+ */
+
+static void
+args(luna_parser_t *self) {
+  do expr(self); while (accept(COMMA));
+}
+
+/*
  *   slot_access_expr '(' args ')'
  * | slot_access_expr
  */
@@ -301,7 +310,7 @@ call_expr(luna_parser_t *self) {
   debug("call_expr");
   if (!slot_access_expr(self)) return 0;
   if (accept(LPAREN)) {
-    printf("parens\n");
+    args(self);
     if (!accept(RPAREN)) return error("call missing closing ')'");
   }
   return 1;
