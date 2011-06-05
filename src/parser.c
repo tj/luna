@@ -133,7 +133,7 @@ primary_expr(luna_parser_t *self) {
 
 /*
  *   call_expr
- * | call_expr '**' primary_expr
+ * | call_expr '**' call_expr
  */
 
 static int
@@ -141,7 +141,7 @@ pow_expr(luna_parser_t *self) {
   debug("pow_expr");
   if (!call_expr(self)) return 0;
   if (accept(OP_POW)) {
-    return primary_expr(self);
+    return call_expr(self);
   }
   return 1;
 }
