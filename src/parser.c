@@ -146,20 +146,24 @@ postfix_expr(luna_parser_t *self) {
 }
 
 /*
- *   '!' unary_expr
+ *   '++' unary_expr
+ * | '--' unary_expr
  * | '~' unary_expr
  * | '+' unary_expr
  * | '-' unary_expr
+ * | '!' unary_expr
  * | primary_expr
  */
 
 static int
 unary_expr(luna_parser_t *self) {
   debug("unary_expr");
-  if (accept(OP_NOT)
+  if (accept(OP_INCR)
+    || accept(OP_DECR)
     || accept(OP_BIT_NOT)
     || accept(OP_PLUS)
-    || accept(OP_MINUS)) {
+    || accept(OP_MINUS)
+    || accept(OP_NOT)) {
     return unary_expr(self);
   }
   return postfix_expr(self);
