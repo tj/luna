@@ -346,6 +346,7 @@ call_expr(luna_parser_t *self) {
 static int
 assignment_expr(luna_parser_t *self) {
   debug("assignment_expr");
+  context("assignment");
   if (call_expr(self)) {
     if (accept(OP_ASSIGN)) return expr(self);
     return 1;
