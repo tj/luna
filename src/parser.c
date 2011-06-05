@@ -542,6 +542,7 @@ while_stmt(luna_parser_t *self) {
 static int
 stmt(luna_parser_t *self) {
   debug("stmt");
+  context("statement");
   if (is(IF) || is(UNLESS)) return if_stmt(self);
   if (is(WHILE) || is(UNTIL)) return while_stmt(self);
   return expr_stmt(self);
@@ -571,7 +572,6 @@ static int
 program(luna_parser_t *self) {
   whitespace(self);
   debug("program");
-  context("global scope");
   while (!accept(EOS)) {
     if (!stmt(self)) return 0;
     whitespace(self);

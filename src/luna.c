@@ -105,7 +105,7 @@ main(int argc, const char **argv){
       err = lex.error;
       type = "syntax";
     // generate
-    } else if (LUNA_TOKEN_EOS != lex.tok.type) {
+    } else {
       char buf[64];
       snprintf(buf, 64, "unexpected token '%s'", luna_token_type_string(lex.tok.type));
       err = buf;
