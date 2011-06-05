@@ -45,6 +45,7 @@
   - ◦ closures
   - ◦ module system
   - ◦ test suite
+  - ◦ VIM / TM / syntaxes
   - ◦ website
 
 ## Operator Precedence Table
