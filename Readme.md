@@ -70,7 +70,7 @@
     &&             |  left
     \|\|           |  left
     ?:             |  right
-    =              |  right
+    = :=           |  right
     not            |  right
     ,              |  left
 
