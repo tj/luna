@@ -14,6 +14,7 @@
   - reflection capabilities
   - reactor concurrency model (event loop)
   - callee evaluated messages
+  - coroutines (maybe)
   - register based VM
   - ...
 
