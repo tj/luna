@@ -274,7 +274,7 @@ scan:
         : (undo, token(OP_MINUS));
     case '*':
       return '*' == next
-        ? token(OP_EX)
+        ? token(OP_POW)
         : (undo, token(OP_MULT));
     case ':':
       return '=' == next

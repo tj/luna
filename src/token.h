@@ -50,7 +50,7 @@
   t(OP_MULT, "*") \
   t(OP_DIV, "/") \
   t(OP_MOD, "%") \
-  t(OP_EX, "**") \
+  t(OP_POW, "**") \
   t(OP_GT, ">") \
   t(OP_LT, "<") \
   t(OP_GTE, ">=") \
