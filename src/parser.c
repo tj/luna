@@ -141,7 +141,8 @@ pow_expr(luna_parser_t *self) {
   debug("pow_expr");
   if (!call_expr(self)) return 0;
   if (accept(OP_POW)) {
-    return call_expr(self);
+    context("** operation");
+    if (!call_expr(self)) return error("missing right-hand expression");
   }
   return 1;
 }
@@ -193,7 +194,8 @@ multiplicative_expr(luna_parser_t *self) {
   debug("multiplicative_expr");
   if (!unary_expr(self)) return 0;
   while (accept(OP_MULT) || accept(OP_DIV) || accept(OP_MOD)) {
-    if (!unary_expr(self)) return 0;
+    context("multiplicative operation");
+    if (!unary_expr(self)) return error("missing right-hand expression");
   }
   return 1;
 }
@@ -207,7 +209,8 @@ concat_expr(luna_parser_t *self) {
   debug("concat_expr");
   if (!multiplicative_expr(self)) return 0;
   while (accept(OP_DOT)) {
-    if (!multiplicative_expr(self)) return 0;
+    context("concatenation operation");
+    if (!multiplicative_expr(self)) return error("missing right-hand expression");
   }
   return 1;
 }
@@ -221,7 +224,8 @@ additive_expr(luna_parser_t *self) {
   debug("additive_expr");
   if (!concat_expr(self)) return 0;
   while (accept(OP_PLUS) || accept(OP_MINUS)) {
-    if (!concat_expr(self)) return 0;
+    context("additive operation");
+    if (!concat_expr(self)) return error("missing right-hand expression");
   }
   return 1;
 }
@@ -235,7 +239,8 @@ shift_expr(luna_parser_t *self) {
   debug("shift_expr");
   if (!additive_expr(self)) return 0;
   while (accept(OP_BIT_SHL) || accept(OP_BIT_SHR)) {
-    if (!additive_expr(self)) return 0;
+    context("shift operation");
+    if (!additive_expr(self)) return error("missing right-hand expression");
   }
   return 1;
 }
@@ -249,7 +254,8 @@ relational_expr(luna_parser_t *self) {
   debug("relational_expr");
   if (!shift_expr(self)) return 0;
   while (accept(OP_LT) || accept(OP_LTE) || accept(OP_GT) || accept(OP_GTE)) {
-    if (!shift_expr(self)) return 0;
+    context("relational operation");
+    if (!shift_expr(self)) return error("missing right-hand expression");
   }
   return 1;
 }
@@ -263,7 +269,8 @@ equality_expr(luna_parser_t *self) {
   debug("equality_expr");
   if (!relational_expr(self)) return 0;
   while (accept(OP_EQ) || accept(OP_NEQ)) {
-    if (!relational_expr(self)) return 0;
+    context("equality operation");
+    if (!relational_expr(self)) return error("missing right-hand expression");
   }
   return 1;
 }
@@ -277,7 +284,8 @@ bitwise_and_expr(luna_parser_t *self) {
   debug("bitwise_and_expr");
   if (!equality_expr(self)) return 0;
   while (accept(OP_BIT_AND)) {
-    if (!equality_expr(self)) return 0;
+    context("& operation");
+    if (!equality_expr(self)) return error("missing right-hand expression");
   }
   return 1;
 }
@@ -291,7 +299,8 @@ bitwise_xor_expr(luna_parser_t *self) {
   debug("bitwise_xor_expr");
   if (!bitwise_and_expr(self)) return 0;
   while (accept(OP_BIT_XOR)) {
-    if (!bitwise_and_expr(self)) return 0;
+    context("^ operation");
+    if (!bitwise_and_expr(self)) return error("missing right-hand expression");
   }
   return 1;
 }
@@ -305,7 +314,8 @@ bitwise_or_expr(luna_parser_t *self) {
   debug("bitwise_or_expr");
   if (!bitwise_xor_expr(self)) return 0;
   while (accept(OP_BIT_OR)) {
-    if (!bitwise_xor_expr(self)) return 0;
+    context("| operation");
+    if (!bitwise_xor_expr(self)) return error("missing right-hand expression");
   }
   return 1;
 }
@@ -319,7 +329,8 @@ logical_and_expr(luna_parser_t *self) {
   debug("logical_and_expr");
   if (!bitwise_or_expr(self)) return 0;
   while (accept(OP_AND)) {
-    if (!bitwise_or_expr(self)) return 0;
+    context("&& operation");
+    if (!bitwise_or_expr(self)) return error("missing right-hand expression");
   }
   return 1;
 }
@@ -333,7 +344,8 @@ logical_or_expr(luna_parser_t *self) {
   debug("logical_or_expr");
   if (!logical_and_expr(self)) return 0;
   while (accept(OP_OR)) {
-    if (!logical_and_expr(self)) return 0;
+    context("|| operation");
+    if (!logical_and_expr(self)) return error("missing right-hand expression");
   }
   return 1;
 }
@@ -413,7 +425,7 @@ assignment_expr(luna_parser_t *self) {
   debug("assignment_expr");
   if (!logical_or_expr(self)) return 0;
   if (accept(OP_ASSIGN) || accept(OP_SLOT_ASSIGN)) {
-    if (!not_expr(self)) return 0;
+    if (!not_expr(self)) return error("assignment missing right-hand expression");
   }
   return 1;
 }
