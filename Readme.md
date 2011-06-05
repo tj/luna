@@ -83,6 +83,32 @@
 
  Luna's inspiration comes from bits of many languages that I have worked work as I aim for the minimalism and performance of [Lua](http://www.lua.org/), elegance of Steve Dekorte's [io](http://www.iolanguage.com/), and bits of syntax inspired by Python (whitespace) and Ruby (low precedence `not`, `**` etc). Luna's reactor is of course, inspired by the fantastic work of Ryan Dahl, and the entire community of [nodejs](http://nodejs.org).
 
+## Syntax
+
+ The syntax, though very much still a work-in-progress, consists of concepts from various languages, as well as some I've not personally seen.
+
+### Significant Whitespace
+
+ Those of you who know me, might think "but TJ, you hate significant white-space?", well I don't; the primary issue I have with significant white-space is it's abuse. It's very easy to get lost when the indentation level is deep, or when methods (or classes etc) span many rows. For example, class-based languages with significant whitespace make it very easy to loose context, and pairing outdents is more of a visual challenge than braces or other block delimiters.
+
+ In contrast, when used appropriately it can lead to syntactically pleasing code. For this reason I have chosen to adopt significant whitespace for Luna, _however_ since Luna's inheritance is prototype-based, excessive nesting is at a minimum, because the receiving object (or class in class-based languages), must be explicitly defined, reaffirming context, as shown in the example below:
+ 
+     Person = Object clone
+
+     Person init =: first, last
+       self first = first
+       self last = last
+
+     Person toString =:
+       self first . ' ' . self last
+
+     Person inspect =:
+       '#<Person' . self toString() . '>'
+
+     tj = Person init('tj', 'holowaychuk')
+     stdout write(tj)
+     // => ''
+
 ## License 
 
 (The MIT License)
