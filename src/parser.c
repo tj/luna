@@ -571,7 +571,7 @@ static int
 program(luna_parser_t *self) {
   whitespace(self);
   debug("program");
-  context("program");
+  context("global scope");
   while (!accept(EOS)) {
     if (!stmt(self)) return 0;
     whitespace(self);
