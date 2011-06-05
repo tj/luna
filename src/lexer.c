@@ -43,6 +43,12 @@
 #define accept(c) (c == next ? c : (undo, 0))
 
 /*
+ * Set error `msg` and assign ILLEGAL token.
+ */
+
+#define error(msg) (self->error = msg, token(ILLEGAL))
+
+/*
  * Initialize lexer with the given `stream` and `filename`.
  */
 
@@ -54,16 +60,6 @@ luna_lexer_init(luna_lexer_t *self, FILE *stream, const char *filename) {
   self->indents = 0;
   self->outdents = 0;
   self->lineno = 1;
-}
-
-/*
- * Set error `msg` and token to ILLEGAL.
- */
-
-static void
-error(luna_lexer_t *self, char *msg) {
-  self->error = msg;
-  token(ILLEGAL);
 }
 
 /*
@@ -157,7 +153,7 @@ hex_literal(luna_lexer_t *self) {
   int a = hex(next)
     , b = hex(next);
   if (a > -1 && b > -1) return a << 4 | b;
-  error(self, "string hex literal \\x contains invalid digits");
+  error("string hex literal \\x contains invalid digits");
   return -1;
 }
 
@@ -217,7 +213,7 @@ scan_hex:
   switch (c = next) {
     case 'x':
       if (!isxdigit(c = next)) {
-        error(self, "hex literal expects one or more digits");
+        error("hex literal expects one or more digits");
         return 0;
       } else {
         do n = n << 4 | hex(c);
@@ -354,7 +350,7 @@ scan:
     default:
       if (isalpha(c) || '_' == c) return scan_ident(self, c);
       if (isdigit(c) || '.' == c) return scan_number(self, c);
-      error(self, "illegal character");
+      error("illegal character");
       return 0;
   }
 }
