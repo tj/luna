@@ -75,6 +75,7 @@
 
 static int block(luna_parser_t *self);
 static int expr(luna_parser_t *self);
+static int call_expr(luna_parser_t *self);
 static int not_expr(luna_parser_t *self);
 
 /*
@@ -131,6 +132,20 @@ primary_expr(luna_parser_t *self) {
 }
 
 /*
+ *   call_expr
+ * | call_expr '++'
+ * | call_expr '--'
+ */
+
+static int
+postfix_expr(luna_parser_t *self) {
+  debug("postfix_expr");
+  if (!call_expr(self)) return 0;
+  if (accept(OP_INCR) || accept(OP_DECR)) ;
+  return 1;
+}
+
+/*
  *   '!' unary_expr
  * | '~' unary_expr
  * | '+' unary_expr
@@ -147,7 +162,7 @@ unary_expr(luna_parser_t *self) {
     || accept(OP_MINUS)) {
     return unary_expr(self);
   }
-  return primary_expr(self);
+  return postfix_expr(self);
 }
 
 /*
