@@ -310,13 +310,24 @@ logical_or_expr(luna_parser_t *self) {
 }
 
 /*
- * ':' block
+ * (id (',' id)*)?
+ */
+
+static void
+params(luna_parser_t *self) {
+  debug("params");
+  do accept(ID); while (accept(COMMA));
+}
+
+/*
+ * ':' params block
  */
 
 static int
 function_expr(luna_parser_t *self) {
   debug("function_expr");
   if (accept(COLON)) {
+    params(self);
     if (block(self)) {
       return 1;
     }
