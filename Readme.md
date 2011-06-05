@@ -10,11 +10,11 @@
 ## Goals
 
   - simple, small, elegant, explicit
+  - fast, fast, fast and fast
   - prototypal inheritance
   - reflection capabilities
   - reactor concurrency model (event loop)
   - callee evaluated messages
-  - coroutines (maybe)
   - register based VM
   - ...
 
