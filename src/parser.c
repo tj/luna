@@ -367,13 +367,14 @@ params(luna_parser_t *self) {
 }
 
 /*
- * ':' params block
+ * ':' params? block
  */
 
 static int
 function_expr(luna_parser_t *self) {
   debug("function_expr");
   if (accept(COLON)) {
+    if (is(INDENT)) return 1;
     if (!params(self)) return 0;
     context("function literal");
     if (block(self)) return 1;
