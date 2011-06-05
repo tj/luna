@@ -435,7 +435,8 @@ assignment_expr(luna_parser_t *self) {
   debug("assignment_expr");
   if (!logical_or_expr(self)) return 0;
   if (accept(OP_ASSIGN) || accept(OP_SLOT_ASSIGN)) {
-    if (!not_expr(self)) return error("assignment missing right-hand expression");
+    context("assignment");
+    if (!not_expr(self)) return 0;
   }
   return 1;
 }
@@ -461,7 +462,7 @@ expr(luna_parser_t *self) {
   debug("expr");
   if (!not_expr(self)) return 0;
   while (accept(COMMA)) {
-    if (!not_expr(self)) return 0;
+    if (!not_expr(self)) return error("missing expression after ','");
   }
   return 1;
 }
