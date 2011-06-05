@@ -331,10 +331,7 @@ function_expr(luna_parser_t *self) {
 static int
 slot_access_expr(luna_parser_t * self) {
   debug("slot_access_expr");
-  if (!primary_expr(self)) {
-    if (function_expr(self)) ;
-    return 0;
-  };
+  if (!(primary_expr(self) || function_expr(self))) return 0;
   while (accept(ID)) ;
   return 1;
 }
