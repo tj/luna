@@ -10,6 +10,7 @@
 
 // TODO: emit for codegen
 // TODO: -DEBUG_PARSER output for accept() etc
+// TODO: contextual errors
 
 // -DEBUG_PARSER
 
