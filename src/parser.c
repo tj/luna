@@ -23,6 +23,22 @@
 #endif
 
 /*
+ * Accept a token, advancing the lexer.
+ */
+
+#ifdef EBUG_PARSER
+#define accept(t) \
+  (peek->type == LUNA_TOKEN_##t \
+    ? (fprintf(stderr, "\033[90maccepted \033[33m%s\033[0m\n", #t), next) \
+    : 0)
+#else
+#define accept(t) \
+  (peek->type == LUNA_TOKEN_##t \
+    ? next \
+    : 0)
+#endif
+
+/*
  * Return the next token.
  */
 
@@ -54,15 +70,6 @@
   ((self->err = self->err \
     ? self->err \
     : str), 0)
-
-/*
- * Accept a token, advancing the lexer.
- */
-
-#define accept(t) \
-  (peek->type == LUNA_TOKEN_##t \
-    ? next \
-    : 0)
 
 // forward declarations
 
