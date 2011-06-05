@@ -11,9 +11,35 @@
 #include <stdio.h>
 #include "lexer.h"
 
+/*
+ * Next char in the stream.
+ */
+
+#ifdef EBUG_LEXER
+#define next \
+  (self->stash = fgetc(self->stream)\
+    , fprintf(stderr, "'%c'\n", self->stash)\
+    , self->stash)
+#else
 #define next (self->stash = fgetc(self->stream))
+#endif
+
+/*
+ * Undo the previous char.
+ */
+
 #define undo ungetc(self->stash, self->stream)
+
+/*
+ * Assign token `t`.
+ */
+
 #define token(t) (self->tok.type = LUNA_TOKEN_##t)
+
+/*
+ * Accept char `c` or undo and return 0.
+ */
+
 #define accept(c) (c == next ? c : (undo, 0))
 
 /*
