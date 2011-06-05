@@ -75,6 +75,7 @@
 
 static int block(luna_parser_t *self);
 static int expr(luna_parser_t *self);
+static int not_expr(luna_parser_t *self);
 
 /*
  * Initialize with the given lexer.
@@ -346,7 +347,7 @@ call_expr(luna_parser_t *self) {
 }
 
 /*
- *   call_expr '=' assignment_expr
+ *   call_expr '=' not_expr
  * | logical_or_expr
  */
 
@@ -355,7 +356,7 @@ assignment_expr(luna_parser_t *self) {
   debug("assignment_expr");
   context("assignment");
   if (call_expr(self)) {
-    if (accept(OP_ASSIGN)) return expr(self);
+    if (accept(OP_ASSIGN)) return not_expr(self);
     return 1;
   }
   return logical_or_expr(self);
