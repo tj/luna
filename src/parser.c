@@ -408,7 +408,7 @@ args(luna_parser_t *self) {
 }
 
 /*
- *   slot_access_expr '(' args ')'
+ *   slot_access_expr '(' args? ')'
  * | slot_access_expr
  */
 
@@ -417,6 +417,7 @@ call_expr(luna_parser_t *self) {
   debug("call_expr");
   if (!slot_access_expr(self)) return 0;
   if (accept(LPAREN)) {
+    if (accept(RPAREN)) return 1;
     if (!args(self)) return 0;
     context("function call");
     if (!accept(RPAREN)) return error("missing closing ')'");
@@ -462,7 +463,7 @@ expr(luna_parser_t *self) {
   debug("expr");
   if (!not_expr(self)) return 0;
   while (accept(COMMA)) {
-    if (!not_expr(self)) return error("missing expression after ','");
+    if (!not_expr(self)) return 0;
   }
   return 1;
 }
