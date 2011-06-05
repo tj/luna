@@ -36,7 +36,7 @@
   - ✔ parser
   - ◦ virtual machine
   - ◦ opcode generation
-  - ◦ object model
+  - ◦ C public/internal apis
   - ◦ garbage collection
   - ◦ optimizations (TCO etc)
   - ◦ libev integration
