@@ -376,13 +376,14 @@ call_expr(luna_parser_t *self) {
 /*
  *   logical_or_expr
  * | call_expr '=' not_expr
+ * | call_expr ':=' not_expr
  */
 
 static int
 assignment_expr(luna_parser_t *self) {
   debug("assignment_expr");
   if (!logical_or_expr(self)) return 0;
-  if (accept(OP_ASSIGN)) {
+  if (accept(OP_ASSIGN) || accept(OP_SLOT_ASSIGN)) {
     if (!not_expr(self)) return 0;
   }
   return 1;
