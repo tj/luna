@@ -383,6 +383,7 @@ not_expr(luna_parser_t *self) {
 static int
 expr(luna_parser_t *self) {
   debug("expr");
+  context("expr");
   if (!not_expr(self)) return 0;
   while (accept(COMMA)) {
     if (!not_expr(self)) return 0;
