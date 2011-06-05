@@ -281,33 +281,45 @@ logical_or_expr(luna_parser_t *self) {
 }
 
 /*
- *   logical_and_expr id*
- * | logical_and_expr
+ * primary_expr id*
  */
 
 static int
-slot_expr(luna_parser_t *self) {
-  debug("slot_expr");
-  if (!logical_and_expr(self)) return 0;
+slot_access_expr(luna_parser_t * self) {
+  if (!primary_expr(self)) return 0;
   while (accept(ID)) ;
   return 1;
 }
 
 /*
- *   slot_expr '=' assignment_expr
- * | slot_expr
+ *   slot_access_expr '(' args ')'
+ * | slot_access_expr
+ */
+
+static int
+call_expr(luna_parser_t *self) {
+  debug("call_expr");
+  if (!slot_access_expr(self)) return 0;
+  if (accept(LPAREN)) {
+    printf("parens\n");
+    if (!accept(RPAREN)) return error("call missing closing ')'");
+  }
+  return 1;
+}
+
+/*
+ *   call_expr '=' assignment_expr
+ * | logical_or_expr
  */
 
 static int
 assignment_expr(luna_parser_t *self) {
   debug("assignment_expr");
-  int lval = is(ID);
-  if (!slot_expr(self)) return 0;
-  if (accept(OP_ASSIGN)) {
-    if (!lval) return error("invalid left-hand side value in assignment");
-    if (!expr(self)) return 0;
+  if (call_expr(self)) {
+    if (accept(OP_ASSIGN)) return expr(self);
+    return 1;
   }
-  return 1;
+  return logical_or_expr(self);
 }
 
 /*

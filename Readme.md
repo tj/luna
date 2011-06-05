@@ -48,11 +48,13 @@
 
 ## Operator Precedence Table
 
- Operator precedence from highest to lowest.
+ Operator precedence from highest to lowest, note "." is used
+ for slot access in the table below, however this is simply a space (' ')
+ in Luna.
 
     operator       |  associativity
     ---------------|---------------
-    []             |  left
+    [] () .        |  left
     ++ --          |  right
     ! ~ + -        |  right
     * / %          |  left
