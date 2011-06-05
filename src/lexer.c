@@ -287,6 +287,7 @@ scan:
     case ';': return token(SEMICOLON);
     case ',': return token(COMMA);
     case '?': return token(QMARK);
+    case '.': return token(OP_DOT);
     case '%': return token(OP_MOD);
     case '^': return token(OP_BIT_XOR);
     case '~': return token(OP_BIT_NOT);

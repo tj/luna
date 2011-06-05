@@ -203,11 +203,25 @@ multiplicative_expr(luna_parser_t *self) {
  */
 
 static int
+concat_expr(luna_parser_t *self) {
+  debug("concat_expr");
+  if (!multiplicative_expr(self)) return 0;
+  while (accept(OP_DOT)) {
+    if (!multiplicative_expr(self)) return 0;
+  }
+  return 1;
+}
+
+/*
+ * concat_expr (('+ | '-') concat_expr)*
+ */
+
+static int
 additive_expr(luna_parser_t *self) {
   debug("additive_expr");
-  if (!multiplicative_expr(self)) return 0;
+  if (!concat_expr(self)) return 0;
   while (accept(OP_PLUS) || accept(OP_MINUS)) {
-    if (!multiplicative_expr(self)) return 0;
+    if (!concat_expr(self)) return 0;
   }
   return 1;
 }
