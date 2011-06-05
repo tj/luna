@@ -283,12 +283,31 @@ logical_or_expr(luna_parser_t *self) {
 }
 
 /*
- * primary_expr id*
+ * ':' block
+ */
+
+static int
+function_expr(luna_parser_t *self) {
+  debug("function_expr");
+  if (accept(COLON)) {
+    if (block(self)) {
+      return 1;
+    }
+  };
+  return 0;
+}
+
+/*
+ * (primary_expr | function_expr) id*
  */
 
 static int
 slot_access_expr(luna_parser_t * self) {
-  if (!primary_expr(self)) return 0;
+  debug("slot_access_expr");
+  if (!primary_expr(self)) {
+    if (function_expr(self)) ;
+    return 0;
+  };
   while (accept(ID)) ;
   return 1;
 }
@@ -299,6 +318,7 @@ slot_access_expr(luna_parser_t * self) {
 
 static void
 args(luna_parser_t *self) {
+  debug("args");
   do expr(self); while (accept(COMMA));
 }
 
