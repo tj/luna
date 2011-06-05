@@ -418,7 +418,8 @@ call_expr(luna_parser_t *self) {
   if (!slot_access_expr(self)) return 0;
   if (accept(LPAREN)) {
     if (!args(self)) return 0;
-    if (!accept(RPAREN)) return error("call missing closing ')'");
+    context("function call");
+    if (!accept(RPAREN)) return error("missing closing ')'");
   }
   return 1;
 }
