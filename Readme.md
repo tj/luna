@@ -44,6 +44,7 @@
   - ◦ portability
   - ◦ closures
   - ◦ module system
+  - ◦ test suite
   - ◦ website
 
 ## Operator Precedence Table
