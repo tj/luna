@@ -27,6 +27,12 @@ usage() {
     "\n    -h, --help      output help information"
     "\n    -V, --version   output luna version"
     "\n"
+    "\n  Examples:"
+    "\n"
+    "\n    $ luna < some.luna"
+    "\n    $ luna some.luna"
+    "\n    $ luna some"
+    "\n"
     "\n"
     );
   exit(1);
