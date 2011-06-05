@@ -87,6 +87,7 @@ main(int argc, const char **argv){
     read:
     stream = fopen(path, "r");
     if (!stream) {
+      // try with .luna extension
       if (!appended_ext) {
         appended_ext = 1;
         char buf[256];
