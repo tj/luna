@@ -75,6 +75,10 @@
     not            |  right
     ,              |  left
 
+## Dependencies
+
+  All Luna dependencies are bundled within this repository, and includes Marc Lehmann and Emanuele Giaquinta's [libev](http://software.schmorp.de/pkg/libev.html) and [libeio](http://software.schmorp.de/pkg/libeio.html), and Ryan Dahl's high performance [HTTP parser](https://github.com/ry/http-parser).
+
 ## License 
 
 (The MIT License)
