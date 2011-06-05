@@ -9,6 +9,7 @@
 #include "parser.h"
 
 // TODO: emit for codegen
+// TODO: -DEBUG_PARSER output for accept() etc
 
 // -DEBUG_PARSER
 
