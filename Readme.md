@@ -39,6 +39,7 @@
   - ◦ C public/internal apis
   - ◦ garbage collection
   - ◦ optimizations (TCO etc)
+  - ◦ linenoise integration for REPL
   - ◦ libev integration
   - ◦ portability
   - ◦ closures
