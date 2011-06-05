@@ -210,7 +210,6 @@ scan_number(luna_lexer_t *self, int c) {
 
   switch (c) {
     case '0': goto scan_hex;
-    case '.': goto scan_float;
     default: goto scan_int;
   }
 
