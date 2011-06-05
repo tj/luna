@@ -68,18 +68,27 @@ parse_args(int argc, const char **argv) {
 
 int
 main(int argc, const char **argv){
+  int appended_ext = 0;
+  const char *path, *orig;
   FILE *stream;
-  const char *path;
 
   // parse arguments
   parse_args(argc, argv);
 
   // file given
   if (argc > 1) {
-    path = argv[1];
+    orig = path = argv[1];
+    read:
     stream = fopen(path, "r");
     if (!stream) {
-      fprintf(stderr, "error reading %s:\n\n  %s\n\n", path, strerror(errno));
+      if (!appended_ext) {
+        appended_ext = 1;
+        char buf[256];
+        snprintf(buf, 256, "%s.luna", path);
+        path = buf;
+        goto read;
+      }
+      fprintf(stderr, "error reading %s:\n\n  %s\n\n", orig, strerror(errno));
       exit(1);
     }
   } else {
