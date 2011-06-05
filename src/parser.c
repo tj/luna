@@ -354,10 +354,15 @@ logical_or_expr(luna_parser_t *self) {
  * (id (',' id)*)?
  */
 
-static void
+static int
 params(luna_parser_t *self) {
   debug("params");
-  do accept(ID); while (accept(COMMA));
+  context("function params");
+  do {
+    if (!accept(ID)) {
+      return error("missing identifier");
+    };
+  } while (accept(COMMA));
 }
 
 /*
@@ -368,10 +373,8 @@ static int
 function_expr(luna_parser_t *self) {
   debug("function_expr");
   if (accept(COLON)) {
-    params(self);
-    if (block(self)) {
-      return 1;
-    }
+    if (!params(self)) return 0;
+    if (block(self)) return 1;
   };
   return 0;
 }
