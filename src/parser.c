@@ -281,15 +281,28 @@ logical_or_expr(luna_parser_t *self) {
 }
 
 /*
- *   primary_expr '=' assignment_expr
- * | primary_expr
+ *   logical_and_expr id*
+ * | logical_and_expr
+ */
+
+static int
+slot_expr(luna_parser_t *self) {
+  debug("slot_expr");
+  if (!logical_and_expr(self)) return 0;
+  while (accept(ID)) ;
+  return 1;
+}
+
+/*
+ *   slot_expr '=' assignment_expr
+ * | slot_expr
  */
 
 static int
 assignment_expr(luna_parser_t *self) {
   debug("assignment_expr");
   int lval = is(ID);
-  if (!logical_or_expr(self)) return 0;
+  if (!slot_expr(self)) return 0;
   if (accept(OP_ASSIGN)) {
     if (!lval) return error("invalid left-hand side value in assignment");
     if (!expr(self)) return 0;
