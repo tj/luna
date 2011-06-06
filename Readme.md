@@ -273,7 +273,7 @@ users select(age > 20)
 
  as well as base 10 (decimal), which (_optionally_) may contain underscore delimiters, inspired by Ruby:
 
-```js
+```rb
 million = 1_000_000.00
 ```
 
