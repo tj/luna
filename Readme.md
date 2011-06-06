@@ -204,14 +204,18 @@ and the following CoffeeScript:
 
 The equivalent canonical Luna would look like this:
 
-    person pets select(: pet
-      pet species == 'ferret' && pet age > 4
-    )
+```js
+person pets select(: pet
+  pet species == 'ferret' && pet age > 4
+)
+```
 
 Slightly ugly right? the parenthesis requirement gets in the way here, however nearly _every_ case of passing a function as an argument is for a _single_ callback, though there are a few exceptions in libraries such as jQuery where two functions are passed for toggle states etc. For this reason Luna has some syntax sugar allowing a tail function argument to be passed trailing the closing paren `)`:
 
-    person pets select(): pet
-      pet species == 'ferret' && pet age > 4
+```js
+person pets select(): pet
+  pet species == 'ferret' && pet age > 4
+```
 
 On top of this, in cases where no other arguments are passed, we can omit the parens all together:
 
@@ -224,7 +228,9 @@ This approach is syntactically similar to Ruby "blocks", though simply sugar on 
 
 To make things even sexier, Luna will allow for callee-evaluated expressions, that is, expressions or "messages" are conditionally evaluated by the function called. For example the following statement means exactly how it reads, select users with `age` above 20, this is _not_ passing the result of `age > 20` to `select()`, we are messaging `select()` which then may choose to evaluate the message against each user, essentially expanding to `user age > 20`:
 
-    users select(age > 20)
+```js
+users select(age > 20)
+```
 
 ## License 
 
