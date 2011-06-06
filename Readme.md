@@ -45,6 +45,7 @@
   - ◦ closures
   - ◦ module system
   - ◦ test suite
+  - ◦ PCRE
   - ◦ VIM / TM / syntaxes
   - ◦ website
 
