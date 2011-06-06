@@ -278,6 +278,13 @@ users select(age > 20)
 million = 1_000_000.00
 ```
 
+ as time-related functions in Luna will be working in milliseconds, much like JavaScript, "s" and "ms" are implemented in the lexical analysis of Luna programs, though `40 s` or `40s` would be a valid number slot access:
+
+```css
+2.5s
+300ms
+```
+
 ### Case Statement
 
  I have not decided yet, but Luna _may_ have two switch-like statements. The syntax is undecided as well. One will be used for arbitrary values such as strings as shown below in an argument parser using `with` (not sold on the name), while the other would be a regular `switch`, restricted to numbers for optimization purposes, to be used in high traffic state machines (multipart parsers etc). 

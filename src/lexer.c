@@ -201,7 +201,7 @@ scan_string(luna_lexer_t *self, int quote) {
 static int
 scan_number(luna_lexer_t *self, int c) {
   // TODO: exponential notation
-  int n = 0;
+  int n = 0, type = 0;
   token(INT);
 
   switch (c) {
@@ -236,12 +236,13 @@ scan_int:
   } while (isdigit(c = next) || '_' == c || '.' == c);
   undo;
   self->tok.value.as_int = n;
-  return 1;
+  goto unit;
 
 // [0-9_]+
 
 scan_float: {
   int e = 1;
+  type = 1;
   token(FLOAT);
   while (isdigit(c = next) || '_' == c) {
     if ('_' == c) continue;
@@ -251,6 +252,25 @@ scan_float: {
   undo;
   self->tok.value.as_float = (float) n / e;
 }
+
+// ('s' | 'ms')
+
+unit:
+  switch (next) {
+    case 's':
+      if (1 == type) self->tok.value.as_float *= 1000;
+      else self->tok.value.as_int *= 1000;
+      break;
+    case 'm':
+      if (1 == type) {
+        float val = self->tok.value.as_float;
+        token(INT);
+        self->tok.value.as_int = val;
+      }
+      break;
+    default:
+      undo;
+  }
 
   return 1;
 }
