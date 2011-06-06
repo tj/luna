@@ -5,7 +5,7 @@
 
 ## About
 
- Luna is an expressive, minimalistic, elegant programming language implemented in ANSI C. With reactor based concurrency at it's core, async I/O, and influences derived from phenomenal languages such as IO and Lua. This project is _very_ much a work in progress, as I explore the wonderful world of VMs! feel free to join.
+ Luna is an expressive, minimalistic, elegant programming language implemented in ANSI C. With reactor based concurrency at it's core, async I/O, and influences derived from languages such as Lua, io, Python, and Ruby. This project is _very_ much a work in progress, as I explore the wonderful world of VMs! feel free to join.
 
 ## Goals
 
