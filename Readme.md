@@ -57,7 +57,7 @@
 
     operator       |  associativity
     ---------------|---------------
-    [] () sp       |  left
+    \[\] \(\) sp       |  left
     ++ --          |  right
     ! ~ + -        |  right
     * / %          |  left
