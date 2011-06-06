@@ -408,7 +408,7 @@ args(luna_parser_t *self) {
 }
 
 /*
- *   slot_access_expr '(' args? ')'
+ *   slot_access_expr '(' args? ')' function_expr?
  * | slot_access_expr
  */
 
@@ -421,6 +421,9 @@ call_expr(luna_parser_t *self) {
     if (!args(self)) return 0;
     context("function call");
     if (!accept(RPAREN)) return error("missing closing ')'");
+    if (is(COLON)) {
+      if (!function_expr(self)) return 0;
+    }
   }
   return 1;
 }
