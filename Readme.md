@@ -215,8 +215,10 @@ Slightly ugly right? the parenthesis requirement gets in the way here, however n
 
 On top of this, in cases where no other arguments are passed, we can omit the parens all together:
 
-    person pets select: pet
-      pet species == 'ferret' && pet age > 4
+```js
+person pets select: pet
+  pet species == 'ferret' && pet age > 4
+```
 
 This approach is syntactically similar to Ruby "blocks", though simply sugar on top of regular old first-class Luna functions.
 
