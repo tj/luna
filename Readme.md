@@ -125,7 +125,7 @@ or in the case of CoffeeScript due to ambiguity issues, they are required when n
     person.pets.push 'jane'
     person.pets.pop()
 
-Luna function calls _always_ require parenthesis:
+Luna function calls _always_ (almost, one exception) require parenthesis:
 
     person pets push('tobi')
     person pets push('loki')
