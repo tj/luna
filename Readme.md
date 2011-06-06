@@ -263,6 +263,20 @@ To make things even sexier, Luna will allow for callee-evaluated expressions, th
 users select(age > 20)
 ```
 
+### Number Literals
+
+ Luna currently provides literals for base 16 (hexadecimal):
+
+```js 
+0xff
+```
+
+ as well as base 10 (decimal), which (_optionally_) may contain underscore delimiters, inspired by Ruby:
+
+```js
+million = 1_000_000.00
+```
+
 ## License 
 
 (The MIT License)
