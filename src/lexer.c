@@ -209,7 +209,7 @@ scan_number(luna_lexer_t *self, int c) {
     default: goto scan_int;
   }
 
-scan_hex:
+  scan_hex:
   switch (c = next) {
     case 'x':
       if (!isxdigit(c = next)) {
@@ -226,9 +226,9 @@ scan_hex:
       goto scan_int;
   }
 
-// [0-9_]+
+  // [0-9_]+
 
-scan_int:
+  scan_int:
   do {
     if ('_' == c) continue;
     else if ('.' == c) goto scan_float;
@@ -238,24 +238,24 @@ scan_int:
   self->tok.value.as_int = n;
   goto unit;
 
-// [0-9_]+
+  // [0-9_]+
 
-scan_float: {
-  int e = 1;
-  type = 1;
-  token(FLOAT);
-  while (isdigit(c = next) || '_' == c) {
-    if ('_' == c) continue;
-    n = n * 10 + c - '0';
-    e *= 10;
+  scan_float: {
+    int e = 1;
+    type = 1;
+    token(FLOAT);
+    while (isdigit(c = next) || '_' == c) {
+      if ('_' == c) continue;
+      n = n * 10 + c - '0';
+      e *= 10;
+    }
+    undo;
+    self->tok.value.as_float = (float) n / e;
   }
-  undo;
-  self->tok.value.as_float = (float) n / e;
-}
 
-// ('s' | 'ms')
+  // ('s' | 'ms')
 
-unit:
+  unit:
   switch (next) {
     case 's':
       if (1 == type) self->tok.value.as_float *= 1000;
