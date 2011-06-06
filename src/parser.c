@@ -382,7 +382,7 @@ function_expr(luna_parser_t *self) {
 }
 
 /*
- * (primary_expr | function_expr) id*
+ * (primary_expr | function_expr) id* function_expr?
  */
 
 static int
@@ -390,6 +390,9 @@ slot_access_expr(luna_parser_t * self) {
   debug("slot_access_expr");
   if (!(primary_expr(self) || function_expr(self))) return 0;
   while (accept(ID)) ;
+  if (is(COLON)) {
+    if (!function_expr(self)) return 0;
+  }
   return 1;
 }
 
@@ -417,10 +420,11 @@ call_expr(luna_parser_t *self) {
   debug("call_expr");
   if (!slot_access_expr(self)) return 0;
   if (accept(LPAREN)) {
-    if (accept(RPAREN)) return 1;
+    if (accept(RPAREN)) goto tail;
     if (!args(self)) return 0;
     context("function call");
     if (!accept(RPAREN)) return error("missing closing ')'");
+    tail:
     if (is(COLON)) {
       if (!function_expr(self)) return 0;
     }
