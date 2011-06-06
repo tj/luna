@@ -178,7 +178,7 @@ where `params` is:
 
 and `block` is:
 
-   INDENT ws (stmt ws)+ OUTDENT
+     INDENT ws (stmt ws)+ OUTDENT
 
 so, for comparison the following JavaScript:
 
