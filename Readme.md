@@ -89,6 +89,8 @@
 
 ### Significant Whitespace
 
+__NOTE__: forgive the bad syntax highlighting, until I have time to write a lexer for [pygments](http://pygments.org/) (what GitHub uses for highlighting). 
+
  Those of you who know me, might think _"but TJ, you hate significant white-space?"_, well that's not quite accurate; the primary issue I have with significant white-space is it's abuse. It's very easy to get lost when the indentation level is deep, or when methods (or classes etc) span many rows. For example, class-based languages with significant whitespace make it very easy to loose context, and pairing outdents is more of a visual challenge than braces or other block delimiters.
 
  In contrast, when used appropriately it can lead to syntactically pleasing code. For this reason I have chosen to adopt significant whitespace for Luna, _however_ since Luna's inheritance is prototype-based, excessive nesting is at a minimum, because the receiving object (or class in class-based languages), must be explicitly defined, reaffirming context, as shown in the example below:
