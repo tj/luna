@@ -124,7 +124,7 @@ person.pets.pop
 
 or in the case of CoffeeScript due to ambiguity issues, they are required when no arguments are given:
 
-```coffee
+```js
 person.pets.push 'tobi'
 person.pets.push 'loki'
 person.pets.push 'jane'
@@ -226,7 +226,7 @@ end
 
 and the following CoffeeScript:
 
-```coffee
+```js
 person.pets.filter (pet) ->
   pet.species == 'ferret' and pet.age > 4
 ```
