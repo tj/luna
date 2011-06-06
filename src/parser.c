@@ -351,7 +351,7 @@ logical_or_expr(luna_parser_t *self) {
 }
 
 /*
- * (id (',' id)*)?
+ * (id (',' id)*)
  */
 
 static int
@@ -394,7 +394,7 @@ slot_access_expr(luna_parser_t * self) {
 }
 
 /*
- * (expr (',' expr)*)?
+ * (expr (',' expr)*)
  */
 
 static int

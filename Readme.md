@@ -174,7 +174,7 @@ or:
 
 where `params` is:
 
-    (id (',' id)*)?
+    (id (',' id)*)
 
 and `block` is:
 
