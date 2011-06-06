@@ -148,6 +148,7 @@ While the former approach is fine in small use-cases, and of course when it's _y
 
 ```js
 User = Object clone
+
 tj = User clone
 
 tj proto == User
