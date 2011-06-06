@@ -92,45 +92,53 @@
  Those of you who know me, might think _"but TJ, you hate significant white-space?"_, well that's not quite accurate; the primary issue I have with significant white-space is it's abuse. It's very easy to get lost when the indentation level is deep, or when methods (or classes etc) span many rows. For example, class-based languages with significant whitespace make it very easy to loose context, and pairing outdents is more of a visual challenge than braces or other block delimiters.
 
  In contrast, when used appropriately it can lead to syntactically pleasing code. For this reason I have chosen to adopt significant whitespace for Luna, _however_ since Luna's inheritance is prototype-based, excessive nesting is at a minimum, because the receiving object (or class in class-based languages), must be explicitly defined, reaffirming context, as shown in the example below:
- 
-     Person = Object clone
 
-     Person init =: first, last
-       self first = first
-       self last = last
+```js 
+Person = Object clone
 
-     Person toString =:
-       self first . ' ' . self last
+Person init =: first, last
+ self first = first
+ self last = last
 
-     Person inspect =:
-       '#<Person' . self toString() . '>'
+Person toString =:
+ self first . ' ' . self last
 
-     tj = Person init('tj', 'holowaychuk')
-     stdout write(tj)
-     // => ''
+Person inspect =:
+ '#<Person' . self toString() . '>'
+
+tj = Person init('tj', 'holowaychuk')
+stdout write(tj)
+// => ''
+```
 
 ### Slot Access
 
  In the example above, you will notice that the use of whitespace is used to convey member (slot) access, where typically the `.` character is used. I find this pleasing to the eye, while maintaining explicit function calls. Typically languages such as Ruby, or CoffeeScript allow optional parenthesis for calls, creating ambiguity with property access:
- 
-     person.pets.push 'tobi'
-     person.pets.push 'loki'
-     person.pets.push 'jane'
-     person.pets.pop
+
+```ruby 
+person.pets.push 'tobi'
+person.pets.push 'loki'
+person.pets.push 'jane'
+person.pets.pop
+```
 
 or in the case of CoffeeScript due to ambiguity issues, they are required when no arguments are given:
 
-    person.pets.push 'tobi'
-    person.pets.push 'loki'
-    person.pets.push 'jane'
-    person.pets.pop()
+```coffee
+person.pets.push 'tobi'
+person.pets.push 'loki'
+person.pets.push 'jane'
+person.pets.pop()
+```
 
 Luna function calls _always_ (almost, one exception) require parenthesis:
 
-    person pets push('tobi')
-    person pets push('loki')
-    person pets push('jane')
-    person pets pop()
+```js
+person pets push('tobi')
+person pets push('loki')
+person pets push('jane')
+person pets pop()
+```
 
 While the former approach is fine in small use-cases, and of course when it's _your_ code, it becomes "word soup" in larger doses.
 
@@ -138,43 +146,55 @@ While the former approach is fine in small use-cases, and of course when it's _y
 
  Another aspect I want to avoid, which I consider an annoyance in JavaScript, is using operators such as `typeof`, or `instanceof`, when a simple method or property will do.
 
-    User = Object clone
-    tj = User clone
+```js
+User = Object clone
+tj = User clone
 
-    tj proto == User
-    // => true
+tj proto == User
+// => true
 
-    tj proto proto == Object
-    // => true
+tj proto proto == Object
+// => true
+```
 
  I have not yet decided on names etc, however these can all easily be implemented in the language itself, avoiding additional keywords. One might ask, _"well why not implement most operators as methods?"_, the answer to that would be, _performance_. Many languages provide type coercion in operations, for the following is legal JavaScript:
 
-    var tj = { valueOf: function(){ return 23; }};
-    5 + tj;
-    // => 28
+```js
+var tj = { valueOf: function(){ return 23; }};
+5 + tj;
+// => 28
+```
 
 or:
 
-    5 + '5'
-    // => '55'
+```js
+5 + '5'
+// => '55'
+```
 
  this feature adds overhead, and in my opinion is rarely overly useful. In Luna arithmetic operators are strictly for arithmetic operations, _not_ concatenation etc, allowing Luna to optimize expressions such as `5 + 10` into a single instruction.
 
 ### Concatenation
 
   Concatenation is performed with the `.` operator:
- 
-     'foo ' . ' bar'
+
+```js 
+'foo ' . ' bar'
+``` 
 
 ### Function Literals
 
  Luna has first-class functions, much like JavaScript, Lua etc. The syntax of a function literal in Luna is as follows (_currently_):
 
-    ':' params? block
+```js
+':' params? block
+```
 
 where `params` is:
 
-    (id (',' id)*)
+```js
+(id (',' id)*)
+```
 
 and `block` is:
 
@@ -182,25 +202,33 @@ and `block` is:
 
 so, for comparison the following JavaScript:
 
-     var greet = function(user) {
-       console.log('hello ' + user)
-     }
+```js
+ var greet = function(user) {
+   console.log('hello ' + user)
+ }
+```
 
 would be defined in Luna as:
 
-    greet =: user
-      stdout write('hello '.user.'\n')
+```js
+greet =: user
+  stdout write('hello '.user.'\n')
+```
 
 Let's look at some more examples. The following Ruby selects `person`'s ferrets, older than `4`:
 
-    person.pets.select do |pet|
-      pet.species == 'ferret' and pet.age > 4
-    end
+```ruby
+person.pets.select do |pet|
+  pet.species == 'ferret' and pet.age > 4
+end
+```
 
 and the following CoffeeScript:
 
-    person.pets.filter (pet) ->
-      pet.species == 'ferret' and pet.age > 4
+```coffee
+person.pets.filter (pet) ->
+  pet.species == 'ferret' and pet.age > 4
+```
 
 The equivalent canonical Luna would look like this:
 
