@@ -293,8 +293,6 @@ while args length
     '-v', '--version':
       stdout puts(version)
       process exit(0)
-    :
-      files push(arg)
 ```
 
 ## License 
