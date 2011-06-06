@@ -89,7 +89,7 @@
 
 ### Significant Whitespace
 
- Those of you who know me, might think "but TJ, you hate significant white-space?", well I don't; the primary issue I have with significant white-space is it's abuse. It's very easy to get lost when the indentation level is deep, or when methods (or classes etc) span many rows. For example, class-based languages with significant whitespace make it very easy to loose context, and pairing outdents is more of a visual challenge than braces or other block delimiters.
+ Those of you who know me, might think _"but TJ, you hate significant white-space?"_, well that's not quite accurate; the primary issue I have with significant white-space is it's abuse. It's very easy to get lost when the indentation level is deep, or when methods (or classes etc) span many rows. For example, class-based languages with significant whitespace make it very easy to loose context, and pairing outdents is more of a visual challenge than braces or other block delimiters.
 
  In contrast, when used appropriately it can lead to syntactically pleasing code. For this reason I have chosen to adopt significant whitespace for Luna, _however_ since Luna's inheritance is prototype-based, excessive nesting is at a minimum, because the receiving object (or class in class-based languages), must be explicitly defined, reaffirming context, as shown in the example below:
  
@@ -109,7 +109,7 @@
      stdout write(tj)
      // => ''
 
-## Slot Access
+### Slot Access
 
  In the example above, you will notice that the use of whitespace is used to convey member (slot) access, where typically the `.` character is used. I find this pleasing to the eye, while maintaining explicit function calls. Typically languages such as Ruby, or CoffeeScript allow optional parenthesis for calls, creating ambiguity with property access:
  
@@ -134,7 +134,7 @@ Luna function calls _always_ require parenthesis:
 
 While the former approach is fine in small use-cases, and of course when it's _your_ code, it becomes "word soup" in larger doses.
 
-## Avoid Operators
+### Avoid Operators
 
  Another aspect I want to avoid, which I consider an annoyance in JavaScript, is using operators such as `typeof`, or `instanceof`, when a simple method or property will do.
 
@@ -147,7 +147,7 @@ While the former approach is fine in small use-cases, and of course when it's _y
     tj proto proto == Object
     // => true
 
- I have not yet decided on names etc, however these can all easily be implemented in the language itself, avoiding additional keywords. One might ask, "well why not implement most operators as methods?", the answer to that would be, _performance_. Many languages provide type coercion in operations, for the following is legal JavaScript:
+ I have not yet decided on names etc, however these can all easily be implemented in the language itself, avoiding additional keywords. One might ask, _"well why not implement most operators as methods?"_, the answer to that would be, _performance_. Many languages provide type coercion in operations, for the following is legal JavaScript:
 
     var tj = { valueOf: function(){ return 23; }};
     5 + tj;
@@ -160,11 +160,69 @@ or:
 
  this feature adds overhead, and in my opinion is rarely overly useful. In Luna arithmetic operators are strictly for arithmetic operations, _not_ concatenation etc, allowing Luna to optimize expressions such as `5 + 10` into a single instruction.
 
-## Concatenation
+### Concatenation
 
   Concatenation is performed with the `.` operator:
  
      'foo ' . ' bar'
+
+### Function Literals
+
+ Luna has first-class functions, much like JavaScript, Lua etc. The syntax of a function literal in Luna is as follows (_currently_):
+
+    ':' params? block
+
+where `params` is:
+
+    (id (',' id)*)?
+
+and `block` is:
+
+   INDENT ws (stmt ws)+ OUTDENT
+
+so, for comparison the following JavaScript:
+
+     var greet = function(user) {
+       console.log('hello ' + user)
+     }
+
+would be defined in Luna as:
+
+    greet =: user
+      stdout write('hello '.user.'\n')
+
+Let's look at some more examples. The following Ruby selects `person`'s ferrets, older than `4`:
+
+    person.pets.select do |pet|
+      pet.species == 'ferret' and pet.age > 4
+    end
+
+and the following CoffeeScript:
+
+    person.pets.filter (pet) ->
+      pet.species == 'ferret' and pet.age > 4
+
+The equivalent canonical Luna would look like this:
+
+    person pets select(: pet
+      pet species == 'ferret' && pet age > 4
+    )
+
+Slightly ugly right? the parenthesis requirement gets in the way here, however nearly _every_ case of passing a function as an argument is for a _single_ callback, though there are a few exceptions in libraries such as jQuery where two functions are passed for toggle states etc. For this reason Luna has some syntax sugar allowing a tail function argument to be passed trailing the closing paren `)`:
+
+    person pets select(): pet
+      pet species == 'ferret' && pet age > 4
+
+On top of this, in cases where no other arguments are passed, we can omit the parens all together:
+
+    person pets select: pet
+      pet species == 'ferret' && pet age > 4
+
+This approach is syntactically similar to Ruby "blocks", though simply sugar on top of regular old first-class Luna functions.
+
+To make things even sexier, Luna will allow for callee-evaluated expressions, that is, expressions or "messages" are conditionally evaluated by the function called. For example the following statement means exactly how it reads, select users with `age` above 20, this is _not_ passing the result of `age > 20` to `select()`, we are messaging `select()` which then may choose to evaluate the message against each user, essentially expanding to `user age > 20`:
+
+    users select(age > 20)
 
 ## License 
 
