@@ -114,6 +114,18 @@ stdout write(tj)
 // => 'tj holowaychuk'
 ```
 
+### Operators
+
+  Personally I'm not a fan of "wordy" operators, aka `or and` for `|| &&`, etc, though again they can look ok within reason, but I find the "machine-like" look of operators provide a nice visual separation. When they are chained in large expressions they get a little lost amongst identifiers. The one exception in Luna is `not`, which is a low-precedence negation. For example the following:
+
+   User allowed =: realm
+     not banned || blockedFrom(realm)
+
+Evaluates as:
+
+   User allowed =: realm
+     not (banned || blockedFrom(realm))
+
 ### Slot Access
 
  In the example above, you will notice that the use of whitespace is used to convey member (slot) access, where typically the `.` character is used. I find this pleasing to the eye, while maintaining explicit function calls. Typically languages such as Ruby, or CoffeeScript allow optional parenthesis for calls, creating ambiguity with property access:
