@@ -110,7 +110,7 @@ Person inspect =:
 
 tj = Person init('tj', 'holowaychuk')
 stdout write(tj)
-// => ''
+// => 'tj holowaychuk'
 ```
 
 ### Slot Access
