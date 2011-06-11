@@ -24,6 +24,10 @@ extern "C" {
 #define LIST_MALLOC malloc
 #endif
 
+#ifndef LIST_CALLOC
+#define LIST_CALLOC calloc
+#endif
+
 #ifndef LIST_FREE
 #define LIST_FREE free
 #endif

@@ -13,7 +13,10 @@ luna: $(OBJ)
 %.o: %.c
 	$(CC) -c $(CFLAGS) $< -o $@
 
+update:
+	cp -fr ../list/* deps/list/
+
 clean:
 	rm -f luna $(OBJ)
 
-.PHONY: clean
+.PHONY: clean update

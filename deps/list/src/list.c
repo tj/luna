@@ -14,13 +14,8 @@
 list_t *
 list_new() {
   list_t *self;
-  if (!(self = LIST_MALLOC(sizeof(list_t))))
+  if (!(self = LIST_CALLOC(1, sizeof(list_t))))
     return NULL;
-  self->head = NULL;
-  self->tail = NULL;
-  self->free = NULL;
-  self->match = NULL;
-  self->len = 0;
   return self;
 }
 
