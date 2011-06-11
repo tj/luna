@@ -66,13 +66,16 @@ KHASH_MAP_INIT_STR(str, char *);
 
 // protos
 
-inline void
+void
 hash_set(khash_t(str) *self, char *key, char *val);
 
-inline char *
+char *
 hash_get(khash_t(str) *self, char *key);
 
-inline int
+int
 hash_has(khash_t(str) *self, char *key);
+
+void
+hash_remove(khash_t(str) *self, char *key);
 
 #endif /* __LUNA_HASH_T__ */

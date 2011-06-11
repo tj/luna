@@ -37,3 +37,13 @@ hash_has(khash_t(str) *self, char *key) {
   khiter_t k = kh_get(str, self, key);
   return kh_exist(self, k);
 }
+
+/*
+ * Remove hash `key`.
+ */
+
+void
+hash_remove(khash_t(str) *self, char *key) {
+  khiter_t k = kh_get(str, self, key);
+  kh_del(str, self, k);
+}
