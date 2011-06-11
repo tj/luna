@@ -306,11 +306,10 @@ static inline khint_t __ac_X31_hash_string(const char *s)
 #define KHASH_MAP_INIT_INT64(name, khval_t)								\
 	KHASH_INIT(name, uint64_t, khval_t, 1, kh_int64_hash_func, kh_int64_hash_equal)
 
-typedef const char *kh_cstr_t;
 #define KHASH_SET_INIT_STR(name)										\
-	KHASH_INIT(name, kh_cstr_t, char, 0, kh_str_hash_func, kh_str_hash_equal)
+	KHASH_INIT(name, char *, char, 0, kh_str_hash_func, kh_str_hash_equal)
 
 #define KHASH_MAP_INIT_STR(name, khval_t)								\
-	KHASH_INIT(name, kh_cstr_t, khval_t, 1, kh_str_hash_func, kh_str_hash_equal)
+	KHASH_INIT(name, char *, khval_t, 1, kh_str_hash_func, kh_str_hash_equal)
 
 #endif /* __AC_KHASH_H */
