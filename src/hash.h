@@ -34,7 +34,7 @@ KHASH_MAP_INIT_STR(str, char *);
       if (!kh_exist(self, k)) continue; \
       key = kh_key(self, k); \
       val = kh_value(self, k); \
-      block \
+      block; \
     } \
   }
 
@@ -47,7 +47,7 @@ KHASH_MAP_INIT_STR(str, char *);
     for (khiter_t k = kh_begin(self); k < kh_end(self); ++k) { \
       if (!kh_exist(self, k)) continue; \
       key = kh_key(self, k); \
-      block \
+      block; \
     } \
   }
 
@@ -60,7 +60,7 @@ KHASH_MAP_INIT_STR(str, char *);
     for (khiter_t k = kh_begin(self); k < kh_end(self); ++k) { \
       if (!kh_exist(self, k)) continue; \
       val = kh_value(self, k); \
-      block \
+      block; \
     } \
   }
 
