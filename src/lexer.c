@@ -63,7 +63,7 @@ luna_lexer_init(luna_lexer_t *self, FILE *stream, const char *filename) {
 }
 
 /*
- * Convert hex digit `c` to an integer,
+ * Convert hex digit `c` to a base 10 int,
  * returning -1 on failure. 
  */
 
