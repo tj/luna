@@ -593,7 +593,6 @@ program(luna_parser_t *self) {
 
 int
 luna_parse(luna_parser_t *self) {
-  luna_lexer_t *lex = self->lex;
   return program(self);
 }
 
