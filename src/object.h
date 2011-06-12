@@ -9,6 +9,25 @@
 #define __LUNA_OBJECT_H__
 
 /*
+ * Check if `obj` is the given type.
+ */
+
+#define luna_object_is(obj, t) ((obj).type == LUNA_TYPE_##t)
+
+/*
+ * Specific type macros.
+ */
+
+#define luna_is_list(obj) luna_object_is(obj, LIST)
+#define luna_is_array(obj) luna_object_is(obj, ARRAY)
+#define luna_is_object(obj) luna_object_is(obj, OBJECT)
+#define luna_is_string(obj) luna_object_is(obj, STRING)
+#define luna_is_float(obj) luna_object_is(obj, FLOAT)
+#define luna_is_int(obj) luna_object_is(obj, INT)
+#define luna_is_bool(obj) luna_object_is(obj, BOOL)
+#define luna_is_null(obj) luna_object_is(obj, NULL)
+
+/*
  * Luna object types.
  */
 
