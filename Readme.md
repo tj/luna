@@ -118,13 +118,13 @@ stdout write(tj)
 
   Personally I'm not a fan of "wordy" operators, aka `or and` for `|| &&`, etc, though again they can look ok within reason, but I find the "machine-like" look of operators provide a nice visual separation. When they are chained in large expressions they get a little lost amongst identifiers. The one exception in Luna is `not`, which is a low-precedence negation. For example the following:
 
-   User allowed =: realm
-     not banned || blockedFrom(realm)
+     User allowed =: realm
+       not banned || blockedFrom(realm)
 
 Evaluates as:
 
-   User allowed =: realm
-     not (banned || blockedFrom(realm))
+     User allowed =: realm
+       not (banned || blockedFrom(realm))
 
 ### Slot Access
 
