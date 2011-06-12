@@ -157,7 +157,7 @@ person pets pop()
 
 While the former approach is fine in small use-cases, and of course when it's _your_ code, it becomes "word soup" in larger doses.
 
-### Operators Avoidance 
+### Operator Avoidance 
 
  Another aspect I want to avoid, which I consider an annoyance in JavaScript, is using operators such as `typeof`, or `instanceof`, when a simple method or property will do, I would much rather use language features such as functions unless performance is crucial.
 
