@@ -49,7 +49,7 @@ typedef enum {
 typedef struct {
   luna_object type;
   union {
-    void *as_pointer;
+    void *pointer;
     int as_int;
     float as_float;
   } val;
