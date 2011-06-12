@@ -17,6 +17,8 @@ typedef enum {
   , LUNA_TYPE_FLOAT
   , LUNA_TYPE_STRING
   , LUNA_TYPE_OBJECT
+  , LUNA_TYPE_ARRAY
+  , LUNA_TYPE_LIST
 } luna_object;
 
 /*
