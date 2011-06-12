@@ -124,7 +124,7 @@ stdout write(tj)
 Evaluates as:
 
      User allowed =: realm
-       not (banned || blockedFrom(realm))
+       !(banned || blockedFrom(realm))
 
 ### Slot Access
 
