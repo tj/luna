@@ -8,6 +8,8 @@
 #ifndef __LUNA_OBJECT_H__
 #define __LUNA_OBJECT_H__
 
+// TODO: consider pointer for immediate values
+
 /*
  * Check if `obj` is the given type.
  */
