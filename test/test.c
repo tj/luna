@@ -59,6 +59,12 @@ test_array_push() {
   assert(3 == luna_array_pop(&arr)->val.as_int);
   assert(2 == luna_array_pop(&arr)->val.as_int);
   assert(1 == luna_array_pop(&arr)->val.as_int);
+
+  assert(NULL == luna_array_pop(&arr));
+  assert(NULL == luna_array_pop(&arr));
+  assert(NULL == luna_array_pop(&arr));
+  luna_array_push(&arr, &one);
+  assert(1 == luna_array_pop(&arr)->val.as_int);
 }
 
 #define test(fn) \

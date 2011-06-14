@@ -34,7 +34,10 @@ typedef kvec_t(luna_object_t *) luna_array_t;
  * Pop an object out of the array.
  */
 
-#define luna_array_pop(self) kv_pop(*self)
+#define luna_array_pop(self) \
+  (luna_array_length(self) \
+    ? kv_pop(*self) \
+    : NULL)
 
 /*
  * Return the array length.
