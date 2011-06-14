@@ -67,6 +67,29 @@ test_array_push() {
   assert(1 == luna_array_pop(&arr)->val.as_int);
 }
 
+static void
+test_array_at() {
+  luna_array_t arr;
+  luna_array_init(&arr);
+
+  luna_object_t one = { .type = LUNA_TYPE_INT };
+  one.val.as_int = 1;
+
+  luna_object_t two = { .type = LUNA_TYPE_INT };
+  two.val.as_int = 2;
+
+  luna_object_t three = { .type = LUNA_TYPE_INT };
+  three.val.as_int = 3;
+
+  luna_array_push(&arr, &one);
+  luna_array_push(&arr, &two);
+  luna_array_push(&arr, &three);
+
+  assert(1 == luna_array_at(&arr, 0)->val.as_int);
+  assert(2 == luna_array_at(&arr, 1)->val.as_int);
+  assert(3 == luna_array_at(&arr, 2)->val.as_int);
+}
+
 #define test(fn) \
   printf("    - \033[90m%s\033[0m\n", #fn); \
   test_##fn();
@@ -82,6 +105,7 @@ main(int argc, const char **argv){
   suite("array");
   test(array_length);
   test(array_push);
+  test(array_at);
   printf("\n");
   return 0;
 }
