@@ -3,6 +3,10 @@
 #include <assert.h>
 #include "array.h"
 
+/*
+ * Test luna_array_length().
+ */
+
 static void
 test_array_length() {
   luna_array_t arr;
@@ -28,6 +32,10 @@ test_array_length() {
   luna_array_push(&arr, &three);
   assert(3 == luna_array_length(&arr));
 }
+
+/*
+ * Test luna_array_push().
+ */
 
 static void
 test_array_push() {
@@ -67,6 +75,10 @@ test_array_push() {
   assert(1 == luna_array_pop(&arr)->val.as_int);
 }
 
+/*
+ * Test luna_array_at().
+ */
+
 static void
 test_array_at() {
   luna_array_t arr;
@@ -94,14 +106,23 @@ test_array_at() {
   assert(NULL == luna_array_at(&arr, 1231231));
 }
 
+/*
+ * Test the given `fn`.
+ */
+
 #define test(fn) \
   printf("    - \033[90m%s\033[0m\n", #fn); \
   test_##fn();
 
-static void
-suite(const char *title) {
-  printf("  \033[90m%s\033[0m\n", title);
-}
+/*
+ * Test suite title.
+ */
+
+#define suite(title) printf("  \033[90m%s\033[0m\n", title)
+
+/*
+ * Run all test suites.
+ */
 
 int
 main(int argc, const char **argv){
