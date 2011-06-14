@@ -24,6 +24,12 @@ typedef kvec_t(luna_object_t *) luna_array_t;
 #define luna_array_init(self) kv_init(*self)
 
 /*
+ * Return the array length.
+ */
+
+#define luna_array_length(self) kv_size(*self)
+
+/*
  * Push `obj` into the array.
  */
 
@@ -40,17 +46,12 @@ typedef kvec_t(luna_object_t *) luna_array_t;
     : NULL)
 
 /*
- * Return the array length.
- */
-
-#define luna_array_length(self) \
-  kv_size(*self)
-
-/*
  * Return the object at `i`.
  */
 
 #define luna_array_at(self, i) \
-  kv_A(*self, i)
+  (((i) >= 0 && (i) < luna_array_length(self)) \
+    ? kv_A(*self, (i)) \
+    : NULL)
 
 #endif /* __LUNA_ARRAY_H__ */

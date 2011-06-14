@@ -88,6 +88,10 @@ test_array_at() {
   assert(1 == luna_array_at(&arr, 0)->val.as_int);
   assert(2 == luna_array_at(&arr, 1)->val.as_int);
   assert(3 == luna_array_at(&arr, 2)->val.as_int);
+  
+  assert(NULL == luna_array_at(&arr, -1123));
+  assert(NULL == luna_array_at(&arr, 5));
+  assert(NULL == luna_array_at(&arr, 1231231));
 }
 
 #define test(fn) \
