@@ -6,7 +6,7 @@ CC = clang
 PREFIX = /usr/local
 CFLAGS = -Wall -Wno-unused-value -std=c99 -DEBUG_PARSER -g -O0 -I deps
 
-TEST_SRC = $(shell find test/*.c)
+TEST_SRC = $(shell find {test,src}/*.c | sed '/luna/d')
 TEST_OBJ = ${TEST_SRC:.c=.o}
 
 luna: $(OBJ)
@@ -25,6 +25,6 @@ update:
 	cp -fr ../list/* deps/list/
 
 clean:
-	rm -f luna test_runner $(OBJ)
+	rm -f luna test_runner $(OBJ) $(TEST_OBJ)
 
 .PHONY: clean update test
