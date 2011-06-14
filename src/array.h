@@ -18,6 +18,12 @@
 typedef kvec_t(luna_object_t *) luna_array_t;
 
 /*
+ * Initialize an array.
+ */
+
+#define luna_array_init(self) kv_init(*self)
+
+/*
  * Push `obj` into the array.
  */
 
