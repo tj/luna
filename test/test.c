@@ -163,6 +163,32 @@ test_object_has() {
 }
 
 /*
+ * Test luna_object_remove().
+ */
+
+static void
+test_object_remove() {
+  luna_value_t one = { .type = LUNA_TYPE_INT };
+  one.val.as_int = 1;
+
+  luna_object_t *obj = luna_object_new();
+
+  luna_object_set(obj, "one", &one);
+  assert(&one == luna_object_get(obj, "one"));
+
+  luna_object_remove(obj, "one");
+  assert(NULL == luna_object_get(obj, "one"));
+
+  luna_object_set(obj, "one", &one);
+  assert(&one == luna_object_get(obj, "one"));
+
+  luna_object_remove(obj, "one");
+  assert(NULL == luna_object_get(obj, "one"));
+
+  luna_object_destroy(obj);
+}
+
+/*
  * Test the given `fn`.
  */
 
@@ -192,6 +218,7 @@ main(int argc, const char **argv){
   suite("object");
   test(object_set);
   test(object_has);
+  test(object_remove);
 
   printf("\n");
   return 0;
