@@ -12,7 +12,7 @@
  */
 
 inline void
-hash_set(khash_t(str) *self, char *key, char *val) {
+luna_hash_set(khash_t(str) *self, char *key, char *val) {
   int ret;
   khiter_t k = kh_put(str, self, key, &ret);
   kh_value(self, k) = val;
@@ -23,7 +23,7 @@ hash_set(khash_t(str) *self, char *key, char *val) {
  */
 
 inline char *
-hash_get(khash_t(str) *self, char *key) {
+luna_hash_get(khash_t(str) *self, char *key) {
   khiter_t k = kh_get(str, self, key);
   return k == kh_end(self) ? NULL : kh_value(self, k);
 }
@@ -33,7 +33,7 @@ hash_get(khash_t(str) *self, char *key) {
  */
 
 inline int
-hash_has(khash_t(str) *self, char *key) {
+luna_hash_has(khash_t(str) *self, char *key) {
   khiter_t k = kh_get(str, self, key);
   return kh_exist(self, k);
 }
@@ -43,7 +43,7 @@ hash_has(khash_t(str) *self, char *key) {
  */
 
 void
-hash_remove(khash_t(str) *self, char *key) {
+luna_hash_remove(khash_t(str) *self, char *key) {
   khiter_t k = kh_get(str, self, key);
   kh_del(str, self, k);
 }

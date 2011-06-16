@@ -1,6 +1,7 @@
 
 #include <stdio.h>
 #include <assert.h>
+#include "hash.h"
 #include "array.h"
 
 /*
@@ -107,6 +108,16 @@ test_array_at() {
 }
 
 /*
+ * Test luna_hash_set().
+ */
+
+static void
+test_hash_set() {
+  luna_hash_t hash;
+  luna_hash_set(&hash, "foo", "bar");
+}
+
+/*
  * Test the given `fn`.
  */
 
@@ -131,6 +142,7 @@ main(int argc, const char **argv){
   test(array_length);
   test(array_push);
   test(array_at);
+  test(hash_set);
   printf("\n");
   return 0;
 }
