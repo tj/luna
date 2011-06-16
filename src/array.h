@@ -54,4 +54,17 @@ typedef kvec_t(luna_value_t *) luna_array_t;
     ? kv_A(*self, (i)) \
     : NULL)
 
+/*
+ * Iterate the array, populating `i` and `val`.
+ */
+
+#define luna_array_each(self, block) { \
+    luna_value_t *val; \
+    int len = luna_array_length(self); \
+    for (int i = 0; i < len; ++i) { \
+      val = luna_array_at(self, i); \
+      block; \
+    } \
+  }
+
 #endif /* __LUNA_ARRAY_H__ */

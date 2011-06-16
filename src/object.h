@@ -86,7 +86,8 @@ typedef khash_t(value) luna_object_t;
 #define luna_object_size kh_size
 
 /*
- * Iterate object slots and values.
+ * Iterate object slots and values, populating
+ * `slot` and `val`.
  */
 
 #define luna_object_each(self, block) { \
@@ -101,7 +102,7 @@ typedef khash_t(value) luna_object_t;
   }
 
 /*
- * Iterate object slots.
+ * Iterate object slots, populating `slot`.
  */
 
 #define luna_object_each_slot(self, block) { \
@@ -114,7 +115,7 @@ typedef khash_t(value) luna_object_t;
   }
 
 /*
- * Iterate object values.
+ * Iterate object values, populating `val`.
  */
 
 #define luna_object_each_val(self, block) { \

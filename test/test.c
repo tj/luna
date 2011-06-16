@@ -124,6 +124,33 @@ test_array_at() {
 }
 
 /*
+ * Test array iteration.
+ */
+
+static void
+test_array_iteration() {
+  luna_array_t arr;
+  luna_array_init(&arr);
+
+  luna_value_t one = { .type = LUNA_TYPE_INT };
+  one.val.as_int = 1;
+
+  luna_value_t two = { .type = LUNA_TYPE_INT };
+  two.val.as_int = 2;
+
+  luna_value_t three = { .type = LUNA_TYPE_INT };
+  three.val.as_int = 3;
+
+  luna_array_push(&arr, &one);
+  luna_array_push(&arr, &two);
+  luna_array_push(&arr, &three);
+
+  luna_array_each(&arr, {
+    
+  });
+}
+
+/*
  * Test luna_object_set().
  */
 
@@ -288,6 +315,7 @@ main(int argc, const char **argv){
   test(array_length);
   test(array_push);
   test(array_at);
+  test(array_iteration);
 
   suite("object");
   test(object_set);
