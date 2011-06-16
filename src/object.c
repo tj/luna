@@ -14,7 +14,7 @@
 inline void
 luna_object_set(khash_t(value) *self, char *key, luna_value_t *val) {
   int ret;
-  khiter_t k = kh_put(str, self, key, &ret);
+  khiter_t k = kh_put(value, self, key, &ret);
   kh_value(self, k) = val;
 }
 
@@ -24,7 +24,7 @@ luna_object_set(khash_t(value) *self, char *key, luna_value_t *val) {
 
 inline luna_value_t *
 luna_object_get(khash_t(value) *self, char *key) {
-  khiter_t k = kh_get(str, self, key);
+  khiter_t k = kh_get(value, self, key);
   return k == kh_end(self) ? NULL : kh_value(self, k);
 }
 
@@ -34,7 +34,7 @@ luna_object_get(khash_t(value) *self, char *key) {
 
 inline int
 luna_object_has(khash_t(value) *self, char *key) {
-  khiter_t k = kh_get(str, self, key);
+  khiter_t k = kh_get(value, self, key);
   return kh_exist(self, k);
 }
 
@@ -44,6 +44,6 @@ luna_object_has(khash_t(value) *self, char *key) {
 
 void
 luna_object_remove(khash_t(value) *self, char *key) {
-  khiter_t k = kh_get(str, self, key);
-  kh_del(str, self, k);
+  khiter_t k = kh_get(value, self, key);
+  kh_del(value, self, k);
 }

@@ -71,7 +71,7 @@ KHASH_MAP_INIT_STR(value, luna_value_t *);
  * Iterate object slots and values.
  */
 
-#define luna_hash_each(self, block) { \
+#define luna_object_each(self, block) { \
    char *slot; \
    luna_value_t *val; \
     for (khiter_t k = kh_begin(self); k < kh_end(self); ++k) { \
@@ -86,7 +86,7 @@ KHASH_MAP_INIT_STR(value, luna_value_t *);
  * Iterate object slots.
  */
 
-#define luna_hash_each_slot(self, block) { \
+#define luna_object_each_slot(self, block) { \
     char *slot; \
     for (khiter_t k = kh_begin(self); k < kh_end(self); ++k) { \
       if (!kh_exist(self, k)) continue; \
@@ -99,7 +99,7 @@ KHASH_MAP_INIT_STR(value, luna_value_t *);
  * Iterate object values.
  */
 
-#define luna_hash_each_val(self, block) { \
+#define luna_object_each_val(self, block) { \
     luna_value_t *val; \
     for (khiter_t k = kh_begin(self); k < kh_end(self); ++k) { \
       if (!kh_exist(self, k)) continue; \
