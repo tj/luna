@@ -272,7 +272,8 @@ test_object_iteration() {
  * Test suite title.
  */
 
-#define suite(title) printf("  \033[90m%s\033[0m\n", title)
+#define suite(title) \
+  printf("\n  \033[90m%s\033[0m\n", title)
 
 /*
  * Run all test suites.
@@ -280,8 +281,6 @@ test_object_iteration() {
 
 int
 main(int argc, const char **argv){
-  printf("\n");
-
   suite("value");
   test(value_is);
 
