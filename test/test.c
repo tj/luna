@@ -1,5 +1,6 @@
 
 #include <stdio.h>
+#include <string.h>
 #include <assert.h>
 #include "object.h"
 #include "array.h"
@@ -189,6 +190,54 @@ test_object_remove() {
 }
 
 /*
+ * Check if the given `slot` is valid.
+ */
+
+static int
+valid_slot(char *slot) {
+  return 0 == strcmp("one", slot)
+    || 0 == strcmp("two", slot)
+    || 0 == strcmp("three", slot)
+    || 0 == strcmp("four", slot)
+    || 0 == strcmp("five", slot);
+}
+
+/*
+ * Test object iteration macros.
+ */
+
+static void
+test_object_iteration() {
+  luna_value_t one = { .type = LUNA_TYPE_INT };
+  one.val.as_int = 1;
+
+  luna_value_t two = { .type = LUNA_TYPE_INT };
+  two.val.as_int = 2;
+
+  luna_value_t three = { .type = LUNA_TYPE_INT };
+  three.val.as_int = 3;
+
+  luna_object_t *obj = luna_object_new();
+
+  assert(0 == luna_object_size(obj));
+
+  luna_object_set(obj, "one", &one);
+  luna_object_set(obj, "two", &two);
+  luna_object_set(obj, "three", &three);
+  luna_object_set(obj, "four", &three);
+  luna_object_set(obj, "five", &three);
+
+  char *slots[luna_object_size(obj)];
+  int i = 0;
+  luna_object_each_slot(obj, {
+    slots[i++] = slot;
+  });
+  for (int i = 0; i < 5; ++i) assert(valid_slot(slots[i]));
+
+  luna_object_destroy(obj);
+}
+
+/*
  * Test the given `fn`.
  */
 
@@ -219,6 +268,7 @@ main(int argc, const char **argv){
   test(object_set);
   test(object_has);
   test(object_remove);
+  test(object_iteration);
 
   printf("\n");
   return 0;
