@@ -15,7 +15,7 @@
  * Luna array.
  */
 
-typedef kvec_t(luna_object_t *) luna_array_t;
+typedef kvec_t(luna_value_t *) luna_array_t;
 
 /*
  * Initialize an array.
@@ -34,7 +34,7 @@ typedef kvec_t(luna_object_t *) luna_array_t;
  */
 
 #define luna_array_push(self, obj) \
-  kv_push(luna_object_t *, *self, obj)
+  kv_push(luna_value_t *, *self, obj)
 
 /*
  * Pop an object out of the array.
