@@ -144,6 +144,25 @@ test_object_set() {
 }
 
 /*
+ * Test luna_object_has().
+ */
+
+static void
+test_object_has() {
+  luna_value_t one = { .type = LUNA_TYPE_INT };
+  one.val.as_int = 1;
+
+  luna_object_t *obj = luna_object_new();
+
+  luna_object_set(obj, "one", &one);
+
+  assert(1 == luna_object_has(obj, "one"));
+  assert(0 == luna_object_has(obj, "foo"));
+
+  luna_object_destroy(obj);
+}
+
+/*
  * Test the given `fn`.
  */
 
@@ -172,6 +191,7 @@ main(int argc, const char **argv){
 
   suite("object");
   test(object_set);
+  test(object_has);
 
   printf("\n");
   return 0;
