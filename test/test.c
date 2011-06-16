@@ -6,6 +6,21 @@
 #include "array.h"
 
 /*
+ * Test luna_is_* macros.
+ */
+
+static void
+test_value_is() {
+  luna_value_t one = { .type = LUNA_TYPE_INT };
+  one.val.as_int = 1;
+  assert(luna_is_int(&one));
+  assert(!luna_is_string(&one));
+
+  luna_value_t two = { .type = LUNA_TYPE_NULL };
+  assert(luna_is_null(&two));
+}
+
+/*
  * Test luna_array_length().
  */
 
@@ -266,6 +281,9 @@ test_object_iteration() {
 int
 main(int argc, const char **argv){
   printf("\n");
+
+  suite("value");
+  test(value_is);
 
   suite("array");
   test(array_length);

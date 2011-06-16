@@ -16,7 +16,7 @@
  * Check if `val` is the given type.
  */
 
-#define luna_value_is(val, t) ((val).type == LUNA_TYPE_##t)
+#define luna_value_is(val, t) ((val)->type == LUNA_TYPE_##t)
 
 /*
  * Specific type macros.
