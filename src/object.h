@@ -62,7 +62,25 @@ typedef struct {
 KHASH_MAP_INIT_STR(value, luna_value_t *);
 
 /*
- * Hash size.
+ * Luna object.
+ */
+
+typedef khash_t(value) luna_object_t;
+
+/*
+ * Allocate a new object.
+ */
+
+#define luna_object_new() kh_init(value)
+
+/*
+ * Destroy the object.
+ */
+
+#define luna_object_destroy(self) kh_destroy(value, self)
+
+/*
+ * Object size.
  */
 
 #define luna_object_size kh_size

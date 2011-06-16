@@ -108,6 +108,42 @@ test_array_at() {
 }
 
 /*
+ * Test luna_object_set().
+ */
+
+static void
+test_object_set() {
+  luna_value_t one = { .type = LUNA_TYPE_INT };
+  one.val.as_int = 1;
+
+  luna_value_t two = { .type = LUNA_TYPE_INT };
+  two.val.as_int = 2;
+
+  luna_value_t three = { .type = LUNA_TYPE_INT };
+  three.val.as_int = 3;
+
+  luna_object_t *obj = luna_object_new();
+
+  assert(0 == luna_object_size(obj));
+
+  luna_object_set(obj, "one", &one);
+  assert(1 == luna_object_size(obj));
+
+  luna_object_set(obj, "two", &two);
+  assert(2 == luna_object_size(obj));
+
+  luna_object_set(obj, "three", &three);
+  assert(3 == luna_object_size(obj));
+
+  assert(&one == luna_object_get(obj, "one"));
+  assert(&two == luna_object_get(obj, "two"));
+  assert(&three == luna_object_get(obj, "three"));
+  assert(NULL == luna_object_get(obj, "four"));
+
+  luna_object_destroy(obj);
+}
+
+/*
  * Test the given `fn`.
  */
 
@@ -128,10 +164,15 @@ test_array_at() {
 int
 main(int argc, const char **argv){
   printf("\n");
+
   suite("array");
   test(array_length);
   test(array_push);
   test(array_at);
+
+  suite("object");
+  test(object_set);
+
   printf("\n");
   return 0;
 }
