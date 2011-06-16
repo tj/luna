@@ -1,7 +1,7 @@
 
 #include <stdio.h>
 #include <assert.h>
-#include "hash.h"
+#include "object.h"
 #include "array.h"
 
 /*
@@ -13,13 +13,13 @@ test_array_length() {
   luna_array_t arr;
   luna_array_init(&arr);
 
-  luna_object_t one = { .type = LUNA_TYPE_INT };
+  luna_value_t one = { .type = LUNA_TYPE_INT };
   one.val.as_int = 1;
 
-  luna_object_t two = { .type = LUNA_TYPE_INT };
+  luna_value_t two = { .type = LUNA_TYPE_INT };
   two.val.as_int = 2;
 
-  luna_object_t three = { .type = LUNA_TYPE_INT };
+  luna_value_t three = { .type = LUNA_TYPE_INT };
   three.val.as_int = 3;
 
   assert(0 == luna_array_length(&arr));
@@ -43,13 +43,13 @@ test_array_push() {
   luna_array_t arr;
   luna_array_init(&arr);
 
-  luna_object_t one = { .type = LUNA_TYPE_INT };
+  luna_value_t one = { .type = LUNA_TYPE_INT };
   one.val.as_int = 1;
 
-  luna_object_t two = { .type = LUNA_TYPE_INT };
+  luna_value_t two = { .type = LUNA_TYPE_INT };
   two.val.as_int = 2;
 
-  luna_object_t three = { .type = LUNA_TYPE_INT };
+  luna_value_t three = { .type = LUNA_TYPE_INT };
   three.val.as_int = 3;
 
   assert(0 == luna_array_length(&arr));
@@ -85,13 +85,13 @@ test_array_at() {
   luna_array_t arr;
   luna_array_init(&arr);
 
-  luna_object_t one = { .type = LUNA_TYPE_INT };
+  luna_value_t one = { .type = LUNA_TYPE_INT };
   one.val.as_int = 1;
 
-  luna_object_t two = { .type = LUNA_TYPE_INT };
+  luna_value_t two = { .type = LUNA_TYPE_INT };
   two.val.as_int = 2;
 
-  luna_object_t three = { .type = LUNA_TYPE_INT };
+  luna_value_t three = { .type = LUNA_TYPE_INT };
   three.val.as_int = 3;
 
   luna_array_push(&arr, &one);
@@ -105,16 +105,6 @@ test_array_at() {
   assert(NULL == luna_array_at(&arr, -1123));
   assert(NULL == luna_array_at(&arr, 5));
   assert(NULL == luna_array_at(&arr, 1231231));
-}
-
-/*
- * Test luna_hash_set().
- */
-
-static void
-test_hash_set() {
-  luna_hash_t hash;
-  luna_hash_set(&hash, "foo", "bar");
 }
 
 /*
@@ -142,7 +132,6 @@ main(int argc, const char **argv){
   test(array_length);
   test(array_push);
   test(array_at);
-  test(hash_set);
   printf("\n");
   return 0;
 }
