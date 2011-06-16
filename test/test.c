@@ -229,10 +229,18 @@ test_object_iteration() {
 
   char *slots[luna_object_size(obj)];
   int i = 0;
-  luna_object_each_slot(obj, {
-    slots[i++] = slot;
-  });
+  luna_object_each_slot(obj, { slots[i++] = slot; });
   for (int i = 0; i < 5; ++i) assert(valid_slot(slots[i]));
+
+  char *slots2[luna_object_size(obj)];
+  i = 0;
+  luna_object_each_slot(obj, slots2[i++] = slot);
+  for (int i = 0; i < 5; ++i) assert(valid_slot(slots2[i]));
+
+  char *slots3[luna_object_size(obj)];
+  i = 0;
+  luna_object_each(obj, slots3  [i++] = slot);
+  for (int i = 0; i < 5; ++i) assert(valid_slot(slots3[i]));
 
   luna_object_destroy(obj);
 }
