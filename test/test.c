@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <assert.h>
+#include "khash.h"
+#include "state.h"
 #include "object.h"
 #include "array.h"
 
@@ -288,6 +290,27 @@ test_object_iteration() {
 }
 
 /*
+ * Test strings.
+ */
+
+static void
+test_string() {
+  luna_state_t state;
+  luna_state_init(&state);
+
+  luna_string_t *str = luna_string_new(&state, "foo bar baz");
+  assert(0 == strcmp("foo bar baz", str->val));
+  
+  str = luna_string_new(&state, "foo bar baz");
+  assert(0 == strcmp("foo bar baz", str->val));
+
+  for (int i = 0; i < 200; ++i) str = luna_string_new(&state, "foo");
+  assert(0 == strcmp("foo", str->val));
+
+  assert(2 == kh_size(state.strs));
+}
+
+/*
  * Test the given `fn`.
  */
 
@@ -322,6 +345,9 @@ main(int argc, const char **argv){
   test(object_has);
   test(object_remove);
   test(object_iteration);
+
+  suite("string");
+  test(string);
 
   printf("\n");
   return 0;
