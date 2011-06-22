@@ -16,7 +16,7 @@
  */
 
 luna_string_t *
-luna_string_new(luna_state_t *state, char *val) {
+luna_string(luna_state_t *state, char *val) {
   khiter_t k = kh_get(str, state->strs, val);
 
   // exists
