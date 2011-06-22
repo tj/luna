@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <assert.h>
+#include <time.h>
 #include "khash.h"
 #include "state.h"
 #include "object.h"
@@ -331,6 +332,8 @@ test_string() {
 
 int
 main(int argc, const char **argv){
+  clock_t start = clock();
+
   suite("value");
   test(value_is);
 
@@ -349,6 +352,8 @@ main(int argc, const char **argv){
   suite("string");
   test(string);
 
+  printf("\n");
+  printf("  \033[90mcompleted in %.5fs\033[0m\n", (float) (clock() - start) / CLOCKS_PER_SEC);
   printf("\n");
   return 0;
 }
