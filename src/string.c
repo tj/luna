@@ -10,7 +10,8 @@
 #include "state.h"
 
 /*
- * Return a new luna_string_t for the given `val`.
+ * Return a new luna_string_t for the given `val`,
+ * allocating space in the strings hash unless present.
  */
 
 luna_string_t *
