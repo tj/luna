@@ -11,7 +11,8 @@
 
 /*
  * Return a new luna_string_t for the given `val`,
- * allocating space in the strings hash unless present.
+ * allocating space in the strings hash unless present,
+ * or NULL on failure.
  */
 
 luna_string_t *
