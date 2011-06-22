@@ -34,6 +34,7 @@
 
   - ✔ lexer
   - ✔ parser
+  - ✔ test suite
   - ◦ virtual machine
   - ◦ opcode generation
   - ◦ C public/internal apis
@@ -44,7 +45,6 @@
   - ◦ portability
   - ◦ closures
   - ◦ module system
-  - ◦ test suite
   - ◦ PCRE
   - ◦ VIM / TM / syntaxes
   - ◦ website
