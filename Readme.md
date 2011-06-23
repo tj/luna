@@ -297,12 +297,16 @@ million = 1_000_000.00
 300ms
 ```
 
-we can also use the `?<CHAR>` syntax to return a character code for the given char:
+we can also use the `#<CHAR>` syntax to return a character code for the given char:
 
-char = ?0 // 48
-char = ?a // 97
-char = ?Z // 90
-char = ?- // 45
+```
+char = #0 // 48
+char = #a // 97
+char = #Z // 90
+char = #- // 45
+char = ## // 35
+char = #  // 32
+```
 
 
 ## License 
