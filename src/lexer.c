@@ -289,7 +289,7 @@ luna_scan(luna_lexer_t *self) {
   if (self->outdents) return outdent(self);
 
   // scan
-scan:
+  scan:
   switch (c = next) {
     case ' ':
     case '\t': goto scan;
@@ -301,11 +301,15 @@ scan:
     case ']': return token(RBRACK);
     case ';': return token(SEMICOLON);
     case ',': return token(COMMA);
-    case '?': return token(QMARK);
     case '.': return token(OP_DOT);
     case '%': return token(OP_MOD);
     case '^': return token(OP_BIT_XOR);
     case '~': return token(OP_BIT_NOT);
+    case '?': 
+      if (' ' == (c = next)) return token(QMARK);
+      token(INT);
+      self->tok.value.as_int = c;
+      return 1;
     case '+':
       return '+' == next
         ? token(OP_INCR)
