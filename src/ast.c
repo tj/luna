@@ -58,6 +58,18 @@ luna_float_node_new(float val) {
 }
 
 /*
+ * Alloc and initialize a new id node with the given `val`.
+ */
+
+luna_id_node_t *
+luna_id_node_new(const char *val) {
+  luna_id_node_t *self = malloc(sizeof(luna_id_node_t));
+  self->base.type = LUNA_NODE_ID;
+  self->val = val;
+  return self;
+}
+
+/*
  * Alloc and initialize a new string node with the given `val`.
  */
 

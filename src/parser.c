@@ -123,6 +123,11 @@ primary_expr(luna_parser_t *self) {
   luna_token_t *tok;
   debug("primary_expr");
 
+  // id
+  if (tok = accept(ID)) {
+    return (luna_node_t *) luna_id_node_new(tok->value.as_string);
+  }
+
   // int
   if (tok = accept(INT)) {
     return (luna_node_t *) luna_int_node_new(tok->value.as_int);

@@ -27,6 +27,7 @@
   n(TERNARY_OP) \
   n(BOOL) \
   n(NULL) \
+  n(ID) \
   n(INT) \
   n(FLOAT) \
   n(STRING) \
@@ -90,6 +91,15 @@ typedef struct {
 } luna_float_node_t;
 
 /*
+ * Luna id node.
+ */
+
+typedef struct {
+  luna_node_t base;
+  const char *val;
+} luna_id_node_t;
+
+/*
  * Luna string node.
  */
 
@@ -105,6 +115,9 @@ luna_node(luna_node_t *node);
 
 luna_block_node_t *
 luna_block_node_new();
+
+luna_id_node_t *
+luna_id_node_new(const char *val);
 
 luna_int_node_t *
 luna_int_node_new(int val);
