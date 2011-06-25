@@ -77,6 +77,7 @@ typedef struct {
  */
 
 typedef struct {
+  luna_node_t base;
   int val;
 } luna_int_node_t;
 
@@ -84,5 +85,8 @@ typedef struct {
 
 luna_block_node_t *
 luna_block_node_new();
+
+luna_int_node_t *
+luna_int_node_new(int val);
 
 #endif /* __LUNA_AST__ */
