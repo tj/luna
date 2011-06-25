@@ -592,7 +592,6 @@ program(luna_parser_t *self) {
   luna_block_node_t block;
   luna_array_init(&(block.stmts));
   self->root = block;
-  self->curr = &block;
   while (!accept(EOS)) {
     if (!stmt(self)) return 0;
     whitespace(self);

@@ -20,7 +20,6 @@ typedef struct {
   char *err;
   luna_token_t *la;
   luna_lexer_t *lex;
-  luna_block_node_t *curr;
   luna_block_node_t root;
 } luna_parser_t;
 
