@@ -112,9 +112,9 @@ whitespace(luna_parser_t *self) {
 
 /*
  *   id
- * | string
  * | int
  * | float
+ * | string
  * | paren_expr
  */
 
@@ -126,6 +126,11 @@ primary_expr(luna_parser_t *self) {
   // int
   if (tok = accept(INT)) {
     return (luna_node_t *) luna_int_node_new(tok->value.as_int);
+  }
+
+  // float
+  if (tok = accept(FLOAT)) {
+    return (luna_node_t *) luna_float_node_new(tok->value.as_float);
   }
 
   // string

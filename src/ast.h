@@ -81,6 +81,15 @@ typedef struct {
 } luna_int_node_t;
 
 /*
+ * Luna float node.
+ */
+
+typedef struct {
+  luna_node_t base;
+  float val;
+} luna_float_node_t;
+
+/*
  * Luna string node.
  */
 
@@ -99,6 +108,9 @@ luna_block_node_new();
 
 luna_int_node_t *
 luna_int_node_new(int val);
+
+luna_float_node_t *
+luna_float_node_new(float val);
 
 luna_string_node_t *
 luna_string_node_new(const char *val);

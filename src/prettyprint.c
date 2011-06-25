@@ -47,6 +47,15 @@ visit_int(luna_int_node_t *node) {
 }
 
 /*
+ * Visit float `node`.
+ */
+
+static void
+visit_float(luna_float_node_t *node) {
+  printf("(float %f)\n", node->val);
+}
+
+/*
  * Visit string `node`.
  */
 
@@ -67,6 +76,9 @@ visit(luna_node_t *node) {
       break;
     case LUNA_NODE_INT:
       visit_int((luna_int_node_t *) node);
+      break;
+    case LUNA_NODE_FLOAT:
+      visit_float((luna_float_node_t *) node);
       break;
     case LUNA_NODE_STRING:
       visit_string((luna_string_node_t *) node);

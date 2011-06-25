@@ -46,6 +46,18 @@ luna_int_node_new(int val) {
 }
 
 /*
+ * Alloc and initialize a new float node with the given `val`.
+ */
+
+luna_float_node_t *
+luna_float_node_new(float val) {
+  luna_float_node_t *self = malloc(sizeof(luna_float_node_t));
+  self->base.type = LUNA_NODE_FLOAT;
+  self->val = val;
+  return self;
+}
+
+/*
  * Alloc and initialize a new string node with the given `val`.
  */
 
