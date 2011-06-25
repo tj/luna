@@ -629,7 +629,7 @@ luna_parse(luna_parser_t *self) {
 
 // -DEBUG_AST
 #ifdef EBUG_AST
-  luna_prettyprint(block);
+  luna_prettyprint((luna_node_t *) block);
 #endif
 
   return block;
