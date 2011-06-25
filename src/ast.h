@@ -15,6 +15,7 @@
  */
 
 #define LUNA_NODE_LIST \
+  n(BLOCK) \
   n(RETURN) \
   n(IF) \
   n(FOR) \
