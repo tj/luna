@@ -20,7 +20,6 @@ typedef struct {
   char *err;
   luna_token_t *la;
   luna_lexer_t *lex;
-  luna_block_node_t root;
 } luna_parser_t;
 
 // protos
@@ -28,7 +27,7 @@ typedef struct {
 void
 luna_parser_init(luna_parser_t *self, luna_lexer_t *lex);
 
-int
+luna_block_node_t *
 luna_parse(luna_parser_t *self);
 
 #endif /* __LUNA_PARSER_H__ */

@@ -67,4 +67,9 @@ typedef kvec_t(luna_value_t *) luna_array_t;
     } \
   }
 
+// protos
+
+luna_array_t *
+luna_array_new();
+
 #endif /* __LUNA_ARRAY_H__ */

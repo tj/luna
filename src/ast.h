@@ -8,6 +8,7 @@
 #ifndef __LUNA_AST__
 #define __LUNA_AST__
 
+#include "token.h"
 #include "object.h"
 #include "array.h"
 
@@ -57,7 +58,7 @@ typedef struct {
 
 typedef struct {
   luna_node_t base;
-  luna_array_t stmts;
+  luna_array_t *stmts;
 } luna_block_node_t;
 
 /*
@@ -67,8 +68,8 @@ typedef struct {
 typedef struct {
   luna_node_t base;
   luna_token type;
-  luna_node left;
-  luna_node right;
+  luna_node_t *left;
+  luna_node_t *right;
 } luna_binary_op_node_t;
 
 /*
@@ -78,5 +79,10 @@ typedef struct {
 typedef struct {
   int val;
 } luna_int_node_t;
+
+// protos
+
+luna_block_node_t *
+luna_block_node_new();
 
 #endif /* __LUNA_AST__ */
