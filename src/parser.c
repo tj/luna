@@ -101,14 +101,15 @@ whitespace(luna_parser_t *self) {
  * '(' expr ')'
  */
 
-// static int
-// paren_expr(luna_parser_t *self) {
-//   debug("paren_expr");
-//   if (!accept(LPAREN)) return 0;
-//   if (!expr(self)) return 0;
-//   if (!accept(RPAREN)) return error("expression missing closing ')'");
-//   return 1;
-// }
+static luna_node_t *
+paren_expr(luna_parser_t *self) {
+  luna_node_t *node;
+  debug("paren_expr");
+  if (!accept(LPAREN)) return NULL;
+  if (!(node = expr(self))) return NULL;
+  if (!accept(RPAREN)) return error("expression missing closing ')'");
+  return node;
+}
 
 /*
  *   id
@@ -143,12 +144,7 @@ primary_expr(luna_parser_t *self) {
     return (luna_node_t *) luna_string_node_new(tok->value.as_string);
   }
 
-  return NULL;
-  // return accept(ID)
-  //   || accept(STRING)
-  //   || accept(FLOAT)
-  //   || paren_expr(self);
-  //   ;
+  return paren_expr(self);
 }
 
 /*
