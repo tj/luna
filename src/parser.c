@@ -6,12 +6,9 @@
 //
 
 #include <stdio.h>
+#include "prettyprint.h"
 #include "parser.h"
 #include "array.h"
-
-// TODO: emit for codegen
-// TODO: -DEBUG_PARSER output for accept() etc
-// TODO: contextual errors
 
 // -DEBUG_PARSER
 
@@ -628,6 +625,13 @@ program(luna_parser_t *self) {
 
 luna_block_node_t *
 luna_parse(luna_parser_t *self) {
-  return program(self);
+  luna_block_node_t *block = program(self);
+
+// -DEBUG_AST
+#ifdef EBUG_AST
+  luna_prettyprint(block);
+#endif
+
+  return block;
 }
 
