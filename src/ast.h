@@ -80,6 +80,15 @@ typedef struct {
   int val;
 } luna_int_node_t;
 
+/*
+ * Luna string node.
+ */
+
+typedef struct {
+  luna_node_t base;
+  const char *val;
+} luna_string_node_t;
+
 // protos
 
 luna_value_t *
@@ -90,5 +99,8 @@ luna_block_node_new();
 
 luna_int_node_t *
 luna_int_node_new(int val);
+
+luna_string_node_t *
+luna_string_node_new(const char *val);
 
 #endif /* __LUNA_AST__ */

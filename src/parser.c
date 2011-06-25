@@ -128,6 +128,11 @@ primary_expr(luna_parser_t *self) {
     return (luna_node_t *) luna_int_node_new(tok->value.as_int);
   }
 
+  // string
+  if (tok = accept(STRING)) {
+    return (luna_node_t *) luna_string_node_new(tok->value.as_string);
+  }
+
   return NULL;
   // return accept(ID)
   //   || accept(STRING)

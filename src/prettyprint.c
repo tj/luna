@@ -47,6 +47,15 @@ visit_int(luna_int_node_t *node) {
 }
 
 /*
+ * Visit string `node`.
+ */
+
+static void
+visit_string(luna_string_node_t *node) {
+  printf("(string '%s')\n", node->val);
+}
+
+/*
  * Visit `node`.
  */
 
@@ -58,6 +67,9 @@ visit(luna_node_t *node) {
       break;
     case LUNA_NODE_INT:
       visit_int((luna_int_node_t *) node);
+      break;
+    case LUNA_NODE_STRING:
+      visit_string((luna_string_node_t *) node);
       break;
   }
 }
