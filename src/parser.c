@@ -406,16 +406,18 @@ logical_or_expr(luna_parser_t *self) {
  * (primary_expr | function_expr) id* function_expr?
  */
 
-// static int
-// slot_access_expr(luna_parser_t * self) {
-//   debug("slot_access_expr");
-//   if (!(primary_expr(self) || function_expr(self))) return 0;
-//   while (accept(ID)) ;
-//   if (is(COLON)) {
-//     if (!function_expr(self)) return 0;
-//   }
-//   return 1;
-// }
+static luna_node_t *
+slot_access_expr(luna_parser_t * self) {
+  luna_node_t *node;
+  debug("slot_access_expr");
+  if (!(node = primary_expr(self))) return NULL;
+  // if (!(primary_expr(self) || function_expr(self))) return 0;
+  // while (accept(ID)) ;
+  // if (is(COLON)) {
+  //   if (!function_expr(self)) return 0;
+  // }
+  return node;
+}
 
 /*
  * (expr (',' expr)*)
@@ -436,22 +438,23 @@ logical_or_expr(luna_parser_t *self) {
  * | slot_access_expr
  */
 
-// static int
-// call_expr(luna_parser_t *self) {
-//   debug("call_expr");
-//   if (!slot_access_expr(self)) return 0;
-//   if (accept(LPAREN)) {
-//     if (accept(RPAREN)) goto tail;
-//     if (!args(self)) return 0;
-//     context("function call");
-//     if (!accept(RPAREN)) return error("missing closing ')'");
-//     tail:
-//     if (is(COLON)) {
-//       if (!function_expr(self)) return 0;
-//     }
-//   }
-//   return 1;
-// }
+static luna_node_t *
+call_expr(luna_parser_t *self) {
+  luna_node_t *node;
+  debug("call_expr");
+  if (!(node = slot_access_expr(self))) return NULL;
+  // if (accept(LPAREN)) {
+  //   if (accept(RPAREN)) goto tail;
+  //   if (!args(self)) return 0;
+  //   context("function call");
+  //   if (!accept(RPAREN)) return error("missing closing ')'");
+  //   tail:
+  //   if (is(COLON)) {
+  //     if (!function_expr(self)) return 0;
+  //   }
+  // }
+  return node;
+}
 
 /*
  *   logical_or_expr
