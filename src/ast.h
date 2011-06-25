@@ -8,6 +8,8 @@
 #ifndef __LUNA_AST__
 #define __LUNA_AST__
 
+#include "object.h"
+
 /*
  * Nodes.
  */
@@ -36,5 +38,14 @@ typedef enum {
 LUNA_NODE_LIST
 #undef t
 } luna_node;
+
+/*
+ * Luna ast node.
+ */
+
+typedef struct {
+  luna_node type;
+  luna_value_t args[3];
+} luna_node_t;
 
 #endif /* __LUNA_AST__ */
