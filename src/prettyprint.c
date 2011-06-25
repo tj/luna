@@ -23,12 +23,23 @@ luna_prettyprint(luna_node_t *node) {
 }
 
 /*
- * Visit `block`.
+ * Visit block `node`.
  */
 
 static void
-block(luna_block_node_t *block) {
-  printf("block\n");
+visit_block(luna_block_node_t *node) {
+  luna_array_each(node->stmts, {
+    visit((luna_node_t *) val->value.as_obj);
+  });
+}
+
+/*
+ * Visit int `node`.
+ */
+
+static void
+visit_int(luna_int_node_t *node) {
+  printf("int\n");
 }
 
 /*
@@ -39,7 +50,10 @@ static void
 visit(luna_node_t *node) {
   switch (node->type) {
     case LUNA_NODE_BLOCK:
-      block((luna_block_node_t *) node);
+      visit_block((luna_block_node_t *) node);
+      break;
+    case LUNA_NODE_INT:
+      visit_int((luna_int_node_t *) node);
       break;
   }
 }
