@@ -34,8 +34,9 @@
   - ✔ lexer
   - ✔ parser
   - ✔ test suite
-  - ◦ virtual machine
+  - ◦ ast
   - ◦ opcode generation
+  - ◦ virtual machine
   - ◦ C public/internal apis
   - ◦ garbage collection
   - ◦ optimizations (TCO etc)
