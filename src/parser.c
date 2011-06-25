@@ -607,14 +607,19 @@ stmt(luna_parser_t *self) {
 
 static luna_block_node_t *
 program(luna_parser_t *self) {
+  luna_node_t *node;
   whitespace(self);
   debug("program");
-  luna_block_node_t *node = luna_block_node_new();
+  luna_block_node_t *block = luna_block_node_new();
   while (!accept(EOS)) {
-    if (!stmt(self)) return NULL;
+    if (node = stmt(self)) {
+      luna_array_push(block->stmts, luna_obj(node));
+    } else {
+      return NULL;
+    }
     whitespace(self);
   }
-  return node;
+  return block;
 }
 
 /*

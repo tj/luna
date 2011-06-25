@@ -55,10 +55,10 @@ typedef enum {
 typedef struct {
   luna_value type;
   union {
-    void *obj;
+    void *as_obj;
     int as_int;
     float as_float;
-  } val;
+  } value;
 } luna_value_t;
 
 KHASH_MAP_INIT_STR(value, luna_value_t *);
@@ -130,6 +130,9 @@ typedef khash_t(value) luna_object_t;
   }
 
 // protos
+
+luna_value_t *
+luna_obj(luna_object_t *obj);
 
 void
 luna_object_set(khash_t(value) *self, char *key, luna_value_t *val);
