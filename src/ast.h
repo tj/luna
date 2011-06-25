@@ -46,6 +46,7 @@ LUNA_NODE_LIST
 typedef struct {
   luna_node type;
   luna_value_t args[3];
+  int lineno;
 } luna_node_t;
 
 #endif /* __LUNA_AST__ */
