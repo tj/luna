@@ -9,6 +9,10 @@
 #include "ast.h"
 #include "prettyprint.h"
 
+// indentation level
+
+static int indents = 0;
+
 // forward declarations
 
 static void visit(luna_node_t *node);
@@ -39,7 +43,7 @@ visit_block(luna_block_node_t *node) {
 
 static void
 visit_int(luna_int_node_t *node) {
-  printf("int\n");
+  printf("(int %d)\n", node->val);
 }
 
 /*
