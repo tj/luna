@@ -88,6 +88,7 @@ luna_parser_init(luna_parser_t *self, luna_lexer_t *lex) {
   self->la = NULL;
   self->ctx = NULL;
   self->err = NULL;
+  self->root = NULL;
 }
 
 /*

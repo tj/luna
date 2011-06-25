@@ -22,6 +22,7 @@
  * Specific type macros.
  */
 
+#define luna_is_node(val) luna_value_is(val, NODE)
 #define luna_is_list(val) luna_value_is(val, LIST)
 #define luna_is_array(val) luna_value_is(val, ARRAY)
 #define luna_is_object(val) luna_value_is(val, OBJECT)
@@ -37,6 +38,7 @@
 
 typedef enum {
     LUNA_TYPE_NULL
+  , LUNA_TYPE_NODE
   , LUNA_TYPE_BOOL
   , LUNA_TYPE_INT
   , LUNA_TYPE_FLOAT

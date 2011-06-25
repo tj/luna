@@ -9,6 +9,7 @@
 #define __LUNA_AST__
 
 #include "object.h"
+#include "array.h"
 
 /*
  * Nodes.
@@ -41,13 +42,21 @@ LUNA_NODE_LIST
 } luna_node;
 
 /*
- * Luna ast node.
+ * Luna node.
  */
 
 typedef struct {
   luna_node type;
-  luna_value_t args[3];
   int lineno;
 } luna_node_t;
+
+/*
+ * Luna block node.
+ */
+
+typedef struct {
+  luna_node_t base;
+  luna_array_t stmts;
+} luna_block_node_t;
 
 #endif /* __LUNA_AST__ */

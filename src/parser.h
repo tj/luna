@@ -9,6 +9,7 @@
 #define __LUNA_PARSER_H__
 
 #include "lexer.h"
+#include "ast.h"
 
 /*
  * Parser struct.
@@ -19,6 +20,7 @@ typedef struct {
   char *err;
   luna_token_t *la;
   luna_lexer_t *lex;
+  luna_block_node_t *root;
 } luna_parser_t;
 
 // protos
