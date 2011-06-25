@@ -7,6 +7,10 @@
 
 #include "ast.h"
 
+/*
+ * Alloc and initialize a new block node.
+ */
+
 luna_block_node_t *
 luna_block_node_new() {
   luna_block_node_t *self = malloc(sizeof(luna_block_node_t));

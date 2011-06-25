@@ -585,13 +585,13 @@ block(luna_parser_t *self) {
  * ws (stmt ws)*
  */
 
-static luna_block_node_t
+static luna_block_node_t *
 program(luna_parser_t *self) {
   whitespace(self);
   debug("program");
   luna_block_node_t *block = luna_block_node_new();
   while (!accept(EOS)) {
-    if (!stmt(self)) return 0;
+    //if (!stmt(self)) return 0;
     whitespace(self);
   }
   return block;
