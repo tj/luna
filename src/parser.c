@@ -7,6 +7,7 @@
 
 #include <stdio.h>
 #include "parser.h"
+#include "array.h"
 
 // TODO: emit for codegen
 // TODO: -DEBUG_PARSER output for accept() etc
@@ -88,7 +89,6 @@ luna_parser_init(luna_parser_t *self, luna_lexer_t *lex) {
   self->la = NULL;
   self->ctx = NULL;
   self->err = NULL;
-  self->root = NULL;
 }
 
 /*
@@ -123,10 +123,18 @@ paren_expr(luna_parser_t *self) {
 
 static int
 primary_expr(luna_parser_t *self) {
+  luna_token_t *tok;
   debug("primary_expr");
+
+  // int
+  if (tok = accept(INT)) {
+    luna_int_node_t node;
+    node.val = tok->value.as_int;
+    return 1;
+  }
+
   return accept(ID)
     || accept(STRING)
-    || accept(INT)
     || accept(FLOAT)
     || paren_expr(self);
     ;
@@ -581,6 +589,10 @@ static int
 program(luna_parser_t *self) {
   whitespace(self);
   debug("program");
+  luna_block_node_t block;
+  luna_array_init(&(block.stmts));
+  self->root = block;
+  self->curr = &block;
   while (!accept(EOS)) {
     if (!stmt(self)) return 0;
     whitespace(self);

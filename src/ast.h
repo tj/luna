@@ -17,6 +17,7 @@
 
 #define LUNA_NODE_LIST \
   n(BLOCK) \
+  n(EXPR_STMT) \
   n(RETURN) \
   n(IF) \
   n(FOR) \
@@ -58,5 +59,24 @@ typedef struct {
   luna_node_t base;
   luna_array_t stmts;
 } luna_block_node_t;
+
+/*
+ * Luna binary operation node.
+ */
+
+typedef struct {
+  luna_node_t base;
+  luna_token type;
+  luna_node left;
+  luna_node right;
+} luna_binary_op_node_t;
+
+/*
+ * Luna int node.
+ */
+
+typedef struct {
+  int val;
+} luna_int_node_t;
 
 #endif /* __LUNA_AST__ */
