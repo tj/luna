@@ -5,8 +5,8 @@
 // Copyright (c) 2011 TJ Holowaychuk <tj@vision-media.ca>
 //
 
-#ifndef __LUNA_OBJECT_H__
-#define __LUNA_OBJECT_H__
+#ifndef __LUNA_OBJECT__
+#define __LUNA_OBJECT__
 
 #include "khash.h"
 
@@ -146,4 +146,4 @@ luna_object_has(khash_t(value) *self, char *key);
 void
 luna_object_remove(khash_t(value) *self, char *key);
 
-#endif /* __LUNA_OBJECT_H__ */
+#endif /* __LUNA_OBJECT__ */

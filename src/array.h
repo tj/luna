@@ -5,8 +5,8 @@
 // Copyright (c) 2011 TJ Holowaychuk <tj@vision-media.ca>
 //
 
-#ifndef __LUNA_ARRAY_H__
-#define __LUNA_ARRAY_H__
+#ifndef __LUNA_ARRAY__
+#define __LUNA_ARRAY__
 
 #include "object.h"
 #include "kvec.h"
@@ -72,4 +72,4 @@ typedef kvec_t(luna_value_t *) luna_array_t;
 luna_array_t *
 luna_array_new();
 
-#endif /* __LUNA_ARRAY_H__ */
+#endif /* __LUNA_ARRAY__ */
