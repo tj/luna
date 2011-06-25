@@ -613,7 +613,7 @@ program(luna_parser_t *self) {
   luna_block_node_t *block = luna_block_node_new();
   while (!accept(EOS)) {
     if (node = stmt(self)) {
-      luna_array_push(block->stmts, luna_obj(node));
+      luna_array_push(block->stmts, luna_node(node));
     } else {
       return NULL;
     }

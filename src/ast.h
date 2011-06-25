@@ -9,8 +9,8 @@
 #define __LUNA_AST__
 
 #include "token.h"
-#include "object.h"
 #include "array.h"
+#include "object.h"
 
 /*
  * Nodes.
@@ -41,14 +41,14 @@ typedef enum {
 #define n(node) LUNA_NODE_##node,
 LUNA_NODE_LIST
 #undef t
-} luna_node;
+} luna_node_type;
 
 /*
  * Luna node.
  */
 
 typedef struct {
-  luna_node type;
+  luna_node_type type;
   int lineno;
 } luna_node_t;
 
@@ -67,7 +67,6 @@ typedef struct {
 
 typedef struct {
   luna_node_t base;
-  luna_token type;
   luna_node_t *left;
   luna_node_t *right;
 } luna_binary_op_node_t;
@@ -82,6 +81,9 @@ typedef struct {
 } luna_int_node_t;
 
 // protos
+
+luna_value_t *
+luna_node(luna_node_t *node);
 
 luna_block_node_t *
 luna_block_node_new();
