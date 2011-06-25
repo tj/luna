@@ -5,7 +5,7 @@
 
 ## About
 
- Luna is an expressive, minimalistic, elegant programming language implemented in ANSI C. With reactor based concurrency at it's core, async I/O, and influences derived from languages such as Lua, io, Python, and Ruby. This project is _very_ much a work in progress, as I explore the wonderful world of VMs! feel free to join.
+ Luna is an expressive, minimalistic, elegant programming language implemented in ANSI C. With cooperative thread concurrency at it's core, async I/O, and influences derived from languages such as Lua, io, Python, and Ruby. This project is _very_ much a work in progress, as I explore the wonderful world of VMs! feel free to join.
 
 ## Goals
 
@@ -13,7 +13,6 @@
   - fast, fast, fast and fast
   - prototypal inheritance
   - reflection capabilities
-  - reactor concurrency model (event loop)
   - callee evaluated messages
   - register based VM
   - ...
@@ -41,7 +40,7 @@
   - ◦ garbage collection
   - ◦ optimizations (TCO etc)
   - ◦ linenoise integration for REPL
-  - ◦ libev integration
+  - ◦ pth integration
   - ◦ portability
   - ◦ closures
   - ◦ module system
@@ -78,11 +77,11 @@
 
 ## Dependencies
 
-  All Luna dependencies are bundled within this repository, and includes Marc Lehmann and Emanuele Giaquinta's [libev](http://software.schmorp.de/pkg/libev.html) and [libeio](http://software.schmorp.de/pkg/libeio.html), and Ryan Dahl's high performance [HTTP parser](https://github.com/ry/http-parser).
+  All Luna dependencies are bundled within this repository, GNU Pth and Ryan Dahl's high performance [HTTP parser](https://github.com/ry/http-parser).
 
 ## Inspiration
 
- Luna's inspiration comes from bits of many languages that I have worked work as I aim for the minimalism and performance of [Lua](http://www.lua.org/), elegance of Steve Dekorte's [io](http://www.iolanguage.com/), and bits of syntax inspired by Python (whitespace) and Ruby (low precedence `not`, `**` etc). Luna's reactor is of course, inspired by the fantastic work of Ryan Dahl, and the entire community of [nodejs](http://nodejs.org).
+ Luna's inspiration comes from bits of many languages that I have worked work as I aim for the minimalism and performance of [Lua](http://www.lua.org/), elegance of Steve Dekorte's [io](http://www.iolanguage.com/), and bits of syntax inspired by Python (whitespace) and Ruby (low precedence `not`, `**` etc).
 
 ## Syntax
 
