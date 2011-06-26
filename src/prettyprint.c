@@ -78,6 +78,7 @@ static void
 visit_binary_op(luna_binary_op_node_t *node) {
   printf("(%s ", luna_token_type_string(node->op));
   visit(node->left);
+  printf(" ");
   visit(node->right);
   printf(")\n");
 }
