@@ -80,3 +80,17 @@ luna_string_node_new(const char *val) {
   self->val = val;
   return self;
 }
+
+/*
+ * Alloc and initialize a binary `op` node with `left` and `right` nodes.
+ */
+
+luna_binary_op_node_t *
+luna_binary_op_node_new(luna_token op, luna_node_t *left, luna_node_t *right) {
+  luna_binary_op_node_t *self = malloc(sizeof(luna_binary_op_node_t));
+  self->base.type = LUNA_NODE_BINARY_OP;
+  self->op = op;
+  self->left = left;
+  self->right = right;
+  return self;
+}

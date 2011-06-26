@@ -475,6 +475,13 @@ assignment_expr(luna_parser_t *self) {
   luna_node_t *node;
   debug("assignment_expr");
   if (!(node = logical_or_expr(self))) return NULL;
+
+  if (accept(OP_ASSIGN)) {
+    context("assignment");
+    luna_node_t *right = not_expr(self);
+    if (!right) return NULL;
+    return (luna_node_t *) luna_binary_op_node_new(LUNA_TOKEN_OP_ASSIGN, node, right);
+  }
   // if (accept(OP_ASSIGN) || accept(OP_SLOT_ASSIGN)) {
   //   context("assignment");
   //   if (!not_expr(self)) return 0;

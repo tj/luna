@@ -67,6 +67,7 @@ typedef struct {
  */
 
 typedef struct {
+  luna_token op;
   luna_node_t base;
   luna_node_t *left;
   luna_node_t *right;
@@ -115,6 +116,9 @@ luna_node(luna_node_t *node);
 
 luna_block_node_t *
 luna_block_node_new();
+
+luna_binary_op_node_t *
+luna_binary_op_node_new(luna_token op, luna_node_t *left, luna_node_t *right);
 
 luna_id_node_t *
 luna_id_node_new(const char *val);
