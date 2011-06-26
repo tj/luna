@@ -34,6 +34,7 @@ static void
 visit_block(luna_block_node_t *node) {
   luna_array_each(node->stmts, {
     visit((luna_node_t *) val->value.as_obj);
+    printf("\n");
   });
 }
 
@@ -43,7 +44,7 @@ visit_block(luna_block_node_t *node) {
 
 static void
 visit_int(luna_int_node_t *node) {
-  printf("(int %d)\n", node->val);
+  printf("(int %d)", node->val);
 }
 
 /*
@@ -52,7 +53,7 @@ visit_int(luna_int_node_t *node) {
 
 static void
 visit_float(luna_float_node_t *node) {
-  printf("(float %f)\n", node->val);
+  printf("(float %f)", node->val);
 }
 
 /*
@@ -61,7 +62,7 @@ visit_float(luna_float_node_t *node) {
 
 static void
 visit_id(luna_id_node_t *node) {
-  printf("(id %s)\n", node->val);
+  printf("(id %s)", node->val);
 }
 
 /*
@@ -70,7 +71,15 @@ visit_id(luna_id_node_t *node) {
 
 static void
 visit_string(luna_string_node_t *node) {
-  printf("(string '%s')\n", node->val);
+  printf("(string '%s')", node->val);
+}
+
+static void
+visit_binary_op(luna_binary_op_node_t *node) {
+  printf("(%s ", luna_token_type_string(node->op));
+  visit(node->left);
+  visit(node->right);
+  printf(")\n");
 }
 
 /*
@@ -94,6 +103,9 @@ visit(luna_node_t *node) {
       break;
     case LUNA_NODE_STRING:
       visit_string((luna_string_node_t *) node);
+      break;
+    case LUNA_NODE_BINARY_OP:
+      visit_binary_op((luna_binary_op_node_t *) node);
       break;
   }
 }
