@@ -281,13 +281,19 @@ additive_expr(luna_parser_t *self) {
 
 static luna_node_t *
 shift_expr(luna_parser_t *self) {
-  luna_node_t *node;
+  luna_token op;
+  luna_node_t *node, *right;
   debug("shift_expr");
   if (!(node = additive_expr(self))) return NULL;
-  // while (accept(OP_BIT_SHL) || accept(OP_BIT_SHR)) {
-  //   context("shift operation");
-  //   if (!additive_expr(self)) return error("missing right-hand expression");
-  // }
+  while (accept(OP_BIT_SHL) || accept(OP_BIT_SHR)) {
+    op = prev->type;
+    context("shift operation");
+    if (right = additive_expr(self)) {
+      node = (luna_node_t *) luna_binary_op_node_new(op, node, right);
+    } else {
+      return error("missing right-hand expression");
+    }
+  }
   return node;
 }
 
