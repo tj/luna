@@ -63,6 +63,16 @@ typedef struct {
 } luna_block_node_t;
 
 /*
+ * Luna unary operation node.
+ */
+
+typedef struct {
+  luna_node_t base;
+  luna_token op;
+  luna_node_t *expr;
+} luna_unary_op_node_t;
+
+/*
  * Luna binary operation node.
  */
 
@@ -116,6 +126,9 @@ luna_node(luna_node_t *node);
 
 luna_block_node_t *
 luna_block_node_new();
+
+luna_unary_op_node_t *
+luna_unary_op_node_new(luna_token op, luna_node_t *expr);
 
 luna_binary_op_node_t *
 luna_binary_op_node_new(luna_token op, luna_node_t *left, luna_node_t *right);

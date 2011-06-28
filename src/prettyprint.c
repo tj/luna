@@ -75,6 +75,17 @@ visit_string(luna_string_node_t *node) {
 }
 
 /*
+ * Visit unary op `node`.
+ */
+
+static void
+visit_unary_op(luna_unary_op_node_t *node) {
+  printf("(%s ", luna_token_type_string(node->op));
+  visit(node->expr);
+  printf(")");
+}
+
+/*
  * Visit binary op `node`.
  */
 
@@ -108,6 +119,9 @@ visit(luna_node_t *node) {
       break;
     case LUNA_NODE_STRING:
       visit_string((luna_string_node_t *) node);
+      break;
+    case LUNA_NODE_UNARY_OP:
+      visit_unary_op((luna_unary_op_node_t *) node);
       break;
     case LUNA_NODE_BINARY_OP:
       visit_binary_op((luna_binary_op_node_t *) node);

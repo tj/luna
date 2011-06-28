@@ -82,6 +82,19 @@ luna_string_node_new(const char *val) {
 }
 
 /*
+ * Alloc and initialize a unary `op` node with `expr` node.
+ */
+
+luna_unary_op_node_t *
+luna_unary_op_node_new(luna_token op, luna_node_t *expr) {
+  luna_unary_op_node_t *self = malloc(sizeof(luna_unary_op_node_t));
+  self->base.type = LUNA_NODE_UNARY_OP;
+  self->op = op;
+  self->expr = expr;
+  return self;
+}
+
+/*
  * Alloc and initialize a binary `op` node with `left` and `right` nodes.
  */
 

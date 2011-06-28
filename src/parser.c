@@ -201,15 +201,16 @@ postfix_expr(luna_parser_t *self) {
 
 static luna_node_t *
 unary_expr(luna_parser_t *self) {
-  // debug("unary_expr");
-  // if (accept(OP_INCR)
-  //   || accept(OP_DECR)
-  //   || accept(OP_BIT_NOT)
-  //   || accept(OP_PLUS)
-  //   || accept(OP_MINUS)
-  //   || accept(OP_NOT)) {
-  //   return unary_expr(self);
-  // }
+  debug("unary_expr");
+  switch (peek->type) {
+    case LUNA_TOKEN_OP_INCR:
+    case LUNA_TOKEN_OP_DECR:
+    case LUNA_TOKEN_OP_BIT_NOT:
+    case LUNA_TOKEN_OP_PLUS:
+    case LUNA_TOKEN_OP_MINUS:
+    case LUNA_TOKEN_OP_NOT:
+      return (luna_node_t *) luna_unary_op_node_new(next->type, unary_expr(self));
+  }
   return postfix_expr(self);
 }
 
