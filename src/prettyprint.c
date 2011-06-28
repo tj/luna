@@ -99,6 +99,16 @@ visit_binary_op(luna_binary_op_node_t *node) {
 }
 
 /*
+ * Visit slot `node`.
+ */
+
+static void
+visit_slot(luna_slot_node_t *node) {
+  visit(node->expr);
+  printf(" (slot %s)", node->slot);
+}
+
+/*
  * Visit `node`.
  */
 
@@ -119,6 +129,9 @@ visit(luna_node_t *node) {
       break;
     case LUNA_NODE_STRING:
       visit_string((luna_string_node_t *) node);
+      break;
+    case LUNA_NODE_SLOT:
+      visit_slot((luna_slot_node_t *) node);
       break;
     case LUNA_NODE_UNARY_OP:
       visit_unary_op((luna_unary_op_node_t *) node);
