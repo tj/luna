@@ -170,13 +170,17 @@ primary_expr(luna_parser_t *self) {
 
 static luna_node_t *
 pow_expr(luna_parser_t *self) {
-  luna_node_t *node;
+  luna_node_t *node, *right;
   debug("pow_expr");
   if (!(node = call_expr(self))) return NULL;
-  // if (accept(OP_POW)) {
-  //   context("** operation");
-  //   if (!call_expr(self)) return error("missing right-hand expression");
-  // }
+  if (accept(OP_POW)) {
+    context("** operation");
+    if (right = call_expr(self)) {
+      return (luna_node_t *) luna_binary_op_node_new(LUNA_TOKEN_OP_POW, node, right);
+    } else {
+      return error("missing right-hand expression");
+    }
+  }
   return node;
 }
 
