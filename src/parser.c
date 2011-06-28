@@ -486,8 +486,6 @@ assignment_expr(luna_parser_t *self) {
   debug("assignment_expr");
   if (!(node = logical_or_expr(self))) return NULL;
 
-  // TODO: fix accept()s retval
-  
   if (accept(OP_ASSIGN)) {
     context("assignment");
     luna_node_t *right = not_expr(self);
@@ -663,7 +661,7 @@ luna_parse(luna_parser_t *self) {
 
 // -DEBUG_AST
 #ifdef EBUG_AST
-  luna_prettyprint((luna_node_t *) block);
+  if (block) luna_prettyprint((luna_node_t *) block);
 #endif
 
   return block;
