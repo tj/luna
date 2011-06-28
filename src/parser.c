@@ -347,13 +347,17 @@ equality_expr(luna_parser_t *self) {
 
 static luna_node_t *
 bitwise_and_expr(luna_parser_t *self) {
-  luna_node_t *node;
+  luna_node_t *node, *right;
   debug("bitwise_and_expr");
   if (!(node = equality_expr(self))) return NULL;
-  // while (accept(OP_BIT_AND)) {
-  //   context("& operation");
-  //   if (!equality_expr(self)) return error("missing right-hand expression");
-  // }
+  while (accept(OP_BIT_AND)) {
+    context("& operation");
+    if (right = equality_expr(self)) {
+      node = (luna_node_t *) luna_binary_op_node_new(LUNA_TOKEN_OP_BIT_AND, node, right);
+    } else {
+      return error("missing right-hand expression");
+    }
+  }
   return node;
 }
 
@@ -363,13 +367,17 @@ bitwise_and_expr(luna_parser_t *self) {
 
 static luna_node_t *
 bitwise_xor_expr(luna_parser_t *self) {
-  luna_node_t *node;
+  luna_node_t *node, *right;
   debug("bitwise_xor_expr");
   if (!(node = bitwise_and_expr(self))) return NULL;
-  // while (accept(OP_BIT_XOR)) {
-  //   context("^ operation");
-  //   if (!bitwise_and_expr(self)) return error("missing right-hand expression");
-  // }
+  while (accept(OP_BIT_XOR)) {
+    context("^ operation");
+    if (right = bitwise_and_expr(self)) {
+      node = (luna_node_t *) luna_binary_op_node_new(LUNA_TOKEN_OP_BIT_XOR, node, right);
+    } else {
+      return error("missing right-hand expression");
+    }
+  }
   return node;
 }
 
