@@ -35,6 +35,7 @@ visit_block(luna_block_node_t *node) {
   luna_array_each(node->stmts, {
     visit((luna_node_t *) val->value.as_obj);
     printf("\n");
+    for (int j = 0; j < indents; ++j) printf("  ");
   });
 }
 
@@ -108,10 +109,16 @@ visit_slot(luna_slot_node_t *node) {
   printf(" (slot %s)", node->slot);
 }
 
+/*
+ * Visit function `node`.
+ */
+
 static void
 visit_function(luna_function_node_t * node) {
   printf("(function");
+  ++indents;
   visit((luna_node_t *) node->block);
+  --indents;
   printf(")");
 }
 
