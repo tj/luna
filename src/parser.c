@@ -463,16 +463,19 @@ logical_or_expr(luna_parser_t *self) {
  * ':' params? block
  */
 
-// static int
-// function_expr(luna_parser_t *self) {
-//   debug("function_expr");
-//   if (accept(COLON)) {
-//     if (is(ID)) if (!params(self)) return 0;
-//     context("function literal");
-//     if (block(self)) return 1;
-//   };
-//   return 0;
-// }
+static luna_node_t *
+function_expr(luna_parser_t *self) {
+  luna_block_node_t *body;
+  debug("function_expr");
+  if (accept(COLON)) {
+    // if (is(ID)) if (!params(self)) return 0;
+    context("function literal");
+    if (body = block(self)) {
+      return (luna_node_t *) luna_function_node_new(body);
+    }
+  }
+  return NULL;
+}
 
 /*
  * (primary_expr | function_expr) id* function_expr?
@@ -482,16 +485,19 @@ static luna_node_t *
 slot_access_expr(luna_parser_t * self) {
   luna_node_t *node;
   debug("slot_access_expr");
-  if (!(node = primary_expr(self))) return NULL;
-  // if (!(primary_expr(self) || function_expr(self))) return 0;
+
+  // primary_expr | function_expr
+  if (node = primary_expr(self)) return node;
+  if (node = function_expr(self)) return node;
 
   // id*
   while (accept(ID)) {
     node = (luna_node_t *) luna_slot_node_new(node, prev->value.as_string);
   }
-  // if (is(COLON)) {
-  //   if (!function_expr(self)) return 0;
-  // }
+
+  // function_expr?
+  if (is(COLON)) return function_expr(self);
+
   return node;
 }
 
@@ -670,17 +676,23 @@ stmt(luna_parser_t *self) {
  * INDENT ws (stmt ws)+ OUTDENT
  */
 
-// static int
-// block(luna_parser_t *self) {
-//   debug("block");
-//   if (!accept(INDENT)) return error("block expected");
-//   whitespace(self);
-//   do {
-//     if (!stmt(self)) return 0;
-//     whitespace(self);
-//   } while (!accept(OUTDENT));
-//   return 1;
-// }
+static luna_block_node_t *
+block(luna_parser_t *self) {
+  debug("block");
+  luna_node_t *node;
+  luna_block_node_t *block = luna_block_node_new();
+  if (!accept(INDENT)) return error("block expected");
+  whitespace(self);
+  do {
+    if (node = stmt(self)) {
+      luna_array_push(block->stmts, luna_node(node));
+    } else {
+      return NULL;
+    }
+    whitespace(self);
+  } while (!accept(OUTDENT));
+  return block;
+}
 
 /*
  * ws (stmt ws)*
@@ -688,9 +700,9 @@ stmt(luna_parser_t *self) {
 
 static luna_block_node_t *
 program(luna_parser_t *self) {
+  debug("program");
   luna_node_t *node;
   whitespace(self);
-  debug("program");
   luna_block_node_t *block = luna_block_node_new();
   while (!accept(EOS)) {
     if (node = stmt(self)) {

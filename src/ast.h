@@ -130,6 +130,11 @@ typedef struct {
   const char *val;
 } luna_string_node_t;
 
+typedef struct {
+  luna_node_t base;
+  luna_block_node_t *block;
+} luna_function_node_t;
+
 // protos
 
 luna_value_t *
@@ -137,6 +142,9 @@ luna_node(luna_node_t *node);
 
 luna_block_node_t *
 luna_block_node_new();
+
+luna_function_node_t *
+luna_function_node_new(luna_block_node_t *block);
 
 luna_slot_node_t *
 luna_slot_node_new(luna_node_t *expr, const char *slot);
