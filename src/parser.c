@@ -137,29 +137,17 @@ paren_expr(luna_parser_t *self) {
 
 static luna_node_t *
 primary_expr(luna_parser_t *self) {
-  luna_token_t *tok;
   debug("primary_expr");
-
-  // id
-  if (tok = accept(ID)) {
-    return (luna_node_t *) luna_id_node_new(tok->value.as_string);
+  switch (peek->type) {
+    case LUNA_TOKEN_ID:
+      return (luna_node_t *) luna_id_node_new(next->value.as_string);
+    case LUNA_TOKEN_INT:
+      return (luna_node_t *) luna_int_node_new(next->value.as_int);
+    case LUNA_TOKEN_FLOAT:
+      return (luna_node_t *) luna_float_node_new(next->value.as_float);
+    case LUNA_TOKEN_STRING:
+      return (luna_node_t *) luna_string_node_new(next->value.as_string);
   }
-
-  // int
-  if (tok = accept(INT)) {
-    return (luna_node_t *) luna_int_node_new(tok->value.as_int);
-  }
-
-  // float
-  if (tok = accept(FLOAT)) {
-    return (luna_node_t *) luna_float_node_new(tok->value.as_float);
-  }
-
-  // string
-  if (tok = accept(STRING)) {
-    return (luna_node_t *) luna_string_node_new(tok->value.as_string);
-  }
-
   return paren_expr(self);
 }
 
