@@ -44,6 +44,12 @@
 #define advance (luna_scan(self->lex), &self->lex->tok)
 
 /*
+ * Previous token look-behind.
+ */
+
+#define prev (&self->lb)
+
+/*
  * Return the next token, previously peeked token.
  */
 
@@ -252,13 +258,19 @@ concat_expr(luna_parser_t *self) {
 
 static luna_node_t *
 additive_expr(luna_parser_t *self) {
-  luna_node_t *node;
+  luna_token op;
+  luna_node_t *node, *right;
   debug("additive_expr");
   if (!(node = concat_expr(self))) return NULL;
-  // while (accept(OP_PLUS) || accept(OP_MINUS)) {
-  //   context("additive operation");
-  //   if (!concat_expr(self)) return error("missing right-hand expression");
-  // }
+  while (accept(OP_PLUS) || accept(OP_MINUS)) {
+    op = prev->type;
+    context("additive operation");
+    if (right = concat_expr(self)) {
+      node = (luna_node_t *) luna_binary_op_node_new(op, node, right);
+    } else {
+      return error("missing right-hand expression");
+    }
+  }
   return node;
 }
 
