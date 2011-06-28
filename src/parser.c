@@ -387,13 +387,17 @@ bitwise_xor_expr(luna_parser_t *self) {
 
 static luna_node_t *
 bitwise_or_expr(luna_parser_t *self) {
-  luna_node_t *node;
+  luna_node_t *node, *right;
   debug("bitwise_or_expr");
   if (!(node = bitwise_xor_expr(self))) return NULL;
-  // while (accept(OP_BIT_OR)) {
-  //   context("| operation");
-  //   if (!bitwise_xor_expr(self)) return error("missing right-hand expression");
-  // }
+  while (accept(OP_BIT_OR)) {
+    context("| operation");
+    if (right = bitwise_xor_expr(self)) {
+      node = (luna_node_t *) luna_binary_op_node_new(LUNA_TOKEN_OP_BIT_OR, node, right);
+    } else {
+      return error("missing right-hand expression");
+    }
+  }
   return node;
 }
 
