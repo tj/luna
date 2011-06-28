@@ -226,13 +226,19 @@ unary_expr(luna_parser_t *self) {
 
 static luna_node_t *
 multiplicative_expr(luna_parser_t *self) {
-  luna_node_t *node;
+  luna_token op;
+  luna_node_t *node, *right;
   debug("multiplicative_expr");
   if (!(node = unary_expr(self))) return NULL;
-  // while (accept(OP_MULT) || accept(OP_DIV) || accept(OP_MOD)) {
-  //   context("multiplicative operation");
-  //   if (!unary_expr(self)) return error("missing right-hand expression");
-  // }
+  while (accept(OP_MULT) || accept(OP_DIV) || accept(OP_MOD)) {
+    op = prev->type;
+    context("multiplicative operation");
+    if (right = unary_expr(self)) {
+      node = (luna_node_t *) luna_binary_op_node_new(op, node, right);
+    } else {
+      return error("missing right-hand expression");
+    }
+  }
   return node;
 }
 
