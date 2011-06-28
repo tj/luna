@@ -540,15 +540,16 @@ call_expr(luna_parser_t *self) {
 
 static luna_node_t *
 assignment_expr(luna_parser_t *self) {
-  luna_node_t *node;
+  luna_token op;
+  luna_node_t *node, *right;
   debug("assignment_expr");
   if (!(node = logical_or_expr(self))) return NULL;
 
   if (accept(OP_ASSIGN) || accept(OP_SLOT_ASSIGN)) {
+    op = prev->type;
     context("assignment");
-    luna_node_t *right = not_expr(self);
-    if (!right) return NULL;
-    return (luna_node_t *) luna_binary_op_node_new(prev->type, node, right);
+    if (!(right = not_expr(self))) return NULL;
+    return (luna_node_t *) luna_binary_op_node_new(op, node, right);
   }
 
   return node;
