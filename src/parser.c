@@ -10,6 +10,8 @@
 #include "parser.h"
 #include "array.h"
 
+// TODO: test contextual errors
+
 // -DEBUG_PARSER
 
 #ifdef EBUG_PARSER
@@ -538,18 +540,11 @@ assignment_expr(luna_parser_t *self) {
   debug("assignment_expr");
   if (!(node = logical_or_expr(self))) return NULL;
 
-  if (accept(OP_ASSIGN)) {
+  if (accept(OP_ASSIGN) || accept(OP_SLOT_ASSIGN)) {
     context("assignment");
     luna_node_t *right = not_expr(self);
     if (!right) return NULL;
-    return (luna_node_t *) luna_binary_op_node_new(LUNA_TOKEN_OP_ASSIGN, node, right);
-  }
-
-  if (accept(OP_SLOT_ASSIGN)) {
-    context("slot assignment");
-    luna_node_t *right = not_expr(self);
-    if (!right) return NULL;
-    return (luna_node_t *) luna_binary_op_node_new(LUNA_TOKEN_OP_SLOT_ASSIGN, node, right);
+    return (luna_node_t *) luna_binary_op_node_new(prev->type, node, right);
   }
 
   return node;
