@@ -82,6 +82,19 @@ luna_string_node_new(const char *val) {
 }
 
 /*
+ * Alloc and initialize slot access node with `expr` and `slot` name.
+ */
+
+luna_slot_node_t *
+luna_slot_node_new(luna_node_t *expr, const char *slot) {
+  luna_slot_node_t *self = malloc(sizeof(luna_slot_node_t));
+  self->base.type = LUNA_NODE_SLOT;
+  self->expr = expr;
+  self->slot = slot;
+  return self;
+}
+
+/*
  * Alloc and initialize a unary `op` node with `expr` node.
  */
 

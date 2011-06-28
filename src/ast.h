@@ -31,7 +31,8 @@
   n(INT) \
   n(FLOAT) \
   n(STRING) \
-  n(FUNCTION)
+  n(FUNCTION) \
+  n(SLOT)
 
 
 /*
@@ -61,6 +62,16 @@ typedef struct {
   luna_node_t base;
   luna_array_t *stmts;
 } luna_block_node_t;
+
+/*
+ * Luna slot access node.
+ */
+
+typedef struct {
+  luna_node_t base;
+  luna_node_t *expr;
+  const char *slot;
+} luna_slot_node_t;
 
 /*
  * Luna unary operation node.
@@ -126,6 +137,9 @@ luna_node(luna_node_t *node);
 
 luna_block_node_t *
 luna_block_node_new();
+
+luna_slot_node_t *
+luna_slot_node_new(luna_node_t *expr, const char *slot);
 
 luna_unary_op_node_t *
 luna_unary_op_node_new(luna_token op, luna_node_t *expr);
