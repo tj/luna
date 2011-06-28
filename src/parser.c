@@ -325,13 +325,19 @@ relational_expr(luna_parser_t *self) {
 
 static luna_node_t *
 equality_expr(luna_parser_t *self) {
-  luna_node_t *node;
+  luna_token op;
+  luna_node_t *node, *right;
   debug("equality_expr");
   if (!(node = relational_expr(self))) return NULL;
-  // while (accept(OP_EQ) || accept(OP_NEQ)) {
-  //   context("equality operation");
-  //   if (!relational_expr(self)) return error("missing right-hand expression");
-  // }
+  while (accept(OP_EQ) || accept(OP_NEQ)) {
+    op = prev->type;
+    context("equality operation");
+    if (node = relational_expr(self)) {
+      node = (luna_node_t *) luna_binary_op_node_new(op, node, right);
+    } else {
+      return error("missing right-hand expression");
+    }
+  }
   return node;
 }
 
