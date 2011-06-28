@@ -303,13 +303,19 @@ shift_expr(luna_parser_t *self) {
 
 static luna_node_t *
 relational_expr(luna_parser_t *self) {
-  luna_node_t *node;
+  luna_token op;
+  luna_node_t *node, *right;
   debug("relational_expr");
   if (!(node = shift_expr(self))) return NULL;
-  // while (accept(OP_LT) || accept(OP_LTE) || accept(OP_GT) || accept(OP_GTE)) {
-  //   context("relational operation");
-  //   if (!shift_expr(self)) return error("missing right-hand expression");
-  // }
+  while (accept(OP_LT) || accept(OP_LTE) || accept(OP_GT) || accept(OP_GTE)) {
+    op = prev->type;
+    context("relational operation");
+    if (right = shift_expr(self)) {
+      node = (luna_node_t *) luna_binary_op_node_new(op, node, right);
+    } else {
+      return error("missing right-hand expression");
+    }
+  }
   return node;
 }
 
