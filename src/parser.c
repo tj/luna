@@ -27,12 +27,13 @@
 #ifdef EBUG_PARSER
 #define accept(t) \
   (peek->type == LUNA_TOKEN_##t \
-    ? (fprintf(stderr, "\033[90maccepted \033[33m%s\033[0m\n", #t), next) \
+    ? (fprintf(stderr, "\033[90maccepted \033[33m%s\033[0m\n", #t), \
+      (self->lb = *self->la, self->la = NULL, &self->lb)) \
     : 0)
 #else
 #define accept(t) \
   (peek->type == LUNA_TOKEN_##t \
-    ? next \
+    ? (self->lb = *self->la, self->la = NULL, &self->lb) \
     : 0)
 #endif
 
@@ -40,13 +41,22 @@
  * Return the next token.
  */
 
-#define next (luna_scan(self->lex), &self->lex->tok)
+#define advance (luna_scan(self->lex), &self->lex->tok)
+
+/*
+ * Return the next token, previously peeked token.
+ */
+
+#define next \
+  (self->la \
+    ? (self->tmp = self->la, self->la = NULL, self->tmp) \
+    : advance)
 
 /*
  * Single token look-ahead.
  */
 
-#define peek (self->la ? self->la : (self->la = next))
+#define peek (self->la ? self->la : (self->la = advance))
 
 /*
  * Check if the next token is `t`.
