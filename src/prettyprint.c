@@ -17,6 +17,10 @@ static int indents = 0;
 
 static void visit(luna_node_t *node);
 
+// output indentation
+
+#define INDENT for (int j = 0; j < indents; ++j) printf("  ")
+
 /*
  * Pretty-print the given `node` to stdout.
  */
@@ -34,9 +38,8 @@ luna_prettyprint(luna_node_t *node) {
 static void
 visit_block(luna_block_node_t *node) {
   luna_array_each(node->stmts, {
-    // TODO: move
     if (i) printf("\n");
-    for (int j = 0; j < indents; ++j) printf("  ");
+    INDENT;
     visit((luna_node_t *) val->value.as_obj);
   });
 }
@@ -119,12 +122,14 @@ static void
 visit_call(luna_call_node_t * node) {
   printf("(call\n");
   ++indents;
-  printf("  ");
+  INDENT;
   visit((luna_node_t *) node->expr);
-  printf("  ");
   if (node->args) {
+    printf("\n");
+    INDENT;
     luna_array_each(node->args, {
       visit((luna_node_t *) val->value.as_obj);
+      if (i != len - 1) printf(" ");
     });
   }
   --indents;
