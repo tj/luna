@@ -486,7 +486,7 @@ function_expr(luna_parser_t *self) {
 }
 
 /*
- * (primary_expr | function_expr) id* 
+ * (primary_expr | function_expr) call_expr*
  */
 
 static luna_node_t *
@@ -500,8 +500,10 @@ slot_access_expr(luna_parser_t * self) {
   if (!node) return NULL;
 
   // id*
-  while (accept(ID)) {
-    node = (luna_node_t *) luna_slot_node_new(node, prev->value.as_string);
+  while (is(ID)) {
+    luna_node_t *slot = call_expr(self);
+    if (!slot) return NULL;
+    node = (luna_node_t *) luna_slot_node_new(node, slot);
   }
 
   return node;

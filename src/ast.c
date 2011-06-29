@@ -96,11 +96,11 @@ luna_call_node_new(luna_node_t *expr) {
 }
 
 /*
- * Alloc and initialize slot access node with `expr` and `slot` name.
+ * Alloc and initialize slot access node with `expr` and `slot`.
  */
 
 luna_slot_node_t *
-luna_slot_node_new(luna_node_t *expr, const char *slot) {
+luna_slot_node_new(luna_node_t *expr, luna_node_t *slot) {
   luna_slot_node_t *self = malloc(sizeof(luna_slot_node_t));
   self->base.type = LUNA_NODE_SLOT;
   self->expr = expr;

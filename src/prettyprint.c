@@ -110,8 +110,15 @@ visit_binary_op(luna_binary_op_node_t *node) {
 
 static void
 visit_slot(luna_slot_node_t *node) {
+  printf("(slot\n");
+  ++indents;
+  INDENT;
   visit(node->expr);
-  printf(" (slot %s)", node->slot);
+  printf("\n");
+  INDENT;
+  visit(node->slot);
+  --indents;
+  printf(")");
 }
 
 /*
