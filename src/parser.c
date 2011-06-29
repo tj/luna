@@ -447,17 +447,24 @@ logical_or_expr(luna_parser_t *self) {
  * (id (',' id)*)
  */
 
-// static int
-// params(luna_parser_t *self) {
-//   debug("params");
-//   context("function params");
-//   do {
-//     if (!accept(ID)) {
-//       return error("missing identifier");
-//     };
-//   } while (accept(COMMA));
-//   return 1;
-// }
+static luna_array_t *
+function_params(luna_parser_t *self) {
+  luna_array_t *params = luna_array_new();
+  debug("params");
+  context("function params");
+  if (accept(ID)) {
+    luna_array_push(params, luna_node((luna_node_t *) luna_id_node_new(prev->value.as_string)));
+    while (accept(COMMA)) {
+      if (accept(ID)) {
+        // TODO: use string api
+        luna_array_push(params, luna_node((luna_node_t *) luna_id_node_new(prev->value.as_string)));
+      } else {
+        return error("missing identifier");
+      };
+    }
+  }
+  return params;
+}
 
 /*
  * ':' params? block
@@ -466,10 +473,10 @@ logical_or_expr(luna_parser_t *self) {
 static luna_node_t *
 function_expr(luna_parser_t *self) {
   luna_block_node_t *body;
-  luna_array_t *params = luna_array_new();
+  luna_array_t *params;
   debug("function_expr");
   if (accept(COLON)) {
-    // if (is(ID)) if (!params(self)) return 0;
+    if (!(params = function_params(self))) return NULL;
     context("function literal");
     if (body = block(self)) {
       return (luna_node_t *) luna_function_node_new(body, params);
