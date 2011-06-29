@@ -5,6 +5,7 @@
 // Copyright (c) 2011 TJ Holowaychuk <tj@vision-media.ca>
 //
 
+#include "array.h"
 #include "ast.h"
 
 // TODO: error handling
@@ -78,6 +79,15 @@ luna_string_node_new(const char *val) {
   luna_string_node_t *self = malloc(sizeof(luna_string_node_t));
   self->base.type = LUNA_NODE_STRING;
   self->val = val;
+  return self;
+}
+
+luna_call_node_t *
+luna_call_node_new(luna_node_t *expr) {
+  luna_call_node_t *self = malloc(sizeof(luna_call_node_t));
+  self->base.type = LUNA_NODE_CALL;
+  self->expr = expr;
+  self->args = luna_array_new();
   return self;
 }
 

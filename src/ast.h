@@ -28,6 +28,7 @@
   n(BOOL) \
   n(NULL) \
   n(ID) \
+  n(CALL) \
   n(INT) \
   n(FLOAT) \
   n(STRING) \
@@ -130,6 +131,20 @@ typedef struct {
   const char *val;
 } luna_string_node_t;
 
+/*
+ * Luna call node.
+ */
+
+typedef struct {
+  luna_node_t base;
+  luna_node_t *expr;
+  luna_array_t *args;
+} luna_call_node_t;
+
+/*
+ * Luna function node.
+ */
+
 typedef struct {
   luna_node_t base;
   luna_block_node_t *block;
@@ -149,6 +164,9 @@ luna_function_node_new(luna_block_node_t *block, luna_array_t *params);
 
 luna_slot_node_t *
 luna_slot_node_new(luna_node_t *expr, const char *slot);
+
+luna_call_node_t *
+luna_call_node_new(luna_node_t *expr);
 
 luna_unary_op_node_t *
 luna_unary_op_node_new(luna_token op, luna_node_t *expr);
