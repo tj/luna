@@ -91,7 +91,7 @@ luna_call_node_new(luna_node_t *expr) {
   luna_call_node_t *self = malloc(sizeof(luna_call_node_t));
   self->base.type = LUNA_NODE_CALL;
   self->expr = expr;
-  self->args = luna_array_new();
+  self->args = NULL;
   return self;
 }
 

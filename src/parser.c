@@ -513,15 +513,21 @@ slot_access_expr(luna_parser_t * self) {
  * (expr (',' expr)*)
  */
 
-// static int
-// args(luna_parser_t *self) {
-//   debug("args");
-//   context("function arguments");
-//   do {
-//     if (!expr(self)) return 0;
-//   } while (accept(COMMA));
-//   return 1;
-// }
+static luna_array_t *
+call_args(luna_parser_t *self) {
+  luna_node_t *node;
+  luna_array_t *args = luna_array_new();
+  debug("args");
+  context("function arguments");
+  do {
+    if (node = expr(self)) {
+      luna_array_push(args, luna_node(node));
+    } else {
+      return NULL;
+    }
+  } while (accept(COMMA));
+  return args;
+}
 
 /*
  *   slot_access_expr '(' args? ')' function_expr?
@@ -533,11 +539,16 @@ call_expr(luna_parser_t *self) {
   luna_node_t *node;
   debug("call_expr");
   if (!(node = slot_access_expr(self))) return NULL;
+
   if (accept(LPAREN)) {
+    context("function call");
     luna_call_node_t *call = luna_call_node_new(node);
+    if (accept(RPAREN)) return (luna_node_t *) call;
+    call->args = call_args(self);
     if (!accept(RPAREN)) return error("missing closing ')'");
     return (luna_node_t *) call;
   }
+
   // if (accept(LPAREN)) {
   //   if (accept(RPAREN)) goto tail;
   //   if (!args(self)) return 0;
