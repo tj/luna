@@ -70,8 +70,8 @@ typedef struct {
 
 typedef struct {
   luna_node_t base;
-  luna_node_t *expr;
-  luna_node_t *slot;
+  luna_node_t *left;
+  luna_node_t *right;
 } luna_slot_node_t;
 
 /*
@@ -163,7 +163,7 @@ luna_function_node_t *
 luna_function_node_new(luna_block_node_t *block, luna_array_t *params);
 
 luna_slot_node_t *
-luna_slot_node_new(luna_node_t *expr, luna_node_t *slot);
+luna_slot_node_new(luna_node_t *left, luna_node_t *right);
 
 luna_call_node_t *
 luna_call_node_new(luna_node_t *expr);
