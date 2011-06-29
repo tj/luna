@@ -466,12 +466,13 @@ logical_or_expr(luna_parser_t *self) {
 static luna_node_t *
 function_expr(luna_parser_t *self) {
   luna_block_node_t *body;
+  luna_array_t *params = luna_array_new();
   debug("function_expr");
   if (accept(COLON)) {
     // if (is(ID)) if (!params(self)) return 0;
     context("function literal");
     if (body = block(self)) {
-      return (luna_node_t *) luna_function_node_new(body);
+      return (luna_node_t *) luna_function_node_new(body, params);
     }
   }
   return NULL;

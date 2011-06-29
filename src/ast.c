@@ -126,9 +126,10 @@ luna_binary_op_node_new(luna_token op, luna_node_t *left, luna_node_t *right) {
  */
 
 luna_function_node_t *
-luna_function_node_new(luna_block_node_t *block) {
+luna_function_node_new(luna_block_node_t *block, luna_array_t *params) {
   luna_function_node_t *self = malloc(sizeof(luna_function_node_t));
   self->base.type = LUNA_NODE_FUNCTION;
+  self->params = params;
   self->block = block;
   return self;
 }
