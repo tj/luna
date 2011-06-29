@@ -34,7 +34,7 @@
   - ✔ lexer
   - ✔ parser
   - ✔ test suite
-  - ◦ ast
+  - ✔ ast
   - ◦ opcode generation
   - ◦ virtual machine
   - ◦ C public/internal apis
