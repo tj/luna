@@ -6,11 +6,11 @@
 //
 
 #include <stdio.h>
+#include "prettyprint.h"
 #include "parser.h"
+#include "array.h"
 
-// TODO: emit for codegen
-// TODO: -DEBUG_PARSER output for accept() etc
-// TODO: contextual errors
+// TODO: test contextual errors
 
 // -DEBUG_PARSER
 
@@ -29,12 +29,13 @@
 #ifdef EBUG_PARSER
 #define accept(t) \
   (peek->type == LUNA_TOKEN_##t \
-    ? (fprintf(stderr, "\033[90maccepted \033[33m%s\033[0m\n", #t), next) \
+    ? (fprintf(stderr, "\033[90maccepted \033[33m%s\033[0m\n", #t), \
+      (self->lb = *self->la, self->la = NULL, &self->lb)) \
     : 0)
 #else
 #define accept(t) \
   (peek->type == LUNA_TOKEN_##t \
-    ? next \
+    ? (self->lb = *self->la, self->la = NULL, &self->lb) \
     : 0)
 #endif
 
@@ -42,13 +43,28 @@
  * Return the next token.
  */
 
-#define next (luna_scan(self->lex), &self->lex->tok)
+#define advance (luna_scan(self->lex), &self->lex->tok)
+
+/*
+ * Previous token look-behind.
+ */
+
+#define prev (&self->lb)
+
+/*
+ * Return the next token, previously peeked token.
+ */
+
+#define next \
+  (self->la \
+    ? (self->tmp = self->la, self->la = NULL, self->tmp) \
+    : advance)
 
 /*
  * Single token look-ahead.
  */
 
-#define peek (self->la ? self->la : (self->la = next))
+#define peek (self->la ? self->la : (self->la = advance))
 
 /*
  * Check if the next token is `t`.
@@ -69,14 +85,14 @@
 #define error(str) \
   ((self->err = self->err \
     ? self->err \
-    : str), 0)
+    : str), NULL)
 
 // forward declarations
 
-static int block(luna_parser_t *self);
-static int expr(luna_parser_t *self);
-static int call_expr(luna_parser_t *self);
-static int not_expr(luna_parser_t *self);
+static luna_block_node_t * block(luna_parser_t *self);
+static luna_node_t * expr(luna_parser_t *self);
+static luna_node_t *call_expr(luna_parser_t *self);
+static luna_node_t *not_expr(luna_parser_t *self);
 
 /*
  * Initialize with the given lexer.
@@ -103,32 +119,38 @@ whitespace(luna_parser_t *self) {
  * '(' expr ')'
  */
 
-static int
+static luna_node_t *
 paren_expr(luna_parser_t *self) {
+  luna_node_t *node;
   debug("paren_expr");
-  if (!accept(LPAREN)) return 0;
-  if (!expr(self)) return 0;
+  if (!accept(LPAREN)) return NULL;
+  if (!(node = expr(self))) return NULL;
   if (!accept(RPAREN)) return error("expression missing closing ')'");
-  return 1;
+  return node;
 }
 
 /*
  *   id
- * | string
  * | int
  * | float
+ * | string
  * | paren_expr
  */
 
-static int
+static luna_node_t *
 primary_expr(luna_parser_t *self) {
   debug("primary_expr");
-  return accept(ID)
-    || accept(STRING)
-    || accept(INT)
-    || accept(FLOAT)
-    || paren_expr(self);
-    ;
+  switch (peek->type) {
+    case LUNA_TOKEN_ID:
+      return (luna_node_t *) luna_id_node_new(next->value.as_string);
+    case LUNA_TOKEN_INT:
+      return (luna_node_t *) luna_int_node_new(next->value.as_int);
+    case LUNA_TOKEN_FLOAT:
+      return (luna_node_t *) luna_float_node_new(next->value.as_float);
+    case LUNA_TOKEN_STRING:
+      return (luna_node_t *) luna_string_node_new(next->value.as_string);
+  }
+  return paren_expr(self);
 }
 
 /*
@@ -136,15 +158,20 @@ primary_expr(luna_parser_t *self) {
  * | call_expr '**' call_expr
  */
 
-static int
+static luna_node_t *
 pow_expr(luna_parser_t *self) {
+  luna_node_t *node, *right;
   debug("pow_expr");
-  if (!call_expr(self)) return 0;
+  if (!(node = call_expr(self))) return NULL;
   if (accept(OP_POW)) {
     context("** operation");
-    if (!call_expr(self)) return error("missing right-hand expression");
+    if (right = call_expr(self)) {
+      return (luna_node_t *) luna_binary_op_node_new(LUNA_TOKEN_OP_POW, node, right);
+    } else {
+      return error("missing right-hand expression");
+    }
   }
-  return 1;
+  return node;
 }
 
 /*
@@ -153,12 +180,13 @@ pow_expr(luna_parser_t *self) {
  * | pow_expr '--'
  */
 
-static int
+static luna_node_t *
 postfix_expr(luna_parser_t *self) {
+  luna_node_t *node;
   debug("postfix_expr");
-  if (!pow_expr(self)) return 0;
-  if (accept(OP_INCR) || accept(OP_DECR)) ;
-  return 1;
+  if (!(node = pow_expr(self))) return NULL;
+  // if (accept(OP_INCR) || accept(OP_DECR)) ;
+  return node;
 }
 
 /*
@@ -171,7 +199,7 @@ postfix_expr(luna_parser_t *self) {
  * | primary_expr
  */
 
-static int
+static luna_node_t *
 unary_expr(luna_parser_t *self) {
   debug("unary_expr");
   if (accept(OP_INCR)
@@ -180,7 +208,7 @@ unary_expr(luna_parser_t *self) {
     || accept(OP_PLUS)
     || accept(OP_MINUS)
     || accept(OP_NOT)) {
-    return unary_expr(self);
+    return (luna_node_t *) luna_unary_op_node_new(prev->type, unary_expr(self));
   }
   return postfix_expr(self);
 }
@@ -189,247 +217,357 @@ unary_expr(luna_parser_t *self) {
  * unary_expr (('* | '/' | '%') unary_expr)*
  */
 
-static int
+static luna_node_t *
 multiplicative_expr(luna_parser_t *self) {
+  luna_token op;
+  luna_node_t *node, *right;
   debug("multiplicative_expr");
-  if (!unary_expr(self)) return 0;
+  if (!(node = unary_expr(self))) return NULL;
   while (accept(OP_MULT) || accept(OP_DIV) || accept(OP_MOD)) {
+    op = prev->type;
     context("multiplicative operation");
-    if (!unary_expr(self)) return error("missing right-hand expression");
+    if (right = unary_expr(self)) {
+      node = (luna_node_t *) luna_binary_op_node_new(op, node, right);
+    } else {
+      return error("missing right-hand expression");
+    }
   }
-  return 1;
+  return node;
 }
 
 /*
- * multiplicative_expr (('+ | '-') multiplicative_expr)*
+ * multiplicative_expr ('.' multiplicative_expr)*
  */
 
-static int
+static luna_node_t *
 concat_expr(luna_parser_t *self) {
+  luna_node_t *node, *right;
   debug("concat_expr");
-  if (!multiplicative_expr(self)) return 0;
+  if (!(node = multiplicative_expr(self))) return NULL;
   while (accept(OP_DOT)) {
     context("concatenation operation");
-    if (!multiplicative_expr(self)) return error("missing right-hand expression");
+    if (right = multiplicative_expr(self)) {
+      node = (luna_node_t *) luna_binary_op_node_new(LUNA_TOKEN_OP_DOT, node, right);
+    } else {
+      return error("missing right-hand expression");
+    }
   }
-  return 1;
+  return node;
 }
 
 /*
  * concat_expr (('+ | '-') concat_expr)*
  */
 
-static int
+static luna_node_t *
 additive_expr(luna_parser_t *self) {
+  luna_token op;
+  luna_node_t *node, *right;
   debug("additive_expr");
-  if (!concat_expr(self)) return 0;
+  if (!(node = concat_expr(self))) return NULL;
   while (accept(OP_PLUS) || accept(OP_MINUS)) {
+    op = prev->type;
     context("additive operation");
-    if (!concat_expr(self)) return error("missing right-hand expression");
+    if (right = concat_expr(self)) {
+      node = (luna_node_t *) luna_binary_op_node_new(op, node, right);
+    } else {
+      return error("missing right-hand expression");
+    }
   }
-  return 1;
+  return node;
 }
 
 /*
  * additive_expr (('<<' | '>>') additive_expr)*
  */
 
-static int
+static luna_node_t *
 shift_expr(luna_parser_t *self) {
+  luna_token op;
+  luna_node_t *node, *right;
   debug("shift_expr");
-  if (!additive_expr(self)) return 0;
+  if (!(node = additive_expr(self))) return NULL;
   while (accept(OP_BIT_SHL) || accept(OP_BIT_SHR)) {
+    op = prev->type;
     context("shift operation");
-    if (!additive_expr(self)) return error("missing right-hand expression");
+    if (right = additive_expr(self)) {
+      node = (luna_node_t *) luna_binary_op_node_new(op, node, right);
+    } else {
+      return error("missing right-hand expression");
+    }
   }
-  return 1;
+  return node;
 }
 
 /*
  * shift_expr (('<' | '<=' | '>' | '>=') shift_expr)*
  */
 
-static int
+static luna_node_t *
 relational_expr(luna_parser_t *self) {
+  luna_token op;
+  luna_node_t *node, *right;
   debug("relational_expr");
-  if (!shift_expr(self)) return 0;
+  if (!(node = shift_expr(self))) return NULL;
   while (accept(OP_LT) || accept(OP_LTE) || accept(OP_GT) || accept(OP_GTE)) {
+    op = prev->type;
     context("relational operation");
-    if (!shift_expr(self)) return error("missing right-hand expression");
+    if (right = shift_expr(self)) {
+      node = (luna_node_t *) luna_binary_op_node_new(op, node, right);
+    } else {
+      return error("missing right-hand expression");
+    }
   }
-  return 1;
+  return node;
 }
 
 /*
  * relational_expr (('==' | '!=') relational_expr)*
  */
 
-static int
+static luna_node_t *
 equality_expr(luna_parser_t *self) {
+  luna_token op;
+  luna_node_t *node, *right;
   debug("equality_expr");
-  if (!relational_expr(self)) return 0;
+  if (!(node = relational_expr(self))) return NULL;
   while (accept(OP_EQ) || accept(OP_NEQ)) {
+    op = prev->type;
     context("equality operation");
-    if (!relational_expr(self)) return error("missing right-hand expression");
+    if (node = relational_expr(self)) {
+      node = (luna_node_t *) luna_binary_op_node_new(op, node, right);
+    } else {
+      return error("missing right-hand expression");
+    }
   }
-  return 1;
+  return node;
 }
 
 /*
  * equality_expr ('&' equality_expr)*
  */
 
-static int
+static luna_node_t *
 bitwise_and_expr(luna_parser_t *self) {
+  luna_node_t *node, *right;
   debug("bitwise_and_expr");
-  if (!equality_expr(self)) return 0;
+  if (!(node = equality_expr(self))) return NULL;
   while (accept(OP_BIT_AND)) {
     context("& operation");
-    if (!equality_expr(self)) return error("missing right-hand expression");
+    if (right = equality_expr(self)) {
+      node = (luna_node_t *) luna_binary_op_node_new(LUNA_TOKEN_OP_BIT_AND, node, right);
+    } else {
+      return error("missing right-hand expression");
+    }
   }
-  return 1;
+  return node;
 }
 
 /*
  * bitwise_and_expr ('^' bitwise_and_expr)*
  */
 
-static int
+static luna_node_t *
 bitwise_xor_expr(luna_parser_t *self) {
+  luna_node_t *node, *right;
   debug("bitwise_xor_expr");
-  if (!bitwise_and_expr(self)) return 0;
+  if (!(node = bitwise_and_expr(self))) return NULL;
   while (accept(OP_BIT_XOR)) {
     context("^ operation");
-    if (!bitwise_and_expr(self)) return error("missing right-hand expression");
+    if (right = bitwise_and_expr(self)) {
+      node = (luna_node_t *) luna_binary_op_node_new(LUNA_TOKEN_OP_BIT_XOR, node, right);
+    } else {
+      return error("missing right-hand expression");
+    }
   }
-  return 1;
+  return node;
 }
 
 /*
  * bitwise_xor_expr ('|' bitwise_xor_expr)*
  */
 
-static int
+static luna_node_t *
 bitwise_or_expr(luna_parser_t *self) {
+  luna_node_t *node, *right;
   debug("bitwise_or_expr");
-  if (!bitwise_xor_expr(self)) return 0;
+  if (!(node = bitwise_xor_expr(self))) return NULL;
   while (accept(OP_BIT_OR)) {
     context("| operation");
-    if (!bitwise_xor_expr(self)) return error("missing right-hand expression");
+    if (right = bitwise_xor_expr(self)) {
+      node = (luna_node_t *) luna_binary_op_node_new(LUNA_TOKEN_OP_BIT_OR, node, right);
+    } else {
+      return error("missing right-hand expression");
+    }
   }
-  return 1;
+  return node;
 }
 
 /*
  * bitwise_or_expr ('&&' bitwise_or_expr)*
  */
 
-static int
+static luna_node_t *
 logical_and_expr(luna_parser_t *self) {
+  luna_node_t *node, *right;
   debug("logical_and_expr");
-  if (!bitwise_or_expr(self)) return 0;
+  if (!(node = bitwise_or_expr(self))) return NULL;
   while (accept(OP_AND)) {
     context("&& operation");
-    if (!bitwise_or_expr(self)) return error("missing right-hand expression");
+    if (right = bitwise_or_expr(self)) {
+      node = (luna_node_t *) luna_binary_op_node_new(LUNA_TOKEN_OP_AND, node, right);
+    } else {
+      return error("missing right-hand expression");
+    }
   }
-  return 1;
+  return node;
 }
 
 /*
  * logical_and_expr ('||' logical_and_expr)*
  */
 
-static int
+static luna_node_t *
 logical_or_expr(luna_parser_t *self) {
+  luna_node_t *node, *right;
   debug("logical_or_expr");
-  if (!logical_and_expr(self)) return 0;
+  if (!(node = logical_and_expr(self))) return NULL;
   while (accept(OP_OR)) {
     context("|| operation");
-    if (!logical_and_expr(self)) return error("missing right-hand expression");
+    if (right = logical_and_expr(self)) {
+      node = (luna_node_t *) luna_binary_op_node_new(LUNA_TOKEN_OP_OR, node, right);
+    } else {
+      return error("missing right-hand expression");
+    }
   }
-  return 1;
+  return node;
 }
 
 /*
  * (id (',' id)*)
  */
 
-static int
-params(luna_parser_t *self) {
+static luna_array_t *
+function_params(luna_parser_t *self) {
+  luna_array_t *params = luna_array_new();
   debug("params");
   context("function params");
-  do {
-    if (!accept(ID)) {
-      return error("missing identifier");
-    };
-  } while (accept(COMMA));
-  return 1;
+  if (accept(ID)) {
+    luna_array_push(params, luna_node((luna_node_t *) luna_id_node_new(prev->value.as_string)));
+    while (accept(COMMA)) {
+      if (accept(ID)) {
+        // TODO: use string api
+        luna_array_push(params, luna_node((luna_node_t *) luna_id_node_new(prev->value.as_string)));
+      } else {
+        return error("missing identifier");
+      };
+    }
+  }
+  return params;
 }
 
 /*
  * ':' params? block
  */
 
-static int
+static luna_node_t *
 function_expr(luna_parser_t *self) {
+  luna_block_node_t *body;
+  luna_array_t *params;
   debug("function_expr");
   if (accept(COLON)) {
-    if (is(ID)) if (!params(self)) return 0;
+    if (!(params = function_params(self))) return NULL;
     context("function literal");
-    if (block(self)) return 1;
-  };
-  return 0;
+    if (body = block(self)) {
+      return (luna_node_t *) luna_function_node_new(body, params);
+    }
+  }
+  return NULL;
 }
 
 /*
- * (primary_expr | function_expr) id* function_expr?
+ * (primary_expr | function_expr) call_expr*
  */
 
-static int
+static luna_node_t *
 slot_access_expr(luna_parser_t * self) {
+  luna_node_t *node;
   debug("slot_access_expr");
-  if (!(primary_expr(self) || function_expr(self))) return 0;
-  while (accept(ID)) ;
-  if (is(COLON)) {
-    if (!function_expr(self)) return 0;
+
+  // (primary_expr | function_expr)
+  node = primary_expr(self);
+  if (!node) node = function_expr(self);
+  if (!node) return NULL;
+
+  // id*
+  while (is(ID)) {
+    luna_node_t *right = call_expr(self);
+    if (!slot) return NULL;
+    node = (luna_node_t *) luna_slot_node_new(node, right);
   }
-  return 1;
+
+  return node;
 }
 
 /*
  * (expr (',' expr)*)
  */
 
-static int
-args(luna_parser_t *self) {
+static luna_array_t *
+call_args(luna_parser_t *self) {
+  luna_node_t *node;
+  luna_array_t *args = luna_array_new();
   debug("args");
   context("function arguments");
   do {
-    if (!expr(self)) return 0;
+    if (node = expr(self)) {
+      luna_array_push(args, luna_node(node));
+    } else {
+      return NULL;
+    }
   } while (accept(COMMA));
-  return 1;
+  return args;
 }
 
 /*
  *   slot_access_expr '(' args? ')' function_expr?
- * | slot_access_expr
+ * | slot_access_expr function_expr?
  */
 
-static int
+static luna_node_t *
 call_expr(luna_parser_t *self) {
+  luna_node_t *node;
+  luna_call_node_t *call = NULL;
   debug("call_expr");
-  if (!slot_access_expr(self)) return 0;
+
+  // slot_access_expr
+  if (!(node = slot_access_expr(self))) return NULL;
+
+  // '('
   if (accept(LPAREN)) {
-    if (accept(RPAREN)) goto tail;
-    if (!args(self)) return 0;
     context("function call");
-    if (!accept(RPAREN)) return error("missing closing ')'");
-    tail:
-    if (is(COLON)) {
-      if (!function_expr(self)) return 0;
+    call = luna_call_node_new(node);
+
+    // args? ')'
+    if (!accept(RPAREN)) {
+      call->args = call_args(self);
+      if (!accept(RPAREN)) return error("missing closing ')'");
     }
+
+    node = (luna_node_t *) call;
   }
-  return 1;
+
+  // function_expr?
+  if (is(COLON)) {
+    if (!call) call = luna_call_node_new(node);
+    if (!call->args) call->args = luna_array_new();
+    luna_node_t *fn = function_expr(self);
+    if (!fn) return NULL;
+    luna_array_push(call->args, luna_node(fn));
+    node = (luna_node_t *) call;
+  }
+
+  return node;
 }
 
 /*
@@ -438,15 +576,21 @@ call_expr(luna_parser_t *self) {
  * | call_expr ':=' not_expr
  */
 
-static int
+static luna_node_t *
 assignment_expr(luna_parser_t *self) {
+  luna_token op;
+  luna_node_t *node, *right;
   debug("assignment_expr");
-  if (!logical_or_expr(self)) return 0;
+  if (!(node = logical_or_expr(self))) return NULL;
+
   if (accept(OP_ASSIGN) || accept(OP_SLOT_ASSIGN)) {
+    op = prev->type;
     context("assignment");
-    if (!not_expr(self)) return 0;
+    if (!(right = not_expr(self))) return NULL;
+    return (luna_node_t *) luna_binary_op_node_new(op, node, right);
   }
-  return 1;
+
+  return node;
 }
 
 /*
@@ -454,10 +598,10 @@ assignment_expr(luna_parser_t *self) {
  * | assignment_expr
  */
 
-static int
+static luna_node_t *
 not_expr(luna_parser_t *self) {
   debug("not_expr");
-  if (accept(OP_LNOT)) return not_expr(self);
+  //if (accept(OP_LNOT)) return not_expr(self);
   return assignment_expr(self);
 }
 
@@ -465,81 +609,85 @@ not_expr(luna_parser_t *self) {
  * not_expr (',' not_expr)*
  */
 
-static int
+static luna_node_t *
 expr(luna_parser_t *self) {
+  luna_node_t *node;
   debug("expr");
-  if (!not_expr(self)) return 0;
-  while (accept(COMMA)) {
-    if (!not_expr(self)) return 0;
-  }
-  return 1;
+  if (!(node = not_expr(self))) return NULL;
+  // while (accept(COMMA)) {
+  //   if (!not_expr(self)) return NULL;
+  // }
+  return node;
 }
 
 /*
  * expr (';' | newline)
  */
 
-static int
+static luna_node_t *
 expr_stmt(luna_parser_t *self) {
+  luna_node_t *node;
   debug("expr_stmt");
-  if (!expr(self)) return 0;
+  
+  if (!(node = expr(self))) return NULL;
   if (!(accept(SEMICOLON) || accept(NEWLINE) || is(OUTDENT))) {
     return error("missing newline or semi-colon");
   }
-  return 1;
+
+  return node;
 }
 
-/*
- *  ('if' | 'unless') expr block
- *  ('else' 'if' block)*
- *  ('else' block)?
- */
+// /*
+//  *  ('if' | 'unless') expr block
+//  *  ('else' 'if' block)*
+//  *  ('else' block)?
+//  */
+// 
+// static luna_node_t *
+// if_stmt(luna_parser_t *self) {
+//   debug("if_stmt");
+// 
+//   accept(UNLESS) || accept(IF);
+// 
+//   context("if statement condition");
+//   if (!expr(self)) return 0;
+//   context("if statement");
+//   if (!block(self)) return 0;
+// 
+//   // else
+// loop:
+//   if (accept(ELSE)) {
+//     context("else statement");
+// 
+//     // else if
+//     if (accept(IF)) {
+//       context("else if statement condition");
+//       if (!expr(self)) return 0;
+//       context("else if statement");
+//       if (!block(self)) return 0;
+//       goto loop;
+//     } else if (!block(self)) {
+//       return 0;
+//     }
+//   }
+// 
+//   return 1;
+// }
 
-static int
-if_stmt(luna_parser_t *self) {
-  debug("if_stmt");
-
-  accept(UNLESS) || accept(IF);
-
-  context("if statement condition");
-  if (!expr(self)) return 0;
-  context("if statement");
-  if (!block(self)) return 0;
-
-  // else
-loop:
-  if (accept(ELSE)) {
-    context("else statement");
-
-    // else if
-    if (accept(IF)) {
-      context("else if statement condition");
-      if (!expr(self)) return 0;
-      context("else if statement");
-      if (!block(self)) return 0;
-      goto loop;
-    } else if (!block(self)) {
-      return 0;
-    }
-  }
-
-  return 1;
-}
-
-/*
- * ('while' | 'until')
- */
-
-static int
-while_stmt(luna_parser_t *self) {
-  debug("while_stmt");
-  accept(UNTIL) || accept(WHILE);
-  context("while statement condition");
-  if (!expr(self)) return 0;
-  context("while statement");
-  if (!block(self)) return 0;
-  return 1;
-}
+// /*
+//  * ('while' | 'until')
+//  */
+// 
+// static luna_node_t *
+// while_stmt(luna_parser_t *self) {
+//   debug("while_stmt");
+//   accept(UNTIL) || accept(WHILE);
+//   context("while statement condition");
+//   if (!expr(self)) return NULL;
+//   context("while statement");
+//   if (!block(self)) return NULL;
+//   return 1;
+// }
 
 /*
  *   if_stmt
@@ -547,12 +695,12 @@ while_stmt(luna_parser_t *self) {
  * | expr_stmt
  */
 
-static int
+static luna_node_t *
 stmt(luna_parser_t *self) {
   debug("stmt");
   context("statement");
-  if (is(IF) || is(UNLESS)) return if_stmt(self);
-  if (is(WHILE) || is(UNTIL)) return while_stmt(self);
+  // if (is(IF) || is(UNLESS)) return if_stmt(self);
+  // if (is(WHILE) || is(UNTIL)) return while_stmt(self);
   return expr_stmt(self);
 }
 
@@ -560,39 +708,58 @@ stmt(luna_parser_t *self) {
  * INDENT ws (stmt ws)+ OUTDENT
  */
 
-static int
+static luna_block_node_t *
 block(luna_parser_t *self) {
   debug("block");
+  luna_node_t *node;
+  luna_block_node_t *block = luna_block_node_new();
   if (!accept(INDENT)) return error("block expected");
   whitespace(self);
   do {
-    if (!stmt(self)) return 0;
+    if (node = stmt(self)) {
+      luna_array_push(block->stmts, luna_node(node));
+    } else {
+      return NULL;
+    }
     whitespace(self);
   } while (!accept(OUTDENT));
-  return 1;
+  return block;
 }
 
 /*
  * ws (stmt ws)*
  */
 
-static int
+static luna_block_node_t *
 program(luna_parser_t *self) {
-  whitespace(self);
   debug("program");
+  luna_node_t *node;
+  whitespace(self);
+  luna_block_node_t *block = luna_block_node_new();
   while (!accept(EOS)) {
-    if (!stmt(self)) return 0;
+    if (node = stmt(self)) {
+      luna_array_push(block->stmts, luna_node(node));
+    } else {
+      return NULL;
+    }
     whitespace(self);
   }
-  return 1;
+  return block;
 }
 
 /*
  * Parse input.
  */
 
-int
+luna_block_node_t *
 luna_parse(luna_parser_t *self) {
-  return program(self);
+  luna_block_node_t *block = program(self);
+
+// -DEBUG_AST
+#ifdef EBUG_AST
+  if (block) luna_prettyprint((luna_node_t *) block);
+#endif
+
+  return block;
 }
 

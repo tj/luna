@@ -8,6 +8,18 @@
 #include "object.h"
 
 /*
+ * Alloc a luna value and assign the given `obj`.
+ */
+
+luna_value_t *
+luna_obj(luna_object_t *obj) {
+  luna_value_t *self = malloc(sizeof(luna_value_t));
+  self->type = LUNA_TYPE_OBJECT;
+  self->value.as_obj = obj;
+  return self;
+}
+
+/*
  * Set hash `key` to `val`.
  */
 

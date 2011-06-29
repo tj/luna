@@ -108,9 +108,10 @@ main(int argc, const char **argv){
   luna_lexer_init(&lex, stream, path);
   luna_parser_t parser;
   luna_parser_init(&parser, &lex);
+  luna_block_node_t *root;
 
   // oh noes!
-  if (!luna_parse(&parser)) {
+  if (!(root = luna_parse(&parser))) {
     char *err, *type = "parse";
 
     // error message

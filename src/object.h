@@ -5,12 +5,13 @@
 // Copyright (c) 2011 TJ Holowaychuk <tj@vision-media.ca>
 //
 
-#ifndef __LUNA_OBJECT_H__
-#define __LUNA_OBJECT_H__
+#ifndef __LUNA_OBJECT__
+#define __LUNA_OBJECT__
 
 #include "khash.h"
 
 // TODO: consider pointer for immediate values
+// TODO: inherit
 
 /*
  * Check if `val` is the given type.
@@ -22,6 +23,7 @@
  * Specific type macros.
  */
 
+#define luna_is_node(val) luna_value_is(val, NODE)
 #define luna_is_list(val) luna_value_is(val, LIST)
 #define luna_is_array(val) luna_value_is(val, ARRAY)
 #define luna_is_object(val) luna_value_is(val, OBJECT)
@@ -37,6 +39,7 @@
 
 typedef enum {
     LUNA_TYPE_NULL
+  , LUNA_TYPE_NODE
   , LUNA_TYPE_BOOL
   , LUNA_TYPE_INT
   , LUNA_TYPE_FLOAT
@@ -53,10 +56,10 @@ typedef enum {
 typedef struct {
   luna_value type;
   union {
-    void *obj;
+    void *as_obj;
     int as_int;
     float as_float;
-  } val;
+  } value;
 } luna_value_t;
 
 KHASH_MAP_INIT_STR(value, luna_value_t *);
@@ -129,6 +132,9 @@ typedef khash_t(value) luna_object_t;
 
 // protos
 
+luna_value_t *
+luna_obj(luna_object_t *obj);
+
 void
 luna_object_set(khash_t(value) *self, char *key, luna_value_t *val);
 
@@ -141,4 +147,4 @@ luna_object_has(khash_t(value) *self, char *key);
 void
 luna_object_remove(khash_t(value) *self, char *key);
 
-#endif /* __LUNA_OBJECT_H__ */
+#endif /* __LUNA_OBJECT__ */

@@ -1,0 +1,16 @@
+
+//
+// prettyprint.h
+//
+// Copyright (c) 2011 TJ Holowaychuk <tj@vision-media.ca>
+//
+
+#ifndef __LUNA_PP__
+#define __LUNA_PP__
+
+#include "ast.h"
+
+void
+luna_prettyprint(luna_node_t *node);
+
+#endif /* __LUNA_PP__ */
