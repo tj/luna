@@ -494,9 +494,10 @@ slot_access_expr(luna_parser_t * self) {
   luna_node_t *node;
   debug("slot_access_expr");
 
-  // primary_expr | function_expr
-  if (node = primary_expr(self)) return node;
-  if (node = function_expr(self)) return node;
+  // (primary_expr | function_expr)
+  node = primary_expr(self);
+  if (!node) node = function_expr(self);
+  if (!node) return NULL;
 
   // id*
   while (accept(ID)) {
@@ -504,7 +505,7 @@ slot_access_expr(luna_parser_t * self) {
   }
 
   // function_expr?
-  if (is(COLON)) return function_expr(self);
+  // if (is(COLON)) return function_expr(self);
 
   return node;
 }
