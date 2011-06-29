@@ -111,6 +111,17 @@ visit_slot(luna_slot_node_t *node) {
 }
 
 /*
+ * Visit call `node`.
+ */
+
+static void
+visit_call(luna_call_node_t * node) {
+  printf("(call ");
+  visit((luna_node_t *) node->expr);
+  printf(")");
+}
+
+/*
  * Visit function `node`.
  */
 
@@ -151,6 +162,9 @@ visit(luna_node_t *node) {
       break;
     case LUNA_NODE_SLOT:
       visit_slot((luna_slot_node_t *) node);
+      break;
+    case LUNA_NODE_CALL:
+      visit_call((luna_call_node_t *) node);
       break;
     case LUNA_NODE_UNARY_OP:
       visit_unary_op((luna_unary_op_node_t *) node);

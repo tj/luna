@@ -533,6 +533,11 @@ call_expr(luna_parser_t *self) {
   luna_node_t *node;
   debug("call_expr");
   if (!(node = slot_access_expr(self))) return NULL;
+  if (accept(LPAREN)) {
+    luna_call_node_t *call = luna_call_node_new(node);
+    if (!accept(RPAREN)) return error("missing closing ')'");
+    return (luna_node_t *) call;
+  }
   // if (accept(LPAREN)) {
   //   if (accept(RPAREN)) goto tail;
   //   if (!args(self)) return 0;

@@ -82,6 +82,10 @@ luna_string_node_new(const char *val) {
   return self;
 }
 
+/*
+ * Alloc and initialize a new call node with the given `expr`.
+ */
+
 luna_call_node_t *
 luna_call_node_new(luna_node_t *expr) {
   luna_call_node_t *self = malloc(sizeof(luna_call_node_t));
