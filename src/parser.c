@@ -545,7 +545,6 @@ call_expr(luna_parser_t *self) {
 
   // '('
   if (accept(LPAREN)) {
-    printf("%s\n", luna_token_type_string(peek->type));
     context("function call");
     call = luna_call_node_new(node);
 
