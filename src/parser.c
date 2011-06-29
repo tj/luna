@@ -535,39 +535,37 @@ call_args(luna_parser_t *self) {
 static luna_node_t *
 call_expr(luna_parser_t *self) {
   luna_node_t *node;
+  luna_call_node_t *call = NULL;
   debug("call_expr");
+
+  // slot_access_expr
   if (!(node = slot_access_expr(self))) return NULL;
 
+  // '('
   if (accept(LPAREN)) {
     printf("%s\n", luna_token_type_string(peek->type));
     context("function call");
-    luna_call_node_t *call = luna_call_node_new(node);
+    call = luna_call_node_new(node);
 
+    // args? ')'
     if (!accept(RPAREN)) {
       call->args = call_args(self);
       if (!accept(RPAREN)) return error("missing closing ')'");
     }
 
-    if (is(COLON)) {
-      if (!call->args) call->args = luna_array_new();
-      luna_node_t *fn = function_expr(self);
-      if (!fn) return NULL;
-      luna_array_push(call->args, luna_node(fn));
-    }
-
     node = (luna_node_t *) call;
   }
 
-  // if (accept(LPAREN)) {
-  //   if (accept(RPAREN)) goto tail;
-  //   if (!args(self)) return 0;
-  //   context("function call");
-  //   if (!accept(RPAREN)) return error("missing closing ')'");
-  //   tail:
-  //   if (is(COLON)) {
-  //     if (!function_expr(self)) return 0;
-  //   }
-  // }
+  // function_expr?
+  if (is(COLON)) {
+    if (!call) call = luna_call_node_new(node);
+    if (!call->args) call->args = luna_array_new();
+    luna_node_t *fn = function_expr(self);
+    if (!fn) return NULL;
+    luna_array_push(call->args, luna_node(fn));
+    node = (luna_node_t *) call;
+  }
+
   return node;
 }
 
