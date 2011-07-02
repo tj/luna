@@ -149,31 +149,18 @@ luna_function_node_new(luna_block_node_t *block, luna_array_t *params) {
 }
 
 /*
- * Alloc and initialize a condition node with the given 
- * condition `expr`, and `block`.
- */
-
-luna_cond_node_t *
-luna_cond_node_new(luna_node_t *expr, luna_block_node_t *block) {
-  luna_cond_node_t *self = malloc(sizeof(luna_cond_node_t));
-  self->base.type = LUNA_NODE_COND;
-  self->expr = expr;
-  self->block = block;
-  return self;
-}
-
-/*
  * Alloc and initialize a new if stmt node, negated for "unless",
- * with the required `cond` node.
+ * with required `expr` and `block`.
  */
 
 luna_if_node_t *
-luna_if_node_new(int negate, luna_cond_node_t *cond) {
+luna_if_node_new(int negate, luna_node_t *expr, luna_block_node_t *block) {
   luna_if_node_t *self = malloc(sizeof(luna_if_node_t));
   self->base.type = LUNA_NODE_IF;
   self->negate = negate;
-  self->cond = cond;
+  self->expr = expr;
+  self->block = block;
   self->else_block = NULL;
-  self->conds = luna_array_new();
+  self->else_ifs = luna_array_new();
   return self;
 }
