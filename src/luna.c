@@ -69,8 +69,8 @@ static void
 repl() {
   char *line;
   while(line = linenoise("luna> ")) {
-    if (line[0] != '\0') {
-      printf("echo: '%s'\n", line);
+    if ('\0' != line[0]) {
+      printf("%s\n", line);
       linenoiseHistoryAdd(line);
     }
     free(line);

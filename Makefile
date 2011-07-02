@@ -6,7 +6,11 @@ CC = clang
 PREFIX = /usr/local
 CFLAGS = -Wall -Wno-unused-value -std=c99 -g -O0
 CFLAGS += -I deps
+
+# linenoise
+
 CFLAGS += -I deps/linenoise
+OBJ += deps/linenoise/linenoise.o
 
 TEST_SRC = $(shell find {test,src}/*.c | sed '/luna/d')
 TEST_OBJ = ${TEST_SRC:.c=.o}
