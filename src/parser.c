@@ -643,6 +643,8 @@ expr_stmt(luna_parser_t *self) {
 
 static luna_node_t *
 if_stmt(luna_parser_t *self) {
+  luna_node_t *cond;
+  luna_block_node_t *body;
   debug("if_stmt");
 
   // ('if' | 'unless') expr block
@@ -650,12 +652,10 @@ if_stmt(luna_parser_t *self) {
   int negate = LUNA_TOKEN_UNLESS == prev->type;
 
   context("if statement condition");
-  luna_node_t *cond = expr(self);
-  if (!cond) return NULL;
+  if (!(cond = expr(self))) return NULL;
 
   context("if statement");
-  luna_block_node_t *body = block(self);
-  if (!body) return NULL;
+  if (!(body = block(self))) return NULL;
 
   luna_if_node_t *node = luna_if_node_new(negate, cond, body);
 
@@ -667,9 +667,12 @@ if_stmt(luna_parser_t *self) {
     // ('else' 'if' block)*
     if (accept(IF)) {
       context("else if statement condition");
-      luna_node_t *cond = expr(self);
-      if (!cond) return NULL;
+      if (!(cond = expr(self))) return NULL;
       context("else if statement");
+      if (!(body = block(self))) return NULL;
+      luna_array_push(node->else_ifs, luna_node((luna_node_t *) luna_if_node_new(0, cond, body)));
+      goto loop;
+    // 'else'
     } else {
       context("else statement");
       if (!(body = block(self))) return NULL;
@@ -679,23 +682,6 @@ if_stmt(luna_parser_t *self) {
   }
 
   return (luna_node_t *) node;
-
-//   // else
-// loop:
-//   if (accept(ELSE)) {
-//     context("else statement");
-// 
-//     // else if
-//     if (accept(IF)) {
-//       context("else if statement condition");
-//       if (!expr(self)) return 0;
-//       context("else if statement");
-//       if (!block(self)) return 0;
-//       goto loop;
-//     } else if (!block(self)) {
-//       return 0;
-//     }
-//   }
 }
 
 // /*

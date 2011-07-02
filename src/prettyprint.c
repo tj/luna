@@ -7,6 +7,7 @@
 
 #include <stdio.h>
 #include "ast.h"
+#include "array.h"
 #include "prettyprint.h"
 
 // indentation level
@@ -166,6 +167,7 @@ visit_function(luna_function_node_t * node) {
 
 static void
 visit_if(luna_if_node_t *node) {
+  // if
   printf("(if ");
   visit((luna_node_t *) node->expr);
   ++indents;
@@ -174,6 +176,12 @@ visit_if(luna_if_node_t *node) {
   --indents;
   printf(")");
 
+  // else ifs
+  if (luna_array_length(node->else_ifs)) {
+
+  }
+
+  // else
   if (node->else_block) {
     printf("\n(else\n");
     ++indents;
