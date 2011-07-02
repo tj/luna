@@ -9,9 +9,11 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <string.h>
+#include "linenoise.h"
 #include "luna.h"
 #include "lexer.h"
 #include "parser.h"
+#include "prettyprint.h"
 
 // --ast
 
@@ -25,7 +27,7 @@ static int stdio = 0;
  * Output usage information.
  */
 
-void
+static void
 usage() {
   fprintf(stderr, 
     "\n  Usage: luna [options] [file]"
@@ -53,9 +55,26 @@ usage() {
  * Output luna version.
  */
 
-void
+static void
 version() {
   printf("%s\n", LUNA_VERSION);
+  exit(0);
+}
+
+/*
+ * Line-noise REPL.
+ */
+
+static void
+repl() {
+  char *line;
+  while(line = linenoise("luna> ")) {
+    if (line[0] != '\0') {
+      printf("echo: '%s'\n", line);
+      linenoiseHistoryAdd(line);
+    }
+    free(line);
+  }
   exit(0);
 }
 
@@ -104,10 +123,7 @@ main(int argc, const char **argv){
   argv = parse_args(&argc, argv);
 
   // REPL
-  if (!stdio && 1 == argc) {
-    printf("TODO: repl\n");
-    exit(0);
-  }
+  if (!stdio && 1 == argc) repl();
 
   // stdin
   if (stdio) {
