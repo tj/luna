@@ -646,26 +646,29 @@ if_stmt(luna_parser_t *self) {
   debug("if_stmt");
 
   // ('if' | 'unless') expr block
-  if (accept(IF) || accept(UNLESS)) {
-    int negate = LUNA_TOKEN_UNLESS == prev->type;
+  if (!(accept(IF) || accept(UNLESS))) return NULL;
+  int negate = LUNA_TOKEN_UNLESS == prev->type;
 
-    luna_node_t *cond = expr(self);
-    if (!cond) return NULL;
+  context("if statement condition");
+  luna_node_t *cond = expr(self);
+  if (!cond) return NULL;
 
+  context("if statement");
+  luna_block_node_t *body = block(self);
+  if (!body) return NULL;
+
+  luna_if_node_t *node = luna_if_node_new(negate, luna_cond_node_new(cond, body));
+
+  // 'else'
+  if (accept(ELSE)) {
+    context("else statement");
     luna_block_node_t *body = block(self);
     if (!body) return NULL;
-
-    luna_if_node_t *node = luna_if_node_new(negate, luna_cond_node_new(cond, body));
-    return (luna_node_t *) node;
+    node->else_block = body;
   }
 
-//   accept(UNLESS) || accept(IF);
-// 
-//   context("if statement condition");
-//   if (!expr(self)) return 0;
-//   context("if statement");
-//   if (!block(self)) return 0;
-// 
+  return (luna_node_t *) node;
+
 //   // else
 // loop:
 //   if (accept(ELSE)) {
@@ -682,8 +685,6 @@ if_stmt(luna_parser_t *self) {
 //       return 0;
 //     }
 //   }
-
-  return NULL;
 }
 
 // /*

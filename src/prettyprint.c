@@ -169,6 +169,14 @@ visit_if(luna_if_node_t *node) {
   printf("(if ");
   visit((luna_node_t *) node->cond);
   printf(")");
+
+  if (node->else_block) {
+    printf("\n(else\n");
+    ++indents;
+    visit((luna_node_t *) node->else_block);
+    --indents;
+    printf(")");
+  }
 }
 
 /*
