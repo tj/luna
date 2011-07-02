@@ -597,7 +597,9 @@ assignment_expr(luna_parser_t *self) {
 static luna_node_t *
 not_expr(luna_parser_t *self) {
   debug("not_expr");
-  //if (accept(OP_LNOT)) return not_expr(self);
+  if (accept(OP_LNOT)) {
+    return (luna_node_t *) luna_unary_op_node_new(prev->type, not_expr(self));
+  }
   return assignment_expr(self);
 }
 
