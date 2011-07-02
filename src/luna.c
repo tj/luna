@@ -17,6 +17,10 @@
 
 static int ast = 0;
 
+// -
+
+static int stdio = 0;
+
 /*
  * Output usage information.
  */
@@ -31,12 +35,14 @@ usage() {
     "\n    -a, --ast       output ast to stdout"
     "\n    -h, --help      output help information"
     "\n    -V, --version   output luna version"
+    "\n    -               read from stdin"
     "\n"
     "\n  Examples:"
     "\n"
-    "\n    $ luna < some.luna"
+    "\n    $ luna - < some.luna"
     "\n    $ luna some.luna"
     "\n    $ luna some"
+    "\n    $ luna"
     "\n"
     "\n"
     );
@@ -71,6 +77,10 @@ parse_args(int *argc, const char **argv) {
       ast = 1;
       --*argc;
       ++argv;
+    } else if (0 == strcmp(arg, "-")) {
+      stdio = 1;
+      --*argc;
+      ++argv;
     } else if ('-' == arg[0]) {
       fprintf(stderr, "unknown flag %s\n", arg);
       exit(1);
@@ -93,8 +103,17 @@ main(int argc, const char **argv){
   // parse arguments
   argv = parse_args(&argc, argv);
 
-  // file given
-  if (argc > 1) {
+  // REPL
+  if (!stdio && 1 == argc) {
+    printf("TODO: repl\n");
+    exit(0);
+  }
+
+  // stdin
+  if (stdio) {
+    path = "stdin";
+    stream = stdin;
+  } else {
     orig = path = argv[1];
     read:
     stream = fopen(path, "r");
@@ -109,10 +128,7 @@ main(int argc, const char **argv){
       }
       fprintf(stderr, "error reading %s:\n\n  %s\n\n", orig, strerror(errno));
       exit(1);
-    }
-  } else {
-    stream = stdin;
-    path = "stdin";
+    }    
   }
 
   // parser the input
