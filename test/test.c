@@ -15,7 +15,7 @@
 static void
 test_value_is() {
   luna_value_t one = { .type = LUNA_TYPE_INT };
-  one.val.as_int = 1;
+  one.value.as_int = 1;
   assert(luna_is_int(&one));
   assert(!luna_is_string(&one));
 
@@ -33,13 +33,13 @@ test_array_length() {
   luna_array_init(&arr);
 
   luna_value_t one = { .type = LUNA_TYPE_INT };
-  one.val.as_int = 1;
+  one.value.as_int = 1;
 
   luna_value_t two = { .type = LUNA_TYPE_INT };
-  two.val.as_int = 2;
+  two.value.as_int = 2;
 
   luna_value_t three = { .type = LUNA_TYPE_INT };
-  three.val.as_int = 3;
+  three.value.as_int = 3;
 
   assert(0 == luna_array_length(&arr));
 
@@ -63,36 +63,36 @@ test_array_push() {
   luna_array_init(&arr);
 
   luna_value_t one = { .type = LUNA_TYPE_INT };
-  one.val.as_int = 1;
+  one.value.as_int = 1;
 
   luna_value_t two = { .type = LUNA_TYPE_INT };
-  two.val.as_int = 2;
+  two.value.as_int = 2;
 
   luna_value_t three = { .type = LUNA_TYPE_INT };
-  three.val.as_int = 3;
+  three.value.as_int = 3;
 
   assert(0 == luna_array_length(&arr));
 
   luna_array_push(&arr, &one);
-  assert(1 == luna_array_pop(&arr)->val.as_int);
+  assert(1 == luna_array_pop(&arr)->value.as_int);
 
   luna_array_push(&arr, &one);
   luna_array_push(&arr, &one);
-  assert(1 == luna_array_pop(&arr)->val.as_int);
-  assert(1 == luna_array_pop(&arr)->val.as_int);
+  assert(1 == luna_array_pop(&arr)->value.as_int);
+  assert(1 == luna_array_pop(&arr)->value.as_int);
 
   luna_array_push(&arr, &one);
   luna_array_push(&arr, &two);
   luna_array_push(&arr, &three);
-  assert(3 == luna_array_pop(&arr)->val.as_int);
-  assert(2 == luna_array_pop(&arr)->val.as_int);
-  assert(1 == luna_array_pop(&arr)->val.as_int);
+  assert(3 == luna_array_pop(&arr)->value.as_int);
+  assert(2 == luna_array_pop(&arr)->value.as_int);
+  assert(1 == luna_array_pop(&arr)->value.as_int);
 
   assert(NULL == luna_array_pop(&arr));
   assert(NULL == luna_array_pop(&arr));
   assert(NULL == luna_array_pop(&arr));
   luna_array_push(&arr, &one);
-  assert(1 == luna_array_pop(&arr)->val.as_int);
+  assert(1 == luna_array_pop(&arr)->value.as_int);
 }
 
 /*
@@ -105,21 +105,21 @@ test_array_at() {
   luna_array_init(&arr);
 
   luna_value_t one = { .type = LUNA_TYPE_INT };
-  one.val.as_int = 1;
+  one.value.as_int = 1;
 
   luna_value_t two = { .type = LUNA_TYPE_INT };
-  two.val.as_int = 2;
+  two.value.as_int = 2;
 
   luna_value_t three = { .type = LUNA_TYPE_INT };
-  three.val.as_int = 3;
+  three.value.as_int = 3;
 
   luna_array_push(&arr, &one);
   luna_array_push(&arr, &two);
   luna_array_push(&arr, &three);
 
-  assert(1 == luna_array_at(&arr, 0)->val.as_int);
-  assert(2 == luna_array_at(&arr, 1)->val.as_int);
-  assert(3 == luna_array_at(&arr, 2)->val.as_int);
+  assert(1 == luna_array_at(&arr, 0)->value.as_int);
+  assert(2 == luna_array_at(&arr, 1)->value.as_int);
+  assert(3 == luna_array_at(&arr, 2)->value.as_int);
   
   assert(NULL == luna_array_at(&arr, -1123));
   assert(NULL == luna_array_at(&arr, 5));
@@ -136,13 +136,13 @@ test_array_iteration() {
   luna_array_init(&arr);
 
   luna_value_t one = { .type = LUNA_TYPE_INT };
-  one.val.as_int = 1;
+  one.value.as_int = 1;
 
   luna_value_t two = { .type = LUNA_TYPE_INT };
-  two.val.as_int = 2;
+  two.value.as_int = 2;
 
   luna_value_t three = { .type = LUNA_TYPE_INT };
-  three.val.as_int = 3;
+  three.value.as_int = 3;
 
   luna_array_push(&arr, &one);
   luna_array_push(&arr, &two);
@@ -160,13 +160,13 @@ test_array_iteration() {
 static void
 test_object_set() {
   luna_value_t one = { .type = LUNA_TYPE_INT };
-  one.val.as_int = 1;
+  one.value.as_int = 1;
 
   luna_value_t two = { .type = LUNA_TYPE_INT };
-  two.val.as_int = 2;
+  two.value.as_int = 2;
 
   luna_value_t three = { .type = LUNA_TYPE_INT };
-  three.val.as_int = 3;
+  three.value.as_int = 3;
 
   luna_object_t *obj = luna_object_new();
 
@@ -196,7 +196,7 @@ test_object_set() {
 static void
 test_object_has() {
   luna_value_t one = { .type = LUNA_TYPE_INT };
-  one.val.as_int = 1;
+  one.value.as_int = 1;
 
   luna_object_t *obj = luna_object_new();
 
@@ -215,7 +215,7 @@ test_object_has() {
 static void
 test_object_remove() {
   luna_value_t one = { .type = LUNA_TYPE_INT };
-  one.val.as_int = 1;
+  one.value.as_int = 1;
 
   luna_object_t *obj = luna_object_new();
 
@@ -254,13 +254,13 @@ valid_slot(char *slot) {
 static void
 test_object_iteration() {
   luna_value_t one = { .type = LUNA_TYPE_INT };
-  one.val.as_int = 1;
+  one.value.as_int = 1;
 
   luna_value_t two = { .type = LUNA_TYPE_INT };
-  two.val.as_int = 2;
+  two.value.as_int = 2;
 
   luna_value_t three = { .type = LUNA_TYPE_INT };
-  three.val.as_int = 3;
+  three.value.as_int = 3;
 
   luna_object_t *obj = luna_object_new();
 
