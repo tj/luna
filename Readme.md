@@ -308,6 +308,13 @@ char = ## // 35
 char = #  // 32
 ```
 
+## Implementation Details
+
+### Lexical & Semantic Analysis
+
+ Both the lexer and parser are hand-coded. The parser
+ consists of a small, simple, and elegant recursive descent parser,
+ capable of producing an in-language AST for 1mb of Luna script (~200k LOC) in 100ms.
 
 ## License 
 
