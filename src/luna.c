@@ -60,9 +60,8 @@ version() {
 const char **
 parse_args(int *argc, const char **argv) {
   const char *arg, **args = argv;
-  int len = *argc;
 
-  for (int i = 0; i < len; ++i) {
+  for (int i = 0, len = *argc; i < len; ++i) {
     arg = args[i];
     if (0 == strcmp(arg, "-h") || 0 == strcmp(arg, "--help"))
       usage();
@@ -153,7 +152,7 @@ main(int argc, const char **argv){
     exit(1);
   }
 
-  // -- ast
+  // --ast
   if (ast) {
     luna_prettyprint((luna_node_t *) root);
     exit(0);
