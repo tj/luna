@@ -41,7 +41,6 @@
   - ◦ C public/internal apis
   - ◦ garbage collection
   - ◦ optimizations (TCO etc)
-  - ◦ pth integration
   - ◦ portability
   - ◦ closures
   - ◦ module system
