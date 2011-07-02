@@ -177,9 +177,16 @@ visit_if(luna_if_node_t *node) {
   printf(")");
 
   // else ifs
-  if (luna_array_length(node->else_ifs)) {
-
-  }
+  luna_array_each(node->else_ifs, {
+    luna_if_node_t *else_if = (luna_if_node_t *) val->value.as_obj;
+    printf("\n(else if ");
+    visit((luna_node_t *) else_if->expr);
+    ++indents;
+    printf("\n");
+    visit((luna_node_t *) else_if->block);
+    --indents;
+    printf(")");
+  });
 
   // else
   if (node->else_block) {
