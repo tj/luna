@@ -753,14 +753,6 @@ program(luna_parser_t *self) {
 
 luna_block_node_t *
 luna_parse(luna_parser_t *self) {
-  luna_block_node_t *block = program(self);
-
-// -DEBUG_AST
-// TODO: remove, add --ast flag
-#ifdef EBUG_AST
-  if (block) luna_prettyprint((luna_node_t *) block);
-#endif
-
-  return block;
+  return program(self);
 }
 

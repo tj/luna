@@ -4,7 +4,7 @@ OBJ = ${SRC:.c=.o}
 
 CC = clang
 PREFIX = /usr/local
-CFLAGS = -Wall -Wno-unused-value -std=c99 -DEBUG_AST -g -O0
+CFLAGS = -Wall -Wno-unused-value -std=c99 -g -O0
 CFLAGS += -I deps
 
 TEST_SRC = $(shell find {test,src}/*.c | sed '/luna/d')

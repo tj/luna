@@ -13,6 +13,10 @@
 #include "lexer.h"
 #include "parser.h"
 
+// --ast
+
+static int ast = 0;
+
 /*
  * Output usage information.
  */
@@ -24,6 +28,7 @@ usage() {
     "\n"
     "\n  Options:"
     "\n"
+    "\n    -a, --ast       output ast to stdout"
     "\n    -h, --help      output help information"
     "\n    -V, --version   output luna version"
     "\n"
@@ -52,20 +57,29 @@ version() {
  * Parse arguments.
  */
 
-void
-parse_args(int argc, const char **argv) {
-  const char *arg;
-  for (int i = 0; i < argc; ++i) {
-    arg = argv[i];
+const char **
+parse_args(int *argc, const char **argv) {
+  const char *arg, **args = argv;
+  int len = *argc;
+
+  for (int i = 0; i < len; ++i) {
+    arg = args[i];
     if (0 == strcmp(arg, "-h") || 0 == strcmp(arg, "--help"))
       usage();
     else if (0 == strcmp(arg, "-V") || 0 == strcmp(arg, "--version"))
       version();
-    else if ('-' == arg[0]) {
+    else if (0 == strcmp(arg, "-a") || 0 == strcmp(arg, "--ast")) {
+      ast = 1;
+      --*argc;
+      ++argv;
+      printf("%p\n", argv);
+    } else if ('-' == arg[0]) {
       fprintf(stderr, "unknown flag %s\n", arg);
       exit(1);
     }
   }
+
+  return argv;
 }
 
 /*
@@ -79,7 +93,7 @@ main(int argc, const char **argv){
   FILE *stream;
 
   // parse arguments
-  parse_args(argc, argv);
+  argv = parse_args(&argc, argv);
 
   // file given
   if (argc > 1) {
@@ -137,6 +151,12 @@ main(int argc, const char **argv){
       , err);
 
     exit(1);
+  }
+
+  // -- ast
+  if (ast) {
+    luna_prettyprint((luna_node_t *) root);
+    exit(0);
   }
 
   return 0;
