@@ -185,7 +185,9 @@ postfix_expr(luna_parser_t *self) {
   luna_node_t *node;
   debug("postfix_expr");
   if (!(node = pow_expr(self))) return NULL;
-  // if (accept(OP_INCR) || accept(OP_DECR)) ;
+  if (accept(OP_INCR) || accept(OP_DECR)) {
+    return (luna_node_t *) luna_unary_op_node_new(prev->type, node, 1);
+  }
   return node;
 }
 
@@ -208,7 +210,7 @@ unary_expr(luna_parser_t *self) {
     || accept(OP_PLUS)
     || accept(OP_MINUS)
     || accept(OP_NOT)) {
-    return (luna_node_t *) luna_unary_op_node_new(prev->type, unary_expr(self));
+    return (luna_node_t *) luna_unary_op_node_new(prev->type, unary_expr(self), 0);
   }
   return postfix_expr(self);
 }
@@ -598,7 +600,7 @@ static luna_node_t *
 not_expr(luna_parser_t *self) {
   debug("not_expr");
   if (accept(OP_LNOT)) {
-    return (luna_node_t *) luna_unary_op_node_new(prev->type, not_expr(self));
+    return (luna_node_t *) luna_unary_op_node_new(prev->type, not_expr(self), 0);
   }
   return assignment_expr(self);
 }

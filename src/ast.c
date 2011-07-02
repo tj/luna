@@ -113,11 +113,12 @@ luna_slot_node_new(luna_node_t *left, luna_node_t *right) {
  */
 
 luna_unary_op_node_t *
-luna_unary_op_node_new(luna_token op, luna_node_t *expr) {
+luna_unary_op_node_new(luna_token op, luna_node_t *expr, int postfix) {
   luna_unary_op_node_t *self = malloc(sizeof(luna_unary_op_node_t));
   self->base.type = LUNA_NODE_UNARY_OP;
   self->op = op;
   self->expr = expr;
+  self->postfix = postfix;
   return self;
 }
 

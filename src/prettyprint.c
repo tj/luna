@@ -87,7 +87,8 @@ visit_string(luna_string_node_t *node) {
 
 static void
 visit_unary_op(luna_unary_op_node_t *node) {
-  printf("(%s ", luna_token_type_string(node->op));
+  int c = node->postfix ? '@' : 0;
+  printf("(%c%s ", c, luna_token_type_string(node->op));
   visit(node->expr);
   printf(")");
 }
