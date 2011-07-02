@@ -99,7 +99,7 @@ __NOTE__: forgive the bad syntax highlighting, until I have time to write a lexe
 ```js 
 Person = Object clone
 
-Person init =: first, last
+Person init =: first last
  self first = first
  self last = last
 
@@ -157,7 +157,7 @@ person pets pop()
 
 While the former approach is fine in small use-cases, and of course when it's _your_ code, it becomes "word soup" in larger doses.
 
-### Operator Avoidance 
+### Avoiding Operators
 
  Another aspect I want to avoid, which I consider an annoyance in JavaScript, is using operators such as `typeof`, or `instanceof`, when a simple method or property will do, I would much rather use language features such as functions unless performance is crucial.
 
@@ -206,10 +206,10 @@ or:
 ':' params? block
 ```
 
-where `params` is:
+where `params` is simply:
 
 ```js
-(id (',' id)*)
+id*
 ```
 
 and `block` is:
