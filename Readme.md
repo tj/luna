@@ -35,12 +35,12 @@
   - ✔ parser
   - ✔ test suite
   - ✔ ast
+  - ✔ linenoise integration for REPL
   - ◦ opcode generation
   - ◦ virtual machine
   - ◦ C public/internal apis
   - ◦ garbage collection
   - ◦ optimizations (TCO etc)
-  - ◦ linenoise integration for REPL
   - ◦ pth integration
   - ◦ portability
   - ◦ closures
