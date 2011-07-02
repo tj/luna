@@ -502,7 +502,7 @@ slot_access_expr(luna_parser_t * self) {
   // id*
   while (is(ID)) {
     luna_node_t *right = call_expr(self);
-    if (!slot) return NULL;
+    if (!right) return NULL;
     node = (luna_node_t *) luna_slot_node_new(node, right);
   }
 

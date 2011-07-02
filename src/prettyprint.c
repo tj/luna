@@ -113,10 +113,10 @@ visit_slot(luna_slot_node_t *node) {
   printf("(slot\n");
   ++indents;
   INDENT;
-  visit(node->expr);
+  // visit(node->expr);
   printf("\n");
   INDENT;
-  visit(node->slot);
+  // visit(node->slot);
   --indents;
   printf(")");
 }
