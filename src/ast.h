@@ -21,6 +21,7 @@
   n(EXPR_STMT) \
   n(RETURN) \
   n(IF) \
+  n(COND) \
   n(FOR) \
   n(UNARY_OP) \
   n(BINARY_OP) \
@@ -151,6 +152,19 @@ typedef struct {
   luna_array_t *params;
 } luna_function_node_t;
 
+/*
+ * Luna if stmt node.
+ */
+
+typedef struct {
+  luna_node_t base;
+  int negate;
+  luna_node_t *expr;
+  luna_block_node_t *block;
+  luna_block_node_t *else_block;
+  luna_array_t *else_ifs;
+} luna_if_node_t;
+
 // protos
 
 luna_value_t *
@@ -185,5 +199,8 @@ luna_float_node_new(float val);
 
 luna_string_node_t *
 luna_string_node_new(const char *val);
+
+luna_if_node_t *
+luna_if_node_new(int negate, luna_node_t *expr, luna_block_node_t *block);
 
 #endif /* __LUNA_AST__ */

@@ -7,6 +7,7 @@
 
 #include <stdio.h>
 #include "ast.h"
+#include "array.h"
 #include "prettyprint.h"
 
 // indentation level
@@ -161,6 +162,43 @@ visit_function(luna_function_node_t * node) {
 }
 
 /*
+ * Visit if `node`.
+ */
+
+static void
+visit_if(luna_if_node_t *node) {
+  // if
+  printf("(if ");
+  visit((luna_node_t *) node->expr);
+  ++indents;
+  printf("\n");
+  visit((luna_node_t *) node->block);
+  --indents;
+  printf(")");
+
+  // else ifs
+  luna_array_each(node->else_ifs, {
+    luna_if_node_t *else_if = (luna_if_node_t *) val->value.as_obj;
+    printf("\n(else if ");
+    visit((luna_node_t *) else_if->expr);
+    ++indents;
+    printf("\n");
+    visit((luna_node_t *) else_if->block);
+    --indents;
+    printf(")");
+  });
+
+  // else
+  if (node->else_block) {
+    printf("\n(else\n");
+    ++indents;
+    visit((luna_node_t *) node->else_block);
+    --indents;
+    printf(")");
+  }
+}
+
+/*
  * Visit `node`.
  */
 
@@ -187,6 +225,9 @@ visit(luna_node_t *node) {
       break;
     case LUNA_NODE_CALL:
       visit_call((luna_call_node_t *) node);
+      break;
+    case LUNA_NODE_IF:
+      visit_if((luna_if_node_t *) node);
       break;
     case LUNA_NODE_UNARY_OP:
       visit_unary_op((luna_unary_op_node_t *) node);

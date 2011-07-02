@@ -635,42 +635,54 @@ expr_stmt(luna_parser_t *self) {
   return node;
 }
 
-// /*
-//  *  ('if' | 'unless') expr block
-//  *  ('else' 'if' block)*
-//  *  ('else' block)?
-//  */
-// 
-// static luna_node_t *
-// if_stmt(luna_parser_t *self) {
-//   debug("if_stmt");
-// 
-//   accept(UNLESS) || accept(IF);
-// 
-//   context("if statement condition");
-//   if (!expr(self)) return 0;
-//   context("if statement");
-//   if (!block(self)) return 0;
-// 
-//   // else
-// loop:
-//   if (accept(ELSE)) {
-//     context("else statement");
-// 
-//     // else if
-//     if (accept(IF)) {
-//       context("else if statement condition");
-//       if (!expr(self)) return 0;
-//       context("else if statement");
-//       if (!block(self)) return 0;
-//       goto loop;
-//     } else if (!block(self)) {
-//       return 0;
-//     }
-//   }
-// 
-//   return 1;
-// }
+/*
+ *  ('if' | 'unless') expr block
+ *  ('else' 'if' block)*
+ *  ('else' block)?
+ */
+
+static luna_node_t *
+if_stmt(luna_parser_t *self) {
+  luna_node_t *cond;
+  luna_block_node_t *body;
+  debug("if_stmt");
+
+  // ('if' | 'unless') expr block
+  if (!(accept(IF) || accept(UNLESS))) return NULL;
+  int negate = LUNA_TOKEN_UNLESS == prev->type;
+
+  context("if statement condition");
+  if (!(cond = expr(self))) return NULL;
+
+  context("if statement");
+  if (!(body = block(self))) return NULL;
+
+  luna_if_node_t *node = luna_if_node_new(negate, cond, body);
+
+  // 'else'
+  loop:
+  if (accept(ELSE)) {
+    luna_block_node_t *body;
+    
+    // ('else' 'if' block)*
+    if (accept(IF)) {
+      context("else if statement condition");
+      if (!(cond = expr(self))) return NULL;
+      context("else if statement");
+      if (!(body = block(self))) return NULL;
+      luna_array_push(node->else_ifs, luna_node((luna_node_t *) luna_if_node_new(0, cond, body)));
+      goto loop;
+    // 'else'
+    } else {
+      context("else statement");
+      if (!(body = block(self))) return NULL;
+      node->else_block = body;
+    }
+
+  }
+
+  return (luna_node_t *) node;
+}
 
 // /*
 //  * ('while' | 'until')
@@ -697,7 +709,7 @@ static luna_node_t *
 stmt(luna_parser_t *self) {
   debug("stmt");
   context("statement");
-  // if (is(IF) || is(UNLESS)) return if_stmt(self);
+  if (is(IF) || is(UNLESS)) return if_stmt(self);
   // if (is(WHILE) || is(UNTIL)) return while_stmt(self);
   return expr_stmt(self);
 }
