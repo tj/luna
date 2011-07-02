@@ -71,7 +71,6 @@ parse_args(int *argc, const char **argv) {
       ast = 1;
       --*argc;
       ++argv;
-      printf("%p\n", argv);
     } else if ('-' == arg[0]) {
       fprintf(stderr, "unknown flag %s\n", arg);
       exit(1);
