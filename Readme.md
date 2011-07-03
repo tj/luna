@@ -179,22 +179,7 @@ tj proto proto == Object
 // => true
 ```
 
- I have not yet decided on names etc, however these can all easily be implemented in the language itself, avoiding additional keywords. One might ask, _"well why not implement most operators as methods?"_, the answer to that would be, _performance_. Many languages provide type coercion in operations, for the following is legal JavaScript:
-
-```js
-var tj = { valueOf: function(){ return 23; }};
-5 + tj;
-// => 28
-```
-
-or:
-
-```js
-5 + '5'
-// => '55'
-```
-
- this feature adds overhead, and in my opinion is rarely overly useful. In Luna arithmetic operators are strictly for arithmetic operations, _not_ concatenation etc, allowing Luna to optimize expressions such as `5 + 10` into a single instruction.
+ I have not yet decided on names etc, however these can all easily be implemented in the language itself, avoiding additional keywords.
 
 ### Concatenation
 
