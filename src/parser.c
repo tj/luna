@@ -624,6 +624,7 @@ if_expr(luna_parser_t *self) {
   // ('if' | 'unless') expr
   if (accept(IF) || accept(UNLESS)) {
     int negate = LUNA_TOKEN_UNLESS == prev->type;
+    context(negate ? "unless operation" : "if operation");
     luna_node_t *cond;
     if (!(cond = expr(self))) return NULL;
     luna_block_node_t *block = luna_block_node_new();
@@ -634,6 +635,7 @@ if_expr(luna_parser_t *self) {
   // ('while' | 'until') expr
   if (accept(WHILE) || accept(UNTIL)) {
     int negate = LUNA_TOKEN_UNTIL == prev->type;
+     context(negate ? "until operation" : "while operation");
     luna_node_t *cond;
     if (!(cond = expr(self))) return NULL;
     luna_block_node_t *block = luna_block_node_new();
