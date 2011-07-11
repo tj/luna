@@ -107,17 +107,19 @@ __NOTE__: forgive the bad syntax highlighting, until I have time to write a lexe
  In contrast, when used appropriately it can lead to syntactically pleasing code. For this reason I have chosen to adopt significant whitespace for Luna, _however_ since Luna's inheritance is prototype-based, excessive nesting is at a minimum, because the receiving object (or class in class-based languages), must be explicitly defined, reaffirming context, as shown in the example below:
 
 ```js 
-Person = Object clone
+Person = Object clone()
 
 Person init =: first last
- self first = first
- self last = last
+  user = Person clone()
+  user first = first
+  user last = last
+  user
 
 Person toString =:
- self first . ' ' . self last
+  self first . ' ' . self last
 
 Person inspect =:
- '#<Person' . self toString() . '>'
+  '#<Person' . self toString() . '>'
 
 tj = Person init('tj', 'holowaychuk')
 stdout write(tj)
@@ -214,16 +216,16 @@ and `block` is:
 so, for comparison the following JavaScript:
 
 ```js
- var greet = function(user) {
-   console.log('hello ' + user)
+ var greet = function(user, msg) {
+   console.log('hello ' + user + ' ' + msg);
  }
 ```
 
 would be defined in Luna as:
 
 ```js
-greet =: user
-  stdout write('hello '.user.'\n')
+greet =: user msg
+  stdout write('hello '.user.' '.msg.'\n')
 ```
 
 Let's look at some more examples. The following Ruby selects `person`'s ferrets, older than `4`:
