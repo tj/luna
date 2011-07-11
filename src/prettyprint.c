@@ -163,6 +163,22 @@ visit_function(luna_function_node_t * node) {
 }
 
 /*
+ * Visit `while` node.
+ */
+
+static void
+visit_while(luna_while_node_t *node) {
+  // while | until
+  printf("(%s ", node->negate ? "until" : "while");
+  visit((luna_node_t *) node->expr);
+  ++indents;
+  printf("\n");
+  visit((luna_node_t *) node->block);
+  --indents;
+  printf(")\n");
+}
+
+/*
  * Visit if `node`.
  */
 
@@ -229,6 +245,9 @@ visit(luna_node_t *node) {
       break;
     case LUNA_NODE_IF:
       visit_if((luna_if_node_t *) node);
+      break;
+    case LUNA_NODE_WHILE:
+      visit_while((luna_while_node_t *) node);
       break;
     case LUNA_NODE_UNARY_OP:
       visit_unary_op((luna_unary_op_node_t *) node);

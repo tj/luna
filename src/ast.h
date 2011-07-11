@@ -21,7 +21,7 @@
   n(EXPR_STMT) \
   n(RETURN) \
   n(IF) \
-  n(COND) \
+  n(WHILE) \
   n(FOR) \
   n(UNARY_OP) \
   n(BINARY_OP) \

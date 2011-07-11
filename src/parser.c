@@ -735,7 +735,8 @@ while_stmt(luna_parser_t *self) {
 
   // block
   if (!(body = block(self))) return NULL;
-  return 1;
+
+  return (luna_node_t *) luna_while_node_new(negate, cond, body);
 }
 
 /*
