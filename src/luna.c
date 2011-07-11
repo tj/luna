@@ -148,7 +148,7 @@ main(int argc, const char **argv){
     }    
   }
 
-  // parser the input
+  // parse the input
   luna_lexer_t lex;
   luna_lexer_init(&lex, stream, path);
   luna_parser_t parser;
