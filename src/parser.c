@@ -610,6 +610,8 @@ not_expr(luna_parser_t *self) {
 /*
  *   not_expr 'if' expr
  * | not_expr 'unless' expr
+ * | not_expr 'while' expr
+ * | not_expr 'until' expr
  * | not_expr
  */
 
@@ -621,6 +623,14 @@ if_expr(luna_parser_t *self) {
 
   // ('if' | 'unless') expr
   if (accept(IF) || accept(UNLESS)) {
+    luna_token type = prev->type;
+    luna_node_t *cond;
+    if (!(cond = expr(self))) return NULL;
+    node = (luna_node_t *) luna_binary_op_node_new(type, node, cond);
+  }
+
+  // ('while' | 'until') expr
+  if (accept(WHILE) || accept(UNTIL)) {
     luna_token type = prev->type;
     luna_node_t *cond;
     if (!(cond = expr(self))) return NULL;
