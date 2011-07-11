@@ -1,9 +1,32 @@
 body {
   padding: 100px;
   font: 14px/1.5 "Helvetica Neue", Helvetica, Arial, sans-serif;
-  color: #777;
+  color: #B4AFAF;
 }
 h1, h2, h3 {
   margin: 0;
   color: #202020;
+}
+h1 {
+  font-size: 25px;
+}
+h2 {
+  font-size: 14px;
+}
+ul {
+  margin: 15px 0;
+  padding: 0;
+  float: left;
+}
+ul li {
+  margin-top: 2px;
+  margin-right: 3px;
+  width: 200px;
+  list-style: none;
+}
+.tag {
+  color: #6b6b6b;
+}
+#content {
+  width: 100%;
 }
