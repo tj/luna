@@ -1,0 +1,9 @@
+body {
+  padding: 100px;
+  font: 14px/1.5 "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: #777;
+}
+h1, h2, h3 {
+  margin: 0;
+  color: #202020;
+}
