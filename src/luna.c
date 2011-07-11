@@ -13,6 +13,7 @@
 #include "luna.h"
 #include "lexer.h"
 #include "parser.h"
+#include "errors.h"
 #include "prettyprint.h"
 
 // --ast
@@ -156,30 +157,7 @@ main(int argc, const char **argv){
 
   // oh noes!
   if (!(root = luna_parse(&parser))) {
-    char *err, *type = "parse";
-
-    // error message
-    if (parser.err) {
-      err = parser.err;
-    // lexer
-    } else if (lex.error) {
-      err = lex.error;
-      type = "syntax";
-    // generate
-    } else {
-      char buf[64];
-      snprintf(buf, 64, "unexpected token '%s'", luna_token_type_string(lex.tok.type));
-      err = buf;
-    } 
-
-    fprintf(stderr
-      , "luna(%s:%d). %s error in %s, %s.\n"
-      , lex.filename
-      , lex.lineno
-      , type
-      , parser.ctx
-      , err);
-
+    luna_report_error(&parser);
     exit(1);
   }
 
