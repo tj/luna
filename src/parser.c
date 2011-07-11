@@ -600,20 +600,45 @@ static luna_node_t *
 not_expr(luna_parser_t *self) {
   debug("not_expr");
   if (accept(OP_LNOT)) {
-    return (luna_node_t *) luna_unary_op_node_new(prev->type, not_expr(self), 0);
+    luna_node_t *expr;
+    if (!(expr = not_expr(self))) return NULL;
+    return (luna_node_t *) luna_unary_op_node_new(prev->type, expr, 0);
   }
   return assignment_expr(self);
 }
 
 /*
- * not_expr (',' not_expr)*
+ *   not_expr 'if' expr
+ * | not_expr 'unless' expr
+ * | not_expr
+ */
+
+static luna_node_t *
+if_expr(luna_parser_t *self) {
+  luna_node_t *node;
+  debug("if_expr");
+  if (!(node = not_expr(self))) return NULL;
+
+  // ('if' | 'unless') expr
+  if (accept(IF) || accept(UNLESS)) {
+    luna_token type = prev->type;
+    luna_node_t *cond;
+    if (!(cond = expr(self))) return NULL;
+    node = (luna_node_t *) luna_binary_op_node_new(type, node, cond);
+  }
+
+  return node;
+}
+
+/*
+ * if_expr (',' if_expr)*
  */
 
 static luna_node_t *
 expr(luna_parser_t *self) {
   luna_node_t *node;
   debug("expr");
-  if (!(node = not_expr(self))) return NULL;
+  if (!(node = if_expr(self))) return NULL;
   // while (accept(COMMA)) {
   //   if (!not_expr(self)) return NULL;
   // }
