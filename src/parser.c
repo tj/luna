@@ -633,10 +633,12 @@ if_expr(luna_parser_t *self) {
 
   // ('while' | 'until') expr
   if (accept(WHILE) || accept(UNTIL)) {
-    luna_token type = prev->type;
+    int negate = LUNA_TOKEN_UNTIL == prev->type;
     luna_node_t *cond;
     if (!(cond = expr(self))) return NULL;
-    node = (luna_node_t *) luna_binary_op_node_new(type, node, cond);
+    luna_block_node_t *block = luna_block_node_new();
+    luna_array_push(block->stmts, luna_node(node));
+    node = (luna_node_t *) luna_while_node_new(negate, cond, block);
   }
 
   return node;
