@@ -83,12 +83,12 @@ while until
 
   All Luna dependencies are bundled within this repository, and follow the same general goals as Luna, light-weight, performant, and elegant:
   
-    - [http-parser](https://github.com/ry/http-parser)
-    - libev (event loop)
-    - libeio (async posix API)
-    - linenoise (tiny repl used by redis)
-    - khash
-    - kvec
+  - [http-parser](https://github.com/ry/http-parser)
+  - libev (event loop)
+  - libeio (async posix API)
+  - linenoise (tiny repl used by redis)
+  - khash
+  - kvec
 
 ## Inspiration
 
