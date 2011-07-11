@@ -165,3 +165,18 @@ luna_if_node_new(int negate, luna_node_t *expr, luna_block_node_t *block) {
   self->else_ifs = luna_array_new();
   return self;
 }
+
+/*
+ * Alloc and initialize a new while loop node, negated for "until",
+ * otherwise "while", with required `expr` and `block`.
+ */
+
+luna_while_node_t *
+luna_while_node_new(int negate, luna_node_t *expr, luna_block_node_t *block) {
+  luna_while_node_t *self = malloc(sizeof(luna_while_node_t));
+  self->base.type = LUNA_NODE_WHILE;
+  self->negate = negate;
+  self->expr = expr;
+  self->block = block;
+  return self;
+}
