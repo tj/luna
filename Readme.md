@@ -54,29 +54,30 @@
  for slot access in the table below, however this is simply a space (' ')
  in Luna.
 
-    operator       |  associativity
-    ---------------|---------------
-    \[\] \(\) sp       |  left
-    ++ --          |  right
-    ! ~ + -        |  right
-    * / %          |  left
-    .              |  left
-    + -            |  left
-    << >>          |  left
-    < <= > >=      |  left
-    == !=          |  left
-    &              |  left
-    ^              |  left
-    |              |  left
-    &&             |  left
-    \|\|           |  left
-    ?:             |  right
-    = :=           |  right
-    not            |  right
-    ,              |  left
-        |  left
-    if unless      |  left
-    while until
+```
+operator       |  associativity
+---------------|---------------
+\[\] \(\) sp       |  left
+++ --          |  right
+! ~ + -        |  right
+* / %          |  left
+.              |  left
++ -            |  left
+<< >>          |  left
+< <= > >=      |  left
+== !=          |  left
+&              |  left
+^              |  left
+|              |  left
+&&             |  left
+\|\|           |  left
+?:             |  right
+= :=           |  right
+not            |  right
+,              |  left
+if unless      |  left
+while until
+```
 
 ## Dependencies
 
