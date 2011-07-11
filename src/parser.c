@@ -630,6 +630,7 @@ expr_stmt(luna_parser_t *self) {
   debug("expr_stmt");
   
   if (!(node = expr(self))) return NULL;
+
   if (!(accept(SEMICOLON) || accept(NEWLINE) || is(OUTDENT))) {
     return error("missing newline or semi-colon");
   }
