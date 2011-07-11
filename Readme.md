@@ -74,6 +74,8 @@
     = :=           |  right
     not            |  right
     ,              |  left
+    while until    |  left
+    if unless      |  left
 
 ## Dependencies
 
