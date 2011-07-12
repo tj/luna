@@ -14,7 +14,7 @@
   - prototypal inheritance
   - reflection capabilities
   - callee evaluated messages
-  - register based VM
+  - register based VM (then JIT)
   - ...
 
 ## Build
