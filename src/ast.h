@@ -44,7 +44,7 @@
 typedef enum {
 #define n(node) LUNA_NODE_##node,
 LUNA_NODE_LIST
-#undef t
+#undef n
 } luna_node_type;
 
 /*
