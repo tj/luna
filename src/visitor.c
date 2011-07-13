@@ -7,6 +7,10 @@
 
 #include "visitor.h"
 
+/*
+ * Visit `node`, invoking the associated callback.
+ */
+
 void
 luna_visit(luna_visitor_t *self, luna_node_t *node) {
   switch (node->type) {
