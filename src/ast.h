@@ -33,6 +33,7 @@
   n(INT) \
   n(FLOAT) \
   n(STRING) \
+  n(ARRAY) \
   n(FUNCTION) \
   n(SLOT)
 
@@ -134,6 +135,15 @@ typedef struct {
 } luna_string_node_t;
 
 /*
+ * Luna array node.
+ */
+
+typedef struct {
+  luna_node_t base;
+  luna_array_t *vals;
+} luna_array_node_t;
+
+/*
  * Luna call node.
  */
 
@@ -208,6 +218,9 @@ luna_int_node_new(int val);
 
 luna_float_node_t *
 luna_float_node_new(float val);
+
+luna_array_node_t *
+luna_array_node_new();
 
 luna_string_node_t *
 luna_string_node_new(const char *val);

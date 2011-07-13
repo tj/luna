@@ -130,10 +130,35 @@ paren_expr(luna_parser_t *self) {
 }
 
 /*
+ * '[' (expr (',' expr)*)? ']'
+ */
+
+static luna_node_t *
+array_expr(luna_parser_t *self) {
+  luna_array_node_t *node = luna_array_node_new();
+  debug("array_expr");
+
+  if (!accept(LBRACK)) return NULL;
+  context("array");
+
+  if (!is(RBRACK)) {
+    do {
+      luna_node_t *val;
+      if (!(val = expr(self))) return NULL;
+      luna_array_push(node->vals, luna_node(val));
+    } while (accept(COMMA));
+  }
+
+  if (!accept(RBRACK)) return error("array missing closing ']'");
+  return (luna_node_t *) node;
+}
+
+/*
  *   id
  * | int
  * | float
  * | string
+ * | array
  * | paren_expr
  */
 
@@ -149,6 +174,8 @@ primary_expr(luna_parser_t *self) {
       return (luna_node_t *) luna_float_node_new(next->value.as_float);
     case LUNA_TOKEN_STRING:
       return (luna_node_t *) luna_string_node_new(next->value.as_string);
+    case LUNA_TOKEN_LBRACK:
+      return array_expr(self);
   }
   return paren_expr(self);
 }

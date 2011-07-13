@@ -62,5 +62,9 @@ luna_visit(luna_visitor_t *self, luna_node_t *node) {
       if (!self->visit_function) return;
       self->visit_function(self, (luna_function_node_t *) node);
       break;
+    case LUNA_NODE_ARRAY:
+      if (!self->visit_array) return;
+      self->visit_array(self, (luna_array_node_t *) node);
+      break;
   }
 }
