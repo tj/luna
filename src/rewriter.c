@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include "ast.h"
 #include "array.h"
+#include "visitor.h"
 #include "rewriter.h"
 
 /*
