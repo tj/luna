@@ -11,7 +11,7 @@
 
   - simple, small, elegant, explicit
   - fast, fast, fast and fast
-  - prototypal inheritance
+  - differential inheritance (proto chain)
   - reflection capabilities
   - callee evaluated messages
   - register based VM (then JIT)
