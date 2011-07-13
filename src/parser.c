@@ -130,17 +130,27 @@ paren_expr(luna_parser_t *self) {
 }
 
 /*
- * '[' (expr ((',' | newline) expr)*)? ']'
+ * '[' (expr (',' expr)*)? ']'
  */
 
 static luna_node_t *
 array_expr(luna_parser_t *self) {
-  luna_node_t *node;
+  luna_array_node_t *node = luna_array_node_new();
   debug("array_expr");
+
   if (!accept(LBRACK)) return NULL;
-  node = (luna_node_t *) luna_array_node_new();
+  context("array");
+
+  if (!is(RBRACK)) {
+    do {
+      luna_node_t *val;
+      if (!(val = expr(self))) return NULL;
+      luna_array_push(node->vals, luna_node(val));
+    } while (accept(COMMA));
+  }
+
   if (!accept(RBRACK)) return error("array missing closing ']'");
-  return node;
+  return (luna_node_t *) node;
 }
 
 /*
