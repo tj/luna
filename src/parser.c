@@ -130,10 +130,25 @@ paren_expr(luna_parser_t *self) {
 }
 
 /*
+ * '[' (expr ((',' | newline) expr)*)? ']'
+ */
+
+static luna_node_t *
+array_expr(luna_parser_t *self) {
+  luna_node_t *node;
+  debug("array_expr");
+  if (!accept(LBRACK)) return NULL;
+  node = (luna_node_t *) luna_array_node_new();
+  if (!accept(RBRACK)) return error("array missing closing ']'");
+  return node;
+}
+
+/*
  *   id
  * | int
  * | float
  * | string
+ * | array
  * | paren_expr
  */
 
@@ -149,6 +164,8 @@ primary_expr(luna_parser_t *self) {
       return (luna_node_t *) luna_float_node_new(next->value.as_float);
     case LUNA_TOKEN_STRING:
       return (luna_node_t *) luna_string_node_new(next->value.as_string);
+    case LUNA_TOKEN_LBRACK:
+      return array_expr(self);
   }
   return paren_expr(self);
 }

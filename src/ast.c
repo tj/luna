@@ -137,6 +137,18 @@ luna_binary_op_node_new(luna_token op, luna_node_t *left, luna_node_t *right) {
 }
 
 /*
+ * Alloc and initialize a new array node.
+ */
+
+luna_array_node_t *
+luna_array_node_new() {
+  luna_array_node_t *self = malloc(sizeof(luna_array_node_t));
+  self->base.type = LUNA_NODE_ARRAY;
+  self->vals = luna_array_new();
+  return self;
+}
+
+/*
  * Alloc and initialize a new function node with the given `block`.
  */
 
