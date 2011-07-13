@@ -94,6 +94,23 @@ visit_binary_op(luna_visitor_t *self, luna_binary_op_node_t *node) {
 }
 
 /*
+ * Visit array `node`.
+ */
+
+static void
+visit_array(luna_visitor_t *self, luna_array_node_t *node) {
+  printf("(array\n");
+  ++indents;
+  luna_array_each(node->vals, {
+    INDENT;
+    visit((luna_node_t *) val->value.as_obj);
+    if (i != len - 1) printf("\n");
+  });
+  --indents;
+  printf(")");
+}
+
+/*
  * Visit slot `node`.
  */
 
@@ -214,6 +231,7 @@ luna_prettyprint(luna_node_t *node) {
     .visit_int = visit_int,
     .visit_slot = visit_slot,
     .visit_call = visit_call,
+    .visit_array = visit_array,
     .visit_while = visit_while,
     .visit_block = visit_block,
     .visit_float = visit_float,
