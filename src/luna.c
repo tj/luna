@@ -14,7 +14,6 @@
 #include "lexer.h"
 #include "parser.h"
 #include "errors.h"
-#include "rewriter.h"
 #include "prettyprint.h"
 
 // --ast
@@ -161,9 +160,6 @@ main(int argc, const char **argv){
     luna_report_error(&parser);
     exit(1);
   }
-
-  // optimize
-  luna_rewrite((luna_node_t *) root);
 
   // --ast
   if (ast) {
