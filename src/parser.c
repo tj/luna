@@ -446,7 +446,7 @@ logical_or_expr(luna_parser_t *self) {
 }
 
 /*
- * id*
+ * (id (',' id)*)
  */
 
 static luna_array_t *
@@ -456,9 +456,13 @@ function_params(luna_parser_t *self) {
   context("function params");
   if (accept(ID)) {
     luna_array_push(params, luna_node((luna_node_t *) luna_id_node_new(prev->value.as_string)));
-    while (accept(ID)) {
-      // TODO: use string api
-      luna_array_push(params, luna_node((luna_node_t *) luna_id_node_new(prev->value.as_string)));
+    while (accept(COMMA)) {
+      if (accept(ID)) {
+        // TODO: use string api
+        luna_array_push(params, luna_node((luna_node_t *) luna_id_node_new(prev->value.as_string)));
+      } else {
+        return error("missing identifier");
+      };
     }
   }
   return params;
