@@ -172,7 +172,7 @@ visit_while(luna_visitor_t *self, luna_while_node_t *node) {
 static void
 visit_if(luna_visitor_t *self, luna_if_node_t *node) {
   // if
-  printf("(if ");
+  printf("(%s ", node->negate ? "unless" : "if");
   visit((luna_node_t *) node->expr);
   ++indents;
   printf("\n");

@@ -633,7 +633,7 @@ if_expr(luna_parser_t *self) {
     if (!(cond = expr(self))) return NULL;
     luna_block_node_t *block = luna_block_node_new();
     luna_array_push(block->stmts, luna_node(node));
-    node = (luna_node_t *) luna_if_node_new(0, cond, block);
+    node = (luna_node_t *) luna_if_node_new(negate, cond, block);
   }
 
   // ('while' | 'until') expr
