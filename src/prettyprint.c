@@ -224,5 +224,6 @@ luna_prettyprint(luna_node_t *node) {
   };
 
   luna_visit(&visitor, node);
+
   printf("\n");
 }
