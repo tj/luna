@@ -223,6 +223,8 @@ scan_number(luna_lexer_t *self, int c) {
       undo;
       return 1;
     default:
+      undo;
+      c = '0';
       goto scan_int;
   }
 
