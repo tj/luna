@@ -10,24 +10,28 @@
 
 #include "ast.h"
 
+#define visit(node) luna_visit(self, node)
+
 /*
  * Visitor struct.
  */
 
 typedef struct luna_visitor {
-  void (* visit_block)(luna_block_node_t *node, struct luna_visitor *self);
-  void (* visit_id)(luna_id_node_t *node, struct luna_visitor *self);
-  void (* visit_int)(luna_int_node_t *node, struct luna_visitor *self);
-  void (* visit_float)(luna_float_node_t *node, struct luna_visitor *self);
-  void (* visit_string)(luna_string_node_t *node, struct luna_visitor *self);
-  void (* visit_slot)(luna_slot_node_t *node, struct luna_visitor *self);
-  void (* visit_call)(luna_call_node_t *node, struct luna_visitor *self);
-  void (* visit_while)(luna_while_node_t *node, struct luna_visitor *self);
-  void (* visit_unary_op)(luna_unary_op_node_t *node, struct luna_visitor *self);
-  void (* visit_binary_op)(luna_binary_op_node_t *node, struct luna_visitor *self);
-  void (* visit_function)(luna_function_node_t *node, struct luna_visitor *self);
-  void (* visit_if)(luna_if_node_t *node, struct luna_visitor *self);
+  void (* visit_block)(struct luna_visitor *self, luna_block_node_t *node);
+  void (* visit_id)(struct luna_visitor *self, luna_id_node_t *node);
+  void (* visit_int)(struct luna_visitor *self, luna_int_node_t *node);
+  void (* visit_float)(struct luna_visitor *self, luna_float_node_t *node);
+  void (* visit_string)(struct luna_visitor *self, luna_string_node_t *node);
+  void (* visit_slot)(struct luna_visitor *self, luna_slot_node_t *node);
+  void (* visit_call)(struct luna_visitor *self, luna_call_node_t *node);
+  void (* visit_while)(struct luna_visitor *self, luna_while_node_t *node);
+  void (* visit_unary_op)(struct luna_visitor *self, luna_unary_op_node_t *node);
+  void (* visit_binary_op)(struct luna_visitor *self, luna_binary_op_node_t *node);
+  void (* visit_function)(struct luna_visitor *self, luna_function_node_t *node);
+  void (* visit_if)(struct luna_visitor *self, luna_if_node_t *node);
 } luna_visitor_t;
+
+// protos
 
 void
 luna_visit(luna_visitor_t *self, luna_node_t *node);

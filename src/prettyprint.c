@@ -8,36 +8,23 @@
 #include <stdio.h>
 #include "ast.h"
 #include "array.h"
+#include "visitor.h"
 #include "prettyprint.h"
 
 // indentation level
 
 static int indents = 0;
 
-// forward declarations
-
-static void visit(luna_node_t *node);
-
 // output indentation
 
 #define INDENT for (int j = 0; j < indents; ++j) printf("  ")
-
-/*
- * Pretty-print the given `node` to stdout.
- */
-
-void
-luna_prettyprint(luna_node_t *node) {
-  visit(node);
-  printf("\n");
-}
 
 /*
  * Visit block `node`.
  */
 
 static void
-visit_block(luna_block_node_t *node) {
+visit_block(luna_visitor_t *self, luna_block_node_t *node) {
   luna_array_each(node->stmts, {
     if (i) printf("\n");
     INDENT;
@@ -50,7 +37,7 @@ visit_block(luna_block_node_t *node) {
  */
 
 static void
-visit_int(luna_int_node_t *node) {
+visit_int(luna_visitor_t *self, luna_int_node_t *node) {
   printf("(int %d)", node->val);
 }
 
@@ -59,7 +46,7 @@ visit_int(luna_int_node_t *node) {
  */
 
 static void
-visit_float(luna_float_node_t *node) {
+visit_float(luna_visitor_t *self, luna_float_node_t *node) {
   printf("(float %f)", node->val);
 }
 
@@ -68,7 +55,7 @@ visit_float(luna_float_node_t *node) {
  */
 
 static void
-visit_id(luna_id_node_t *node) {
+visit_id(luna_visitor_t *self, luna_id_node_t *node) {
   printf("(id %s)", node->val);
 }
 
@@ -77,7 +64,7 @@ visit_id(luna_id_node_t *node) {
  */
 
 static void
-visit_string(luna_string_node_t *node) {
+visit_string(luna_visitor_t *self, luna_string_node_t *node) {
   printf("(string '%s')", node->val);
 }
 
@@ -86,7 +73,7 @@ visit_string(luna_string_node_t *node) {
  */
 
 static void
-visit_unary_op(luna_unary_op_node_t *node) {
+visit_unary_op(luna_visitor_t *self, luna_unary_op_node_t *node) {
   int c = node->postfix ? '@' : 0;
   printf("(%c%s ", c, luna_token_type_string(node->op));
   visit(node->expr);
@@ -98,7 +85,7 @@ visit_unary_op(luna_unary_op_node_t *node) {
  */
 
 static void
-visit_binary_op(luna_binary_op_node_t *node) {
+visit_binary_op(luna_visitor_t *self, luna_binary_op_node_t *node) {
   printf("(%s ", luna_token_type_string(node->op));
   visit(node->left);
   printf(" ");
@@ -111,7 +98,7 @@ visit_binary_op(luna_binary_op_node_t *node) {
  */
 
 static void
-visit_slot(luna_slot_node_t *node) {
+visit_slot(luna_visitor_t *self, luna_slot_node_t *node) {
   printf("(slot\n");
   ++indents;
   INDENT;
@@ -128,7 +115,7 @@ visit_slot(luna_slot_node_t *node) {
  */
 
 static void
-visit_call(luna_call_node_t * node) {
+visit_call(luna_visitor_t *self, luna_call_node_t * node) {
   printf("(call\n");
   ++indents;
   INDENT;
@@ -150,7 +137,7 @@ visit_call(luna_call_node_t * node) {
  */
 
 static void
-visit_function(luna_function_node_t * node) {
+visit_function(luna_visitor_t *self, luna_function_node_t * node) {
   printf("(function ");
   luna_array_each(node->params, {
     printf("%s ", ((luna_id_node_t *) val->value.as_obj)->val);
@@ -167,7 +154,7 @@ visit_function(luna_function_node_t * node) {
  */
 
 static void
-visit_while(luna_while_node_t *node) {
+visit_while(luna_visitor_t *self, luna_while_node_t *node) {
   // while | until
   printf("(%s ", node->negate ? "until" : "while");
   visit((luna_node_t *) node->expr);
@@ -183,7 +170,7 @@ visit_while(luna_while_node_t *node) {
  */
 
 static void
-visit_if(luna_if_node_t *node) {
+visit_if(luna_visitor_t *self, luna_if_node_t *node) {
   // if
   printf("(if ");
   visit((luna_node_t *) node->expr);
@@ -216,48 +203,26 @@ visit_if(luna_if_node_t *node) {
 }
 
 /*
- * Visit `node`.
+ * Pretty-print the given `node` to stdout.
  */
 
-static void
-visit(luna_node_t *node) {
-  switch (node->type) {
-    case LUNA_NODE_BLOCK:
-      visit_block((luna_block_node_t *) node);
-      break;
-    case LUNA_NODE_ID:
-      visit_id((luna_id_node_t *) node);
-      break;
-    case LUNA_NODE_INT:
-      visit_int((luna_int_node_t *) node);
-      break;
-    case LUNA_NODE_FLOAT:
-      visit_float((luna_float_node_t *) node);
-      break;
-    case LUNA_NODE_STRING:
-      visit_string((luna_string_node_t *) node);
-      break;
-    case LUNA_NODE_SLOT:
-      visit_slot((luna_slot_node_t *) node);
-      break;
-    case LUNA_NODE_CALL:
-      visit_call((luna_call_node_t *) node);
-      break;
-    case LUNA_NODE_IF:
-      visit_if((luna_if_node_t *) node);
-      break;
-    case LUNA_NODE_WHILE:
-      visit_while((luna_while_node_t *) node);
-      break;
-    case LUNA_NODE_UNARY_OP:
-      visit_unary_op((luna_unary_op_node_t *) node);
-      break;
-    case LUNA_NODE_BINARY_OP:
-      visit_binary_op((luna_binary_op_node_t *) node);
-      break;
-    case LUNA_NODE_FUNCTION:
-      visit_function((luna_function_node_t *) node);
-      break;
-  }
-}
+void
+luna_prettyprint(luna_node_t *node) {
+  luna_visitor_t visitor = {
+    .visit_if = visit_if,
+    .visit_id = visit_id,
+    .visit_int = visit_int,
+    .visit_slot = visit_slot,
+    .visit_call = visit_call,
+    .visit_while = visit_while,
+    .visit_block = visit_block,
+    .visit_float = visit_float,
+    .visit_string = visit_string,
+    .visit_function = visit_function,
+    .visit_unary_op = visit_unary_op,
+    .visit_binary_op = visit_binary_op
+  };
 
+  luna_visit(&visitor, node);
+  printf("\n");
+}
