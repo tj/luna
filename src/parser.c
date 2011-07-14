@@ -9,6 +9,7 @@
 #include "prettyprint.h"
 #include "parser.h"
 #include "array.h"
+#include "token.h"
 
 // TODO: test contextual errors
 
@@ -130,6 +131,52 @@ paren_expr(luna_parser_t *self) {
 }
 
 /*
+ *   expr
+ * | expr ',' newline? arg_list
+ * | expr ','? newline arg_list
+ * | indent arg_list ','? outdent
+ * | arg_list ','? indent arg_list ','? outdent
+ */
+
+int
+arg_list(luna_parser_t *self, luna_array_node_t *arr, luna_token delim) {
+  if (delim == peek->type) return 1;
+
+  // indent arg_list ','? outdent
+  if (accept(INDENT)) {
+    if (!arg_list(self, arr, delim)) return 0;
+    if (!accept(OUTDENT)) return 0;
+    return arg_list(self, arr, delim);
+  }
+
+  // newline*
+  if (accept(NEWLINE)) return arg_list(self, arr, delim);
+
+  // expr
+  luna_node_t *val;
+  if (!(val = expr(self))) return 0;
+  luna_array_push(arr->vals, luna_node(val));
+
+  // newline
+  if (accept(NEWLINE)) return arg_list(self, arr, delim);
+
+  // ','
+  if (accept(COMMA)) {
+    // newline? arg_list
+    if (accept(NEWLINE)) return arg_list(self, arr, delim);
+    // indent arg_list ','? outdent
+    else if (is(INDENT)) return arg_list(self, arr, delim);
+    // arg_list
+    return arg_list(self, arr, delim);
+  }
+
+  // indent arg_list ','? outdent
+  if (is(INDENT)) return arg_list(self, arr, delim);
+
+  return 1;
+}
+
+/*
  * '[' (expr (',' expr)*)? ']'
  */
 
@@ -141,31 +188,7 @@ array_expr(luna_parser_t *self) {
 
   if (!accept(LBRACK)) return NULL;
   context("array");
-
-  // TODO: utilize args_list for call_args
-  while (!is(RBRACK)) {
-
-    // indent
-    if (accept(INDENT)) ++indents;
-
-    // expr
-    luna_node_t *val;
-    if (!(val = expr(self))) return NULL;
-    luna_array_push(node->vals, luna_node(val));
-
-    // , newline?
-    if (accept(COMMA)) {
-      accept(NEWLINE);
-      continue;
-    // newline
-    } else if (accept(NEWLINE)) {
-      continue;
-    }
-
-    // outdent
-    if (indents-- && !accept(OUTDENT)) return error("missing outdent");
-  }
-
+  if (!arg_list(self, node, LUNA_TOKEN_RBRACK)) return NULL;
   if (!accept(RBRACK)) return error("array missing closing ']'");
   return (luna_node_t *) node;
 }
