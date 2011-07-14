@@ -135,22 +135,35 @@ paren_expr(luna_parser_t *self) {
 
 static luna_node_t *
 array_expr(luna_parser_t *self) {
-  luna_token_t *indent = NULL;
+  int indents = 0;
   luna_array_node_t *node = luna_array_node_new();
   debug("array_expr");
 
   if (!accept(LBRACK)) return NULL;
   context("array");
 
-  if (!is(RBRACK)) {
-    indent = accept(INDENT);
-    while (!is(RBRACK)) {
-      luna_node_t *val;
-      if (!(val = expr(self))) return NULL;
-      luna_array_push(node->vals, luna_node(val));
-      if (!(accept(COMMA) || accept(NEWLINE))) break;
+  // TODO: utilize args_list for call_args
+  while (!is(RBRACK)) {
+
+    // indent
+    if (accept(INDENT)) ++indents;
+
+    // expr
+    luna_node_t *val;
+    if (!(val = expr(self))) return NULL;
+    luna_array_push(node->vals, luna_node(val));
+
+    // , newline?
+    if (accept(COMMA)) {
+      accept(NEWLINE);
+      continue;
+    // newline
+    } else if (accept(NEWLINE)) {
+      continue;
     }
-    if (indent) if (!accept(OUTDENT)) return error("missing outdent");
+
+    // outdent
+    if (indents-- && !accept(OUTDENT)) return error("missing outdent");
   }
 
   if (!accept(RBRACK)) return error("array missing closing ']'");
