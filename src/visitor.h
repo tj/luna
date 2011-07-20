@@ -10,6 +10,10 @@
 
 #include "ast.h"
 
+/*
+ * Visit the given `node`.
+ */
+
 #define visit(node) luna_visit(self, node)
 
 /*
