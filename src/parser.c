@@ -131,47 +131,24 @@ paren_expr(luna_parser_t *self) {
 }
 
 /*
- *   expr
- * | expr ',' newline? arg_list
- * | expr ','? newline arg_list
- * | indent arg_list ','? outdent
- * | arg_list ','? indent arg_list ','? outdent
+ *   expr ','?
+ * | expr ',' arg_list
  */
 
 int
 arg_list(luna_parser_t *self, luna_array_node_t *arr, luna_token delim) {
+  // trailing ','
   if (delim == peek->type) return 1;
-
-  // indent arg_list ','? outdent
-  if (accept(INDENT)) {
-    if (!arg_list(self, arr, delim)) return 0;
-    if (!accept(OUTDENT)) return 0;
-    return arg_list(self, arr, delim);
-  }
-
-  // newline*
-  if (accept(NEWLINE)) return arg_list(self, arr, delim);
 
   // expr
   luna_node_t *val;
   if (!(val = expr(self))) return 0;
   luna_array_push(arr->vals, luna_node(val));
 
-  // newline
-  if (accept(NEWLINE)) return arg_list(self, arr, delim);
-
-  // ','
+  // ',' arg_list
   if (accept(COMMA)) {
-    // newline? arg_list
-    if (accept(NEWLINE)) return arg_list(self, arr, delim);
-    // indent arg_list ','? outdent
-    else if (is(INDENT)) return arg_list(self, arr, delim);
-    // arg_list
-    return arg_list(self, arr, delim);
+    arg_list(self, arr, delim);
   }
-
-  // indent arg_list ','? outdent
-  if (is(INDENT)) return arg_list(self, arr, delim);
 
   return 1;
 }
