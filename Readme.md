@@ -113,10 +113,10 @@ Person init =: first last
  self last = last
 
 Person toString =:
- self first . ' ' . self last
+ self first + ' ' + self last
 
 Person inspect =:
- '#<Person' . self toString() . '>'
+ '#<Person' + self toString() + '>'
 
 tj = Person init('tj', 'holowaychuk')
 stdout write(tj)
@@ -184,14 +184,6 @@ tj proto proto == Object
 
  I have not yet decided on names etc, however these can all easily be implemented in the language itself, avoiding additional keywords.
 
-### Concatenation
-
-  Concatenation is performed with the `.` operator:
-
-```js 
-'foo ' . ' bar'
-``` 
-
 ### Function Literals
 
  Luna has first-class functions, much like JavaScript, Lua etc. The syntax of a function literal in Luna is as follows (_currently_):
@@ -222,7 +214,7 @@ would be defined in Luna as:
 
 ```js
 greet =: user
-  stdout write('hello '.user.'\n')
+  stdout write('hello ' + user + '\n')
 ```
 
 Let's look at some more examples. The following Ruby selects `person`'s ferrets, older than `4`:
