@@ -282,27 +282,7 @@ multiplicative_expr(luna_parser_t *self) {
 }
 
 /*
- * multiplicative_expr ('.' multiplicative_expr)*
- */
-
-static luna_node_t *
-concat_expr(luna_parser_t *self) {
-  luna_node_t *node, *right;
-  debug("concat_expr");
-  if (!(node = multiplicative_expr(self))) return NULL;
-  while (accept(OP_DOT)) {
-    context("concatenation operation");
-    if (right = multiplicative_expr(self)) {
-      node = (luna_node_t *) luna_binary_op_node_new(LUNA_TOKEN_OP_DOT, node, right);
-    } else {
-      return error("missing right-hand expression");
-    }
-  }
-  return node;
-}
-
-/*
- * concat_expr (('+ | '-') concat_expr)*
+ * multiplicative_expr (('+ | '-') multiplicative_expr)*
  */
 
 static luna_node_t *
@@ -310,11 +290,11 @@ additive_expr(luna_parser_t *self) {
   luna_token op;
   luna_node_t *node, *right;
   debug("additive_expr");
-  if (!(node = concat_expr(self))) return NULL;
+  if (!(node = multiplicative_expr(self))) return NULL;
   while (accept(OP_PLUS) || accept(OP_MINUS)) {
     op = prev->type;
     context("additive operation");
-    if (right = concat_expr(self)) {
+    if (right = multiplicative_expr(self)) {
       node = (luna_node_t *) luna_binary_op_node_new(op, node, right);
     } else {
       return error("missing right-hand expression");

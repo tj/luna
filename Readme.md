@@ -61,7 +61,6 @@ operator       |  associativity
 ++ --          |  right
 ! ~ + -        |  right
 * / %          |  left
-.              |  left
 + -            |  left
 << >>          |  left
 < <= > >=      |  left
