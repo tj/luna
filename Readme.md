@@ -276,13 +276,6 @@ users select(age > 20)
 million = 1_000_000.00
 ```
 
- as time-related functions in Luna will be working in milliseconds, much like JavaScript, "s" and "ms" are implemented in the lexical analysis of Luna programs, though `40 s` or `40s` would be a valid number slot access:
-
-```js
-2.5s
-300ms
-```
-
 we can also use the `#<CHAR>` syntax to return a character code for the given char:
 
 ```
