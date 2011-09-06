@@ -8,63 +8,33 @@
 #include "visitor.h"
 
 /*
+ * Visit the node when a `type` callback is present.
+ */
+
+#define VISIT(type) \
+  if (!self->visit_##type) return; \
+  self->visit_##type(self, (luna_##type##_node_t *) node); \
+  break;
+
+/*
  * Visit `node`, invoking the associated callback.
  */
 
 void
 luna_visit(luna_visitor_t *self, luna_node_t *node) {
   switch (node->type) {
-    case LUNA_NODE_BLOCK:
-      if (!self->visit_block) return;
-      self->visit_block(self, (luna_block_node_t *) node);
-      break;
-    case LUNA_NODE_ID:
-      if (!self->visit_id) return;
-      self->visit_id(self, (luna_id_node_t *) node);
-      break;
-    case LUNA_NODE_INT:
-      if (!self->visit_int) return;
-      self->visit_int(self, (luna_int_node_t *) node);
-      break;
-    case LUNA_NODE_FLOAT:
-      if (!self->visit_float) return;
-      self->visit_float(self, (luna_float_node_t *) node);
-      break;
-    case LUNA_NODE_STRING:
-      if (!self->visit_string) return;
-      self->visit_string(self, (luna_string_node_t *) node);
-      break;
-    case LUNA_NODE_SLOT:
-      if (!self->visit_slot) return;
-      self->visit_slot(self, (luna_slot_node_t *) node);
-      break;
-    case LUNA_NODE_CALL:
-      if (!self->visit_call) return;
-      self->visit_call(self, (luna_call_node_t *) node);
-      break;
-    case LUNA_NODE_IF:
-      if (!self->visit_if) return;
-      self->visit_if(self, (luna_if_node_t *) node);
-      break;
-    case LUNA_NODE_WHILE:
-      if (!self->visit_while) return;
-      self->visit_while(self, (luna_while_node_t *) node);
-      break;
-    case LUNA_NODE_UNARY_OP:
-      if (!self->visit_unary_op) return;
-      self->visit_unary_op(self, (luna_unary_op_node_t *) node);
-      break;
-    case LUNA_NODE_BINARY_OP:
-      if (!self->visit_binary_op) return;
-      self->visit_binary_op(self, (luna_binary_op_node_t *) node);
-      break;
-    case LUNA_NODE_FUNCTION:
-      if (!self->visit_function) return;
-      self->visit_function(self, (luna_function_node_t *) node);
-      break;
-    case LUNA_NODE_ARRAY:
-      if (!self->visit_array) return;
-      self->visit_array(self, (luna_array_node_t *) node);
-      break;
+    case LUNA_NODE_BLOCK: VISIT(block);
+    case LUNA_NODE_ID: VISIT(id);
+    case LUNA_NODE_INT: VISIT(int);
+    case LUNA_NODE_FLOAT: VISIT(float);
+    case LUNA_NODE_STRING: VISIT(string);
+    case LUNA_NODE_SLOT: VISIT(slot);
+    case LUNA_NODE_CALL: VISIT(call);
+    case LUNA_NODE_IF: VISIT(if);
+    case LUNA_NODE_WHILE: VISIT(while);
+    case LUNA_NODE_UNARY_OP: VISIT(unary_op);
+    case LUNA_NODE_BINARY_OP: VISIT(binary_op);
+    case LUNA_NODE_FUNCTION: VISIT(function);
+    case LUNA_NODE_ARRAY: VISIT(array);
   }
 }
