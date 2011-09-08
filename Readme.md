@@ -13,7 +13,6 @@
   - fast, fast, fast and fast
   - differential inheritance (proto chain)
   - reflection capabilities
-  - callee evaluated messages
   - register based VM (then JIT)
   - ...
 
@@ -255,12 +254,6 @@ person pets select: pet
 ```
 
 This approach is syntactically similar to Ruby "blocks", though simply sugar on top of regular old first-class Luna functions.
-
-To make things even sexier, Luna will allow for callee-evaluated expressions, that is, expressions or "messages" are conditionally evaluated by the function called. For example the following statement means exactly how it reads, select users with `age` above 20, this is _not_ passing the result of `age > 20` to `select()`, we are messaging `select()` which then may choose to evaluate the message against each user, essentially expanding to `user age > 20`:
-
-```js
-users select(age > 20)
-```
 
 ### Number Literals
 
