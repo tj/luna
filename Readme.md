@@ -111,11 +111,11 @@ Person init =: first last
  self first = first
  self last = last
 
-Person toString =:
+Person to_string_ =:
  self first + ' ' + self last
 
 Person inspect =:
- '#<Person' + self toString() + '>'
+ '#<Person' + self + '>'
 
 tj = Person init('tj', 'holowaychuk')
 stdout write(tj)
@@ -127,16 +127,16 @@ stdout write(tj)
   Personally I'm not a fan of "wordy" operators, aka `or and` for `|| &&`, etc, though again they can look ok within reason, but I find the "machine-like" look of operators provide a nice visual separation. When they are chained in large expressions they get a little lost amongst identifiers. The one exception in Luna is `not`, which is a low-precedence negation. For example the following:
 
      User allowed =: realm
-       not banned || blockedFrom(realm)
+       not banned || blocked_from(realm)
 
 Evaluates as:
 
      User allowed =: realm
-       !(banned || blockedFrom(realm))
+       !(banned || blocked_from(realm))
 
 ### Slot Access
 
- In the example above, you will notice that the use of whitespace is used to convey member (slot) access, where typically the `.` character is used. I find this pleasing to the eye, while maintaining explicit function calls. Typically languages such as Ruby, or CoffeeScript allow optional parenthesis for calls, creating ambiguity with property access:
+ In the example above, you will notice that the use of whitespace is used to convey member (slot) access, where typically the `.` character is used. I find this pleasing to the eye, while maintaining explicit function calls. Typically languages such as Ruby allow optional parenthesis for calls, creating ambiguity with property access:
 
 ```ruby 
 person.pets.push 'tobi'
@@ -145,16 +145,7 @@ person.pets.push 'jane'
 person.pets.pop
 ```
 
-or in the case of CoffeeScript due to ambiguity issues, they are required when no arguments are given:
-
-```js
-person.pets.push 'tobi'
-person.pets.push 'loki'
-person.pets.push 'jane'
-person.pets.pop()
-```
-
-Luna function calls _always_ (almost, one exception) require parenthesis:
+Luna function calls _always_ (one exception :) ) require parenthesis:
 
 ```js
 person pets push('tobi')
@@ -167,17 +158,23 @@ While the former approach is fine in small use-cases, and of course when it's _y
 
 ### Avoiding Operators
 
- Another aspect I want to avoid, which I consider an annoyance in JavaScript, is using operators such as `typeof`, or `instanceof`, when a simple method or property will do, I would much rather use language features such as functions unless performance is crucial.
+ Another aspect I want to avoid, which I consider an annoyance in JavaScript, is using operators such as `typeof`, or `instanceof`, when a simple method or property will do, I would much rather use built-in language features.
 
 ```js
 User = Object clone
 
 tj = User clone
 
+tj is_a =: type
+  'user' == type
+
 tj proto == User
 // => true
 
 tj proto proto == Object
+// => true
+
+tj is_a('user')
 // => true
 ```
 
@@ -222,13 +219,6 @@ Let's look at some more examples. The following Ruby selects `person`'s ferrets,
 person.pets.select do |pet|
   pet.species == 'ferret' and pet.age > 4
 end
-```
-
-and the following CoffeeScript:
-
-```js
-person.pets.filter (pet) ->
-  pet.species == 'ferret' and pet.age > 4
 ```
 
 The equivalent canonical Luna would look like this:
