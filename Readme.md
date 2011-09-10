@@ -9,9 +9,10 @@
 
 ## Goals
 
+  - fast!
   - simple, small, elegant, explicit
-  - fast, fast, fast and fast
   - differential inheritance (proto chain)
+  - avoid keywords and additional syntax where possible
   - reflection capabilities
   - register based VM (then JIT)
   - ...
