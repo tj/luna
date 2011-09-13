@@ -1,0 +1,20 @@
+
+Array first =: n
+  if n
+    self slice(0, n)
+  else
+    self at(n)
+
+Array sum =:
+  self reduce: sum, n
+    sum + n
+
+Array min =:
+  self reduce: min, n
+    n < min ? n : min
+
+Array max =:
+  self reduce: max, n
+    n > max ? max : min
+
+
