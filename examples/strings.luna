@@ -13,3 +13,4 @@ foo = 'foo
 bar
 baz'
 
+foo = 'foo\x40bar'
