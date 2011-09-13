@@ -200,7 +200,9 @@ visit_if(luna_visitor_t *self, luna_if_node_t *node) {
   // else ifs
   luna_array_each(node->else_ifs, {
     luna_if_node_t *else_if = (luna_if_node_t *) val->value.as_obj;
-    printf("\n(else if ");
+    printf("\n");
+    INDENT;
+    printf("(else if ");
     visit((luna_node_t *) else_if->expr);
     ++indents;
     printf("\n");
@@ -211,7 +213,9 @@ visit_if(luna_visitor_t *self, luna_if_node_t *node) {
 
   // else
   if (node->else_block) {
-    printf("\n(else\n");
+    printf("\n");
+    INDENT;
+    printf("(else\n");
     ++indents;
     visit((luna_node_t *) node->else_block);
     --indents;
