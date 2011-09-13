@@ -92,6 +92,7 @@
 #include <errno.h>
 #include <string.h>
 #include <stdlib.h>
+#include <ctype.h>
 #include <sys/types.h>
 #include <sys/ioctl.h>
 #include <unistd.h>
@@ -287,6 +288,40 @@ void linenoiseClearScreen(void) {
     }
 }
 
+int hardLeft(char *buf, int pos) {
+  int c = buf[pos-1]; 
+
+  // space
+  if (isspace(c)) {
+    do --pos;
+    while (pos && isspace(buf[pos-1]));
+    if (pos) return hardLeft(buf, pos);
+  // word
+  } else {
+    do --pos;
+    while (pos && !isspace(buf[pos-1]));
+  }
+
+  return pos;
+}
+
+int hardRight(char *buf, int pos) {
+  int c = buf[pos+1]; 
+
+  // space
+  if (isspace(c)) {
+    do ++pos;
+    while ((c = buf[pos+1]) && isspace(c));
+  // word
+  } else {
+    do ++pos;
+    while ((c = buf[pos+1]) && !isspace(c));
+    if (c) return hardRight(buf, pos);
+  }
+
+  return pos;
+}
+
 static int linenoisePrompt(int fd, char *buf, size_t buflen, const char *prompt) {
     size_t plen = strlen(prompt);
     size_t pos = 0;
@@ -305,7 +340,7 @@ static int linenoisePrompt(int fd, char *buf, size_t buflen, const char *prompt)
     while(1) {
         char c;
         int nread;
-        char seq[2], seq2[2];
+        char seq[3], seq2[2];
 
         nread = read(fd,&c,1);
         if (nread <= 0) return len;
@@ -372,8 +407,18 @@ static int linenoisePrompt(int fd, char *buf, size_t buflen, const char *prompt)
             goto up_down_arrow;
             break;
         case 27:    /* escape sequence */
-            if (read(fd,seq,2) == -1) break;
-            if (seq[0] == 91 && seq[1] == 68) {
+            if (read(fd,seq,3) == -1) break;
+            if (seq[0] == 91 && seq[1] == 53 && seq[2] == 68) {
+              if (pos > 0) {
+                pos = hardLeft(buf, pos);
+                refreshLine(fd,prompt,buf,len,pos,cols);
+              }
+            } else if (seq[0] == 91 && seq[1] == 53 && seq[2] == 67) {
+              if (pos != len) {
+                pos = hardRight(buf, pos);
+                refreshLine(fd,prompt,buf,len,pos,cols);
+              }
+            } else if (seq[0] == 91 && seq[1] == 68) {
 left_arrow:
                 /* left arrow */
                 if (pos > 0) {
