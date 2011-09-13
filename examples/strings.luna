@@ -1,0 +1,15 @@
+
+foo = 'foo bar baz'
+
+foo = 'foo\abar\abaz'
+foo = 'foo\bbar\bbaz'
+foo = 'foo\tbar\tbaz'
+foo = 'foo\fbar\fbaz'
+foo = 'foo\vbar\vbaz'
+foo = 'foo\nbar\nbaz'
+foo = 'foo\ebar\ebaz'
+
+foo = 'foo
+bar
+baz'
+
