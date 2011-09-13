@@ -20,6 +20,20 @@ static int indents = 0;
 #define INDENT for (int j = 0; j < indents; ++j) printf("  ")
 
 /*
+ * Escape chars.
+ */
+
+static char escapes[] = {
+    'a'
+  , 'b'
+  , 't'
+  , 'n'
+  , 'v'
+  , 'f'
+  , 'r'
+};
+
+/*
  * Return the length of an "inspected" string.
  */
 
@@ -51,42 +65,23 @@ inspect_length(const char *str) {
 
 static const char *
 inspect(const char *str) {
-  // determine length
   int len = inspect_length(str);
   char *buf = malloc(len);
   for (int i = 0, j = 0; str[i]; ++i) {
     switch (str[i]) {
       case '\a':
-        buf[j++] = '\\';
-        buf[j++] = 'a';
-        break;
       case '\b':
+      case '\f':
+      case '\n':
+      case '\r':
+      case '\t':
+      case '\v':
         buf[j++] = '\\';
-        buf[j++] = 'b';
+        buf[j++] = escapes[str[i]-7];
         break;
       case '\e':
         buf[j++] = '\\';
         buf[j++] = 'e';
-        break;
-      case '\f':
-        buf[j++] = '\\';
-        buf[j++] = 'f';
-        break;
-      case '\n':
-        buf[j++] = '\\';
-        buf[j++] = 'n';
-        break;
-      case '\r':
-        buf[j++] = '\\';
-        buf[j++] = 'r';
-        break;
-      case '\t':
-        buf[j++] = '\\';
-        buf[j++] = 't';
-        break;
-      case '\v':
-        buf[j++] = '\\';
-        buf[j++] = 'v';
         break;
       default:
         buf[j++] = str[i];
