@@ -8,16 +8,23 @@
 #include "object.h"
 #include "hash.h"
 
+static luna_value_t *
+alloc_value(luna_value type) {
+  luna_value_t *self = malloc(sizeof(luna_value_t));
+  if (!self) return NULL;
+  self->type = type;
+  self->hash = luna_hash_new();
+  return self;
+}
+
 /*
  * Allocate a new int object with the given `val`.
  */
 
 luna_value_t *
 luna_int_new(int val) {
-  luna_value_t *self = malloc(sizeof(luna_value_t));
+  luna_value_t *self = alloc_value(LUNA_TYPE_INT);
   if (!self) return NULL;
-  self->type = LUNA_TYPE_INT;
-  self->hash = luna_hash_new();
   self->value.as_int = val;
   return self;
 }
