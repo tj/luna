@@ -1,6 +1,6 @@
 /* The MIT License
 
-   Copyright (c) 2008, by Attractive Chaos <attractivechaos@aol.co.uk>
+   Copyright (c) 2008, by Attractive Chaos <attractor@live.co.uk>
 
    Permission is hereby granted, free of charge, to any person obtaining
    a copy of this software and associated documentation files (the
@@ -61,6 +61,12 @@ int main() {
 #define kv_max(v) ((v).m)
 
 #define kv_resize(type, v, s)  ((v).m = (s), (v).a = (type*)realloc((v).a, sizeof(type) * (v).m))
+
+#define kv_copy(type, v1, v0) do {							\
+		if ((v1).m < (v0).n) kv_resize(type, v1, (v0).n);	\
+		(v1).n = (v0).n;									\
+		memcpy((v1).a, (v0).a, sizeof(type) * (v0).n);		\
+	} while (0)												\
 
 #define kv_push(type, v, x) do {									\
 		if ((v).n == (v).m) {										\
