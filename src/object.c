@@ -8,6 +8,10 @@
 #include "object.h"
 #include "hash.h"
 
+/*
+ * Allocate an initialize a new object of the given `type`.
+ */
+
 static luna_value_t *
 alloc_value(luna_value type) {
   luna_value_t *self = malloc(sizeof(luna_value_t));
