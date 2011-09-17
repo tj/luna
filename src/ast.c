@@ -18,7 +18,7 @@ luna_value_t *
 luna_node(luna_node_t *node) {
   luna_value_t *self = malloc(sizeof(luna_value_t));
   self->type = LUNA_TYPE_NODE;
-  self->value.as_obj = node;
+  self->value.as_pointer = node;
   return self;
 }
 

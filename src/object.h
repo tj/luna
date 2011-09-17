@@ -8,7 +8,7 @@
 #ifndef __LUNA_OBJECT__
 #define __LUNA_OBJECT__
 
-#include "khash.h"
+#include "hash.h"
 
 // TODO: consider pointer for immediate values
 // TODO: inherit
@@ -50,101 +50,71 @@ typedef enum {
 } luna_value;
 
 /*
- * Luna value.
+ * Luna object.
+ * 
+ * A simple tagged union forming
+ * the basis of a Luna values.
  */
 
-typedef struct {
+struct luna_object_struct {
   luna_value type;
+  luna_hash_t *hash;
   union {
-    void *as_obj;
+    void *as_pointer;
     int as_int;
     float as_float;
   } value;
-} luna_value_t;
+};
 
-KHASH_MAP_INIT_STR(value, luna_value_t *);
-
-/*
- * Luna object.
- */
-
-typedef khash_t(value) luna_object_t;
-
-/*
- * Allocate a new object.
- */
-
-#define luna_object_new() kh_init(value)
-
-/*
- * Destroy the object.
- */
-
-#define luna_object_destroy(self) kh_destroy(value, self)
+// protos
 
 /*
  * Object size.
  */
 
-#define luna_object_size kh_size
+#define luna_object_size(self) luna_hash_size((self)->hash)
 
 /*
  * Iterate object slots and values, populating
  * `slot` and `val`.
  */
 
-#define luna_object_each(self, block) { \
-   char *slot; \
-   luna_value_t *val; \
-    for (khiter_t k = kh_begin(self); k < kh_end(self); ++k) { \
-      if (!kh_exist(self, k)) continue; \
-      slot = kh_key(self, k); \
-      val = kh_value(self, k); \
-      block; \
-    } \
-  }
+#define luna_object_each(self, block) luna_hash_each((self)->hash, block)
 
 /*
  * Iterate object slots, populating `slot`.
  */
 
-#define luna_object_each_slot(self, block) { \
-    char *slot; \
-    for (khiter_t k = kh_begin(self); k < kh_end(self); ++k) { \
-      if (!kh_exist(self, k)) continue; \
-      slot = kh_key(self, k); \
-      block; \
-    } \
-  }
+#define luna_object_each_slot(self, block) luna_hash_each_slot((self)->hash, block)
 
 /*
  * Iterate object values, populating `val`.
  */
 
-#define luna_object_each_val(self, block) { \
-    luna_value_t *val; \
-    for (khiter_t k = kh_begin(self); k < kh_end(self); ++k) { \
-      if (!kh_exist(self, k)) continue; \
-      val = kh_value(self, k); \
-      block; \
-    } \
-  }
+#define luna_object_each_val(self, block) luna_hash_each_val((self)->hash, block)
 
-// protos
+/*
+ * Set object slot `key` to `val`.
+ */
 
-luna_value_t *
-luna_obj(luna_object_t *obj);
+#define luna_object_set(self, key, val) luna_hash_set((self)->hash, key, val)
 
-void
-luna_object_set(khash_t(value) *self, char *key, luna_value_t *val);
+/*
+ * Get object slot `key`.
+ */
 
-luna_value_t *
-luna_object_get(khash_t(value) *self, char *key);
+#define luna_object_get(self, key) luna_hash_get((self)->hash, key)
 
-int
-luna_object_has(khash_t(value) *self, char *key);
+/*
+ * Check if object has slot `key`.
+ */
 
-void
-luna_object_remove(khash_t(value) *self, char *key);
+#define luna_object_has(self, key) luna_hash_has((self)->hash, key)
+
+/*
+ * Remove object slot `key`.
+ */
+
+#define luna_object_remove(self, key) luna_hash_remove((self)->hash, key)
 
 #endif /* __LUNA_OBJECT__ */

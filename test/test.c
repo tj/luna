@@ -6,6 +6,7 @@
 #include "khash.h"
 #include "state.h"
 #include "object.h"
+#include "hash.h"
 #include "array.h"
 
 /*
@@ -154,11 +155,11 @@ test_array_iteration() {
 }
 
 /*
- * Test luna_object_set().
+ * Test luna_hash_set().
  */
 
 static void
-test_object_set() {
+test_hash_set() {
   luna_value_t one = { .type = LUNA_TYPE_INT };
   one.value.as_int = 1;
 
@@ -168,70 +169,70 @@ test_object_set() {
   luna_value_t three = { .type = LUNA_TYPE_INT };
   three.value.as_int = 3;
 
-  luna_object_t *obj = luna_object_new();
+  luna_hash_t *obj = luna_hash_new();
 
-  assert(0 == luna_object_size(obj));
+  assert(0 == luna_hash_size(obj));
 
-  luna_object_set(obj, "one", &one);
-  assert(1 == luna_object_size(obj));
+  luna_hash_set(obj, "one", &one);
+  assert(1 == luna_hash_size(obj));
 
-  luna_object_set(obj, "two", &two);
-  assert(2 == luna_object_size(obj));
+  luna_hash_set(obj, "two", &two);
+  assert(2 == luna_hash_size(obj));
 
-  luna_object_set(obj, "three", &three);
-  assert(3 == luna_object_size(obj));
+  luna_hash_set(obj, "three", &three);
+  assert(3 == luna_hash_size(obj));
 
-  assert(&one == luna_object_get(obj, "one"));
-  assert(&two == luna_object_get(obj, "two"));
-  assert(&three == luna_object_get(obj, "three"));
-  assert(NULL == luna_object_get(obj, "four"));
+  assert(&one == luna_hash_get(obj, "one"));
+  assert(&two == luna_hash_get(obj, "two"));
+  assert(&three == luna_hash_get(obj, "three"));
+  assert(NULL == luna_hash_get(obj, "four"));
 
-  luna_object_destroy(obj);
+  luna_hash_destroy(obj);
 }
 
 /*
- * Test luna_object_has().
+ * Test luna_hash_has().
  */
 
 static void
-test_object_has() {
+test_hash_has() {
   luna_value_t one = { .type = LUNA_TYPE_INT };
   one.value.as_int = 1;
 
-  luna_object_t *obj = luna_object_new();
+  luna_hash_t *obj = luna_hash_new();
 
-  luna_object_set(obj, "one", &one);
+  luna_hash_set(obj, "one", &one);
 
-  assert(1 == luna_object_has(obj, "one"));
-  assert(0 == luna_object_has(obj, "foo"));
+  assert(1 == luna_hash_has(obj, "one"));
+  assert(0 == luna_hash_has(obj, "foo"));
 
-  luna_object_destroy(obj);
+  luna_hash_destroy(obj);
 }
 
 /*
- * Test luna_object_remove().
+ * Test luna_hash_remove().
  */
 
 static void
-test_object_remove() {
+test_hash_remove() {
   luna_value_t one = { .type = LUNA_TYPE_INT };
   one.value.as_int = 1;
 
-  luna_object_t *obj = luna_object_new();
+  luna_hash_t *obj = luna_hash_new();
 
-  luna_object_set(obj, "one", &one);
-  assert(&one == luna_object_get(obj, "one"));
+  luna_hash_set(obj, "one", &one);
+  assert(&one == luna_hash_get(obj, "one"));
 
-  luna_object_remove(obj, "one");
-  assert(NULL == luna_object_get(obj, "one"));
+  luna_hash_remove(obj, "one");
+  assert(NULL == luna_hash_get(obj, "one"));
 
-  luna_object_set(obj, "one", &one);
-  assert(&one == luna_object_get(obj, "one"));
+  luna_hash_set(obj, "one", &one);
+  assert(&one == luna_hash_get(obj, "one"));
 
-  luna_object_remove(obj, "one");
-  assert(NULL == luna_object_get(obj, "one"));
+  luna_hash_remove(obj, "one");
+  assert(NULL == luna_hash_get(obj, "one"));
 
-  luna_object_destroy(obj);
+  luna_hash_destroy(obj);
 }
 
 /*
@@ -252,7 +253,7 @@ valid_slot(char *slot) {
  */
 
 static void
-test_object_iteration() {
+test_hash_iteration() {
   luna_value_t one = { .type = LUNA_TYPE_INT };
   one.value.as_int = 1;
 
@@ -262,32 +263,45 @@ test_object_iteration() {
   luna_value_t three = { .type = LUNA_TYPE_INT };
   three.value.as_int = 3;
 
-  luna_object_t *obj = luna_object_new();
+  luna_hash_t *obj = luna_hash_new();
 
-  assert(0 == luna_object_size(obj));
+  assert(0 == luna_hash_size(obj));
 
-  luna_object_set(obj, "one", &one);
-  luna_object_set(obj, "two", &two);
-  luna_object_set(obj, "three", &three);
-  luna_object_set(obj, "four", &three);
-  luna_object_set(obj, "five", &three);
+  luna_hash_set(obj, "one", &one);
+  luna_hash_set(obj, "two", &two);
+  luna_hash_set(obj, "three", &three);
+  luna_hash_set(obj, "four", &three);
+  luna_hash_set(obj, "five", &three);
 
-  char *slots[luna_object_size(obj)];
+  char *slots[luna_hash_size(obj)];
   int i = 0;
-  luna_object_each_slot(obj, { slots[i++] = slot; });
+  luna_hash_each_slot(obj, { slots[i++] = slot; });
   for (int i = 0; i < 5; ++i) assert(valid_slot(slots[i]));
 
-  char *slots2[luna_object_size(obj)];
+  char *slots2[luna_hash_size(obj)];
   i = 0;
-  luna_object_each_slot(obj, slots2[i++] = slot);
+  luna_hash_each_slot(obj, slots2[i++] = slot);
   for (int i = 0; i < 5; ++i) assert(valid_slot(slots2[i]));
 
-  char *slots3[luna_object_size(obj)];
+  char *slots3[luna_hash_size(obj)];
   i = 0;
-  luna_object_each(obj, slots3[i++] = slot);
+  luna_hash_each(obj, slots3[i++] = slot);
   for (int i = 0; i < 5; ++i) assert(valid_slot(slots3[i]));
 
-  luna_object_destroy(obj);
+  luna_hash_destroy(obj);
+}
+
+/*
+ * Test mixins.
+ */
+
+static void
+test_hash_mixins() {
+  luna_value_t type = { .type = LUNA_TYPE_INT };
+  type.value.as_int = 1;
+
+  luna_array_t arr;
+  luna_array_init(&arr);
 }
 
 /*
@@ -312,6 +326,41 @@ test_string() {
 }
 
 /*
+ * Test luna_object_set().
+ */
+
+static void
+test_object_set() {
+  luna_value_t foo = {
+      .type = LUNA_TYPE_INT
+    , .value.as_int = 1
+    , .hash = luna_hash_new() 
+  };
+
+  luna_value_t bar = {
+      .type = LUNA_TYPE_INT
+    , .value.as_int = 2
+  };
+  
+  luna_value_t baz = {
+      .type = LUNA_TYPE_INT
+    , .value.as_int = 3
+  };
+
+  assert(0 == luna_object_size(&foo));
+
+  luna_object_set(&foo, "bar", &bar);
+  assert(&bar == luna_object_get(&foo, "bar"));
+
+  assert(1 == luna_object_size(&foo));
+
+  luna_object_set(&foo, "baz", &baz);
+  assert(&baz == luna_object_get(&foo, "baz"));
+
+  assert(2 == luna_object_size(&foo));
+}
+
+/*
  * Test the given `fn`.
  */
 
@@ -327,12 +376,21 @@ test_string() {
   printf("\n  \033[90m%s\033[0m\n", title)
 
 /*
+ * Report sizeof.
+ */
+
+#define size(type) \
+  printf("\n  \033[90m%s: %d bytes\033[0m\n", #type, sizeof(type));
+
+/*
  * Run all test suites.
  */
 
 int
 main(int argc, const char **argv){
   clock_t start = clock();
+
+  size(luna_value_t);
 
   suite("value");
   test(value_is);
@@ -343,11 +401,15 @@ main(int argc, const char **argv){
   test(array_at);
   test(array_iteration);
 
+  suite("hash");
+  test(hash_set);
+  test(hash_has);
+  test(hash_remove);
+  test(hash_iteration);
+  test(hash_mixins);
+
   suite("object");
   test(object_set);
-  test(object_has);
-  test(object_remove);
-  test(object_iteration);
 
   suite("string");
   test(string);
