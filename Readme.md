@@ -135,6 +135,17 @@ Evaluates as:
      User allowed =: realm
        !(banned || blocked_from(realm))
 
+### Heredocs
+
+To make heredocs convenient you'd then also need interpolation, which ends up being a bit silly as this could simply be a built-in function to provide similar functionality. A function like `doc()` below could easily check the indentation level of the first line, and trim the following lines based on that.
+
+```
+foo = doc('
+   foo
+   bar
+   baz')
+```
+
 ### Slot Access
 
  In the example above, you will notice that the use of whitespace is used to convey member (slot) access, where typically the `.` character is used. I find this pleasing to the eye, while maintaining explicit function calls. Typically languages such as Ruby allow optional parenthesis for calls, creating ambiguity with property access:
