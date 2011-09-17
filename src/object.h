@@ -117,4 +117,7 @@ struct luna_object_struct {
 
 #define luna_object_remove(self, key) luna_hash_remove((self)->hash, key)
 
+luna_value_t *
+luna_int_new(int val);
+
 #endif /* __LUNA_OBJECT__ */

@@ -361,6 +361,17 @@ test_object_set() {
 }
 
 /*
+ * Test object mixins.
+ */
+
+static void
+test_object_mixins() {
+  luna_value_t *num = luna_int_new(11);
+  assert(LUNA_TYPE_INT == num->type);
+  assert(11 == num->value.as_int);
+}
+
+/*
  * Test the given `fn`.
  */
 
@@ -410,6 +421,7 @@ main(int argc, const char **argv){
 
   suite("object");
   test(object_set);
+  test(object_mixins);
 
   suite("string");
   test(string);
