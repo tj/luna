@@ -9,7 +9,7 @@
 #define __LUNA_AST__
 
 #include "token.h"
-#include "array.h"
+#include "vec.h"
 #include "object.h"
 
 /*
@@ -63,7 +63,7 @@ typedef struct {
 
 typedef struct {
   luna_node_t base;
-  luna_array_t *stmts;
+  luna_vec_t *stmts;
 } luna_block_node_t;
 
 /*
@@ -140,7 +140,7 @@ typedef struct {
 
 typedef struct {
   luna_node_t base;
-  luna_array_t *vals;
+  luna_vec_t *vals;
 } luna_array_node_t;
 
 /*
@@ -150,7 +150,7 @@ typedef struct {
 typedef struct {
   luna_node_t base;
   luna_node_t *expr;
-  luna_array_t *args;
+  luna_vec_t *args;
 } luna_call_node_t;
 
 /*
@@ -160,7 +160,7 @@ typedef struct {
 typedef struct {
   luna_node_t base;
   luna_block_node_t *block;
-  luna_array_t *params;
+  luna_vec_t *params;
 } luna_function_node_t;
 
 /*
@@ -173,7 +173,7 @@ typedef struct {
   luna_node_t *expr;
   luna_block_node_t *block;
   luna_block_node_t *else_block;
-  luna_array_t *else_ifs;
+  luna_vec_t *else_ifs;
 } luna_if_node_t;
 
 /*
@@ -196,7 +196,7 @@ luna_block_node_t *
 luna_block_node_new();
 
 luna_function_node_t *
-luna_function_node_new(luna_block_node_t *block, luna_array_t *params);
+luna_function_node_new(luna_block_node_t *block, luna_vec_t *params);
 
 luna_slot_node_t *
 luna_slot_node_new(luna_node_t *left, luna_node_t *right);

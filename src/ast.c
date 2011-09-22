@@ -5,7 +5,7 @@
 // Copyright (c) 2011 TJ Holowaychuk <tj@vision-media.ca>
 //
 
-#include "array.h"
+#include "vec.h"
 #include "ast.h"
 
 // TODO: error handling
@@ -30,7 +30,7 @@ luna_block_node_t *
 luna_block_node_new() {
   luna_block_node_t *self = malloc(sizeof(luna_block_node_t));
   self->base.type = LUNA_NODE_BLOCK;
-  self->stmts = luna_array_new();
+  self->stmts = luna_vec_new();
   return self;
 }
 
@@ -144,7 +144,7 @@ luna_array_node_t *
 luna_array_node_new() {
   luna_array_node_t *self = malloc(sizeof(luna_array_node_t));
   self->base.type = LUNA_NODE_ARRAY;
-  self->vals = luna_array_new();
+  self->vals = luna_vec_new();
   return self;
 }
 
@@ -153,7 +153,7 @@ luna_array_node_new() {
  */
 
 luna_function_node_t *
-luna_function_node_new(luna_block_node_t *block, luna_array_t *params) {
+luna_function_node_new(luna_block_node_t *block, luna_vec_t *params) {
   luna_function_node_t *self = malloc(sizeof(luna_function_node_t));
   self->base.type = LUNA_NODE_FUNCTION;
   self->params = params;
@@ -174,7 +174,7 @@ luna_if_node_new(int negate, luna_node_t *expr, luna_block_node_t *block) {
   self->expr = expr;
   self->block = block;
   self->else_block = NULL;
-  self->else_ifs = luna_array_new();
+  self->else_ifs = luna_vec_new();
   return self;
 }
 

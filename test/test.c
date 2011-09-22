@@ -7,7 +7,7 @@
 #include "state.h"
 #include "object.h"
 #include "hash.h"
-#include "array.h"
+#include "vec.h"
 
 /*
  * Test luna_is_* macros.
@@ -24,91 +24,91 @@ test_value_is() {
 }
 
 /*
- * Test luna_array_length().
+ * Test luna_vec_length().
  */
 
 static void
 test_array_length() {
-  luna_array_t arr;
-  luna_array_init(&arr);
+  luna_vec_t arr;
+  luna_vec_init(&arr);
 
   luna_value_t one = { .type = LUNA_TYPE_INT, .value.as_int = 1 };
   luna_value_t two = { .type = LUNA_TYPE_INT, .value.as_int = 2 };
   luna_value_t three = { .type = LUNA_TYPE_INT, .value.as_int = 3 };
 
-  assert(0 == luna_array_length(&arr));
+  assert(0 == luna_vec_length(&arr));
 
-  luna_array_push(&arr, &one);
-  assert(1 == luna_array_length(&arr));
+  luna_vec_push(&arr, &one);
+  assert(1 == luna_vec_length(&arr));
 
-  luna_array_push(&arr, &two);
-  assert(2 == luna_array_length(&arr));
+  luna_vec_push(&arr, &two);
+  assert(2 == luna_vec_length(&arr));
 
-  luna_array_push(&arr, &three);
-  assert(3 == luna_array_length(&arr));
+  luna_vec_push(&arr, &three);
+  assert(3 == luna_vec_length(&arr));
 }
 
 /*
- * Test luna_array_push().
+ * Test luna_vec_push().
  */
 
 static void
 test_array_push() {
-  luna_array_t arr;
-  luna_array_init(&arr);
+  luna_vec_t arr;
+  luna_vec_init(&arr);
 
   luna_value_t one = { .type = LUNA_TYPE_INT, .value.as_int = 1 };
   luna_value_t two = { .type = LUNA_TYPE_INT, .value.as_int = 2 };
   luna_value_t three = { .type = LUNA_TYPE_INT, .value.as_int = 3 };
 
-  assert(0 == luna_array_length(&arr));
+  assert(0 == luna_vec_length(&arr));
 
-  luna_array_push(&arr, &one);
-  assert(1 == luna_array_pop(&arr)->value.as_int);
+  luna_vec_push(&arr, &one);
+  assert(1 == luna_vec_pop(&arr)->value.as_int);
 
-  luna_array_push(&arr, &one);
-  luna_array_push(&arr, &one);
-  assert(1 == luna_array_pop(&arr)->value.as_int);
-  assert(1 == luna_array_pop(&arr)->value.as_int);
+  luna_vec_push(&arr, &one);
+  luna_vec_push(&arr, &one);
+  assert(1 == luna_vec_pop(&arr)->value.as_int);
+  assert(1 == luna_vec_pop(&arr)->value.as_int);
 
-  luna_array_push(&arr, &one);
-  luna_array_push(&arr, &two);
-  luna_array_push(&arr, &three);
-  assert(3 == luna_array_pop(&arr)->value.as_int);
-  assert(2 == luna_array_pop(&arr)->value.as_int);
-  assert(1 == luna_array_pop(&arr)->value.as_int);
+  luna_vec_push(&arr, &one);
+  luna_vec_push(&arr, &two);
+  luna_vec_push(&arr, &three);
+  assert(3 == luna_vec_pop(&arr)->value.as_int);
+  assert(2 == luna_vec_pop(&arr)->value.as_int);
+  assert(1 == luna_vec_pop(&arr)->value.as_int);
 
-  assert(NULL == luna_array_pop(&arr));
-  assert(NULL == luna_array_pop(&arr));
-  assert(NULL == luna_array_pop(&arr));
-  luna_array_push(&arr, &one);
-  assert(1 == luna_array_pop(&arr)->value.as_int);
+  assert(NULL == luna_vec_pop(&arr));
+  assert(NULL == luna_vec_pop(&arr));
+  assert(NULL == luna_vec_pop(&arr));
+  luna_vec_push(&arr, &one);
+  assert(1 == luna_vec_pop(&arr)->value.as_int);
 }
 
 /*
- * Test luna_array_at().
+ * Test luna_vec_at().
  */
 
 static void
 test_array_at() {
-  luna_array_t arr;
-  luna_array_init(&arr);
+  luna_vec_t arr;
+  luna_vec_init(&arr);
 
   luna_value_t one = { .type = LUNA_TYPE_INT, .value.as_int = 1 };
   luna_value_t two = { .type = LUNA_TYPE_INT, .value.as_int = 2 };
   luna_value_t three = { .type = LUNA_TYPE_INT, .value.as_int = 3 };
 
-  luna_array_push(&arr, &one);
-  luna_array_push(&arr, &two);
-  luna_array_push(&arr, &three);
+  luna_vec_push(&arr, &one);
+  luna_vec_push(&arr, &two);
+  luna_vec_push(&arr, &three);
 
-  assert(1 == luna_array_at(&arr, 0)->value.as_int);
-  assert(2 == luna_array_at(&arr, 1)->value.as_int);
-  assert(3 == luna_array_at(&arr, 2)->value.as_int);
+  assert(1 == luna_vec_at(&arr, 0)->value.as_int);
+  assert(2 == luna_vec_at(&arr, 1)->value.as_int);
+  assert(3 == luna_vec_at(&arr, 2)->value.as_int);
   
-  assert(NULL == luna_array_at(&arr, -1123));
-  assert(NULL == luna_array_at(&arr, 5));
-  assert(NULL == luna_array_at(&arr, 1231231));
+  assert(NULL == luna_vec_at(&arr, -1123));
+  assert(NULL == luna_vec_at(&arr, 5));
+  assert(NULL == luna_vec_at(&arr, 1231231));
 }
 
 /*
@@ -117,18 +117,18 @@ test_array_at() {
 
 static void
 test_array_iteration() {
-  luna_array_t arr;
-  luna_array_init(&arr);
+  luna_vec_t arr;
+  luna_vec_init(&arr);
 
   luna_value_t one = { .type = LUNA_TYPE_INT, .value.as_int = 1 };
   luna_value_t two = { .type = LUNA_TYPE_INT, .value.as_int = 2 };
   luna_value_t three = { .type = LUNA_TYPE_INT, .value.as_int = 3 };
 
-  luna_array_push(&arr, &one);
-  luna_array_push(&arr, &two);
-  luna_array_push(&arr, &three);
+  luna_vec_push(&arr, &one);
+  luna_vec_push(&arr, &two);
+  luna_vec_push(&arr, &three);
 
-  luna_array_each(&arr, {
+  luna_vec_each(&arr, {
     
   });
 }
@@ -265,8 +265,8 @@ test_hash_iteration() {
 static void
 test_hash_mixins() {
   luna_value_t type = { .type = LUNA_TYPE_INT, .value.as_int = 1 };
-  luna_array_t arr;
-  luna_array_init(&arr);
+  luna_vec_t arr;
+  luna_vec_init(&arr);
 }
 
 /*
