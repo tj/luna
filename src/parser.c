@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include "prettyprint.h"
 #include "parser.h"
-#include "array.h"
+#include "vec.h"
 #include "token.h"
 
 // TODO: test contextual errors
@@ -143,7 +143,7 @@ arg_list(luna_parser_t *self, luna_array_node_t *arr, luna_token delim) {
   // expr
   luna_node_t *val;
   if (!(val = expr(self))) return 0;
-  luna_array_push(arr->vals, luna_node(val));
+  luna_vec_push(arr->vals, luna_node(val));
 
   // ',' arg_list
   if (accept(COMMA)) {
@@ -473,17 +473,17 @@ logical_or_expr(luna_parser_t *self) {
  * (id (',' id)*)
  */
 
-static luna_array_t *
+static luna_vec_t *
 function_params(luna_parser_t *self) {
-  luna_array_t *params = luna_array_new();
+  luna_vec_t *params = luna_vec_new();
   debug("params");
   context("function params");
   if (accept(ID)) {
-    luna_array_push(params, luna_node((luna_node_t *) luna_id_node_new(prev->value.as_string)));
+    luna_vec_push(params, luna_node((luna_node_t *) luna_id_node_new(prev->value.as_string)));
     while (accept(COMMA)) {
       if (accept(ID)) {
         // TODO: use string api
-        luna_array_push(params, luna_node((luna_node_t *) luna_id_node_new(prev->value.as_string)));
+        luna_vec_push(params, luna_node((luna_node_t *) luna_id_node_new(prev->value.as_string)));
       } else {
         return error("missing identifier");
       };
@@ -499,7 +499,7 @@ function_params(luna_parser_t *self) {
 static luna_node_t *
 function_expr(luna_parser_t *self) {
   luna_block_node_t *body;
-  luna_array_t *params;
+  luna_vec_t *params;
   debug("function_expr");
   if (accept(COLON)) {
     if (!(params = function_params(self))) return NULL;
@@ -539,15 +539,15 @@ slot_access_expr(luna_parser_t * self) {
  * (expr (',' expr)*)
  */
 
-static luna_array_t *
+static luna_vec_t *
 call_args(luna_parser_t *self) {
   luna_node_t *node;
-  luna_array_t *args = luna_array_new();
+  luna_vec_t *args = luna_vec_new();
   debug("args");
   context("function arguments");
   do {
     if (node = expr(self)) {
-      luna_array_push(args, luna_node(node));
+      luna_vec_push(args, luna_node(node));
     } else {
       return NULL;
     }
@@ -586,10 +586,10 @@ call_expr(luna_parser_t *self) {
   // function_expr?
   if (is(COLON)) {
     if (!call) call = luna_call_node_new(node);
-    if (!call->args) call->args = luna_array_new();
+    if (!call->args) call->args = luna_vec_new();
     luna_node_t *fn = function_expr(self);
     if (!fn) return NULL;
-    luna_array_push(call->args, luna_node(fn));
+    luna_vec_push(call->args, luna_node(fn));
     node = (luna_node_t *) call;
   }
 
@@ -656,7 +656,7 @@ if_expr(luna_parser_t *self) {
     luna_node_t *cond;
     if (!(cond = expr(self))) return NULL;
     luna_block_node_t *block = luna_block_node_new();
-    luna_array_push(block->stmts, luna_node(node));
+    luna_vec_push(block->stmts, luna_node(node));
     node = (luna_node_t *) luna_if_node_new(negate, cond, block);
   }
 
@@ -667,7 +667,7 @@ if_expr(luna_parser_t *self) {
     luna_node_t *cond;
     if (!(cond = expr(self))) return NULL;
     luna_block_node_t *block = luna_block_node_new();
-    luna_array_push(block->stmts, luna_node(node));
+    luna_vec_push(block->stmts, luna_node(node));
     node = (luna_node_t *) luna_while_node_new(negate, cond, block);
   }
 
@@ -744,7 +744,7 @@ if_stmt(luna_parser_t *self) {
       if (!(cond = expr(self))) return NULL;
       context("else if statement");
       if (!(body = block(self))) return NULL;
-      luna_array_push(node->else_ifs, luna_node((luna_node_t *) luna_if_node_new(0, cond, body)));
+      luna_vec_push(node->else_ifs, luna_node((luna_node_t *) luna_if_node_new(0, cond, body)));
       goto loop;
     // 'else'
     } else {
@@ -811,7 +811,7 @@ block(luna_parser_t *self) {
   whitespace(self);
   do {
     if (node = stmt(self)) {
-      luna_array_push(block->stmts, luna_node(node));
+      luna_vec_push(block->stmts, luna_node(node));
     } else {
       return NULL;
     }
@@ -832,7 +832,7 @@ program(luna_parser_t *self) {
   luna_block_node_t *block = luna_block_node_new();
   while (!accept(EOS)) {
     if (node = stmt(self)) {
-      luna_array_push(block->stmts, luna_node(node));
+      luna_vec_push(block->stmts, luna_node(node));
     } else {
       return NULL;
     }

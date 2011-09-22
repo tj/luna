@@ -7,7 +7,7 @@
 
 #include <stdio.h>
 #include "ast.h"
-#include "array.h"
+#include "vec.h"
 #include "visitor.h"
 #include "prettyprint.h"
 
@@ -96,7 +96,7 @@ inspect(const char *str) {
 
 static void
 visit_block(luna_visitor_t *self, luna_block_node_t *node) {
-  luna_array_each(node->stmts, {
+  luna_vec_each(node->stmts, {
     if (i) printf("\n");
     INDENT;
     visit((luna_node_t *) val->value.as_pointer);
@@ -172,7 +172,7 @@ static void
 visit_array(luna_visitor_t *self, luna_array_node_t *node) {
   printf("(array\n");
   ++indents;
-  luna_array_each(node->vals, {
+  luna_vec_each(node->vals, {
     INDENT;
     visit((luna_node_t *) val->value.as_pointer);
     if (i != len - 1) printf("\n");
@@ -211,7 +211,7 @@ visit_call(luna_visitor_t *self, luna_call_node_t * node) {
   if (node->args) {
     printf("\n");
     INDENT;
-    luna_array_each(node->args, {
+    luna_vec_each(node->args, {
       visit((luna_node_t *) val->value.as_pointer);
       if (i != len - 1) printf(" ");
     });
@@ -227,7 +227,7 @@ visit_call(luna_visitor_t *self, luna_call_node_t * node) {
 static void
 visit_function(luna_visitor_t *self, luna_function_node_t * node) {
   printf("(function ");
-  luna_array_each(node->params, {
+  luna_vec_each(node->params, {
     printf("%s ", ((luna_id_node_t *) val->value.as_pointer)->val);
   });
   printf("\n");
@@ -269,7 +269,7 @@ visit_if(luna_visitor_t *self, luna_if_node_t *node) {
   printf(")");
 
   // else ifs
-  luna_array_each(node->else_ifs, {
+  luna_vec_each(node->else_ifs, {
     luna_if_node_t *else_if = (luna_if_node_t *) val->value.as_pointer;
     printf("\n");
     INDENT;
