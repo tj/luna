@@ -11,9 +11,10 @@
  * Alloc and initialize a new array.
  */
 
-luna_array_t *
-luna_array_new() {
-  luna_array_t *self = malloc(sizeof(luna_array_t));
-  luna_array_init(self);
+luna_vec_t *
+luna_vec_new() {
+  luna_vec_t *self = malloc(sizeof(luna_vec_t));
+  if (!self) return NULL;
+  luna_vec_init(self);
   return self;
 }
