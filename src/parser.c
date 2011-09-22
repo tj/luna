@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include "prettyprint.h"
 #include "parser.h"
-#include "array.h"
+#include "vec.h"
 #include "token.h"
 
 // TODO: test contextual errors
