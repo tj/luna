@@ -7,6 +7,7 @@
 
 #include "object.h"
 #include "hash.h"
+#include "list.h"
 
 /*
  * Allocate an initialize a new object of the given `type`.

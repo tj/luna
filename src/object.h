@@ -9,6 +9,7 @@
 #define __LUNA_OBJECT__
 
 #include "hash.h"
+#include "list.h"
 
 // TODO: consider pointer for immediate values
 // TODO: inherit

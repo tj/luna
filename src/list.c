@@ -2,7 +2,7 @@
 //
 // list.c
 //
-// Copyright (c) 2010 TJ Holowaychuk <tj@vision-media.ca>
+// Copyright (c) 2011 TJ Holowaychuk <tj@vision-media.ca>
 //
 
 #include "list.h"
@@ -14,7 +14,7 @@
 list_t *
 list_new() {
   list_t *self;
-  if (!(self = LIST_CALLOC(1, sizeof(list_t))))
+  if (!(self = calloc(1, sizeof(list_t))))
     return NULL;
   return self;
 }
@@ -31,10 +31,10 @@ list_destroy(list_t *self) {
   while (len--) {
     next = curr->next;
     if (self->free) self->free(curr->val);
-    LIST_FREE(curr);
+    free(curr);
     curr = next;
   }
-  LIST_FREE(self);
+  free(self);
 }
 
 /*
@@ -177,6 +177,72 @@ list_remove(list_t *self, list_node_t *node) {
     ? (node->next->prev = node->prev)
     : (self->tail = node->prev);
   if (self->free) self->free(node);
-  LIST_FREE(node);
+  free(node);
   --self->len;
+}
+
+/*
+ * Allocate a new list_iterator_t. NULL on failure.
+ * Accepts a direction, which may be LIST_HEAD or LIST_TAIL.
+ */
+
+list_iterator_t *
+list_iterator_new(list_t *list, list_direction_t direction) {
+  list_node_t *node = direction == LIST_HEAD
+    ? list->head
+    : list->tail;
+  return list_iterator_new_from_node(node, direction);
+}
+
+/*
+ * Allocate a new list_iterator_t with the given start
+ * node. NULL on failure. 
+ */
+
+list_iterator_t *
+list_iterator_new_from_node(list_node_t *node, list_direction_t direction) {
+  list_iterator_t *self;
+  if (!(self = malloc(sizeof(list_iterator_t))))
+    return NULL;
+  self->next = node;
+  self->direction = direction;
+  return self;
+}
+
+/*
+ * Return the next list_node_t or NULL when no more
+ * nodes remain in the list.
+ */
+
+list_node_t *
+list_iterator_next(list_iterator_t *self) {
+  list_node_t *curr = self->next;
+  if (curr) {
+    self->next = self->direction == LIST_HEAD
+      ? curr->next
+      : curr->prev;
+  }
+  return curr;
+}
+
+/*
+ * Free the list iterator.
+ */
+
+void
+list_iterator_destroy(list_iterator_t *self) {
+  free(self);
+}
+
+/*
+ * Allocates a new list_node_t. NULL on failure.
+ */
+
+list_node_t *
+list_node_new(void *val) {
+  list_node_t *self;
+  if (!(self = calloc(1, sizeof(list_node_t))))
+    return NULL;
+  self->val = val;
+  return self;
 }

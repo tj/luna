@@ -4,7 +4,7 @@ OBJ = ${SRC:.c=.o}
 
 CC = clang
 PREFIX = /usr/local
-CFLAGS = -Wall -Wno-unused-value -std=c99 -g -O0
+CFLAGS = -std=c99 -g -O0
 CFLAGS += -I deps
 
 # linenoise
@@ -17,7 +17,7 @@ TEST_OBJ = ${TEST_SRC:.c=.o}
 CFLAGS += -I src
 
 luna: $(OBJ)
-	$(CC) $^ -o $@
+	$(CC) $^ $(LDFLAGS) -o $@
 
 %.o: %.c
 	$(CC) -c $(CFLAGS) $< -o $@

@@ -5,32 +5,10 @@
 // Copyright (c) 2010 TJ Holowaychuk <tj@vision-media.ca>
 //
 
-#ifndef __LIST_H__
-#define __LIST_H__
-
-#ifdef __cplusplus
-extern "C" {
-#endif
+#ifndef __LUNA_LIST__
+#define __LUNA_LIST__
 
 #include <stdlib.h>
-
-// Library version
-
-#define LIST_VERSION "0.0.4"
-
-// Memory management macros
-
-#ifndef LIST_MALLOC
-#define LIST_MALLOC malloc
-#endif
-
-#ifndef LIST_CALLOC
-#define LIST_CALLOC calloc
-#endif
-
-#ifndef LIST_FREE
-#define LIST_FREE free
-#endif
 
 /*
  * list_t iterator direction.
@@ -72,12 +50,12 @@ typedef struct {
   list_direction_t direction;
 } list_iterator_t;
 
-// Node prototypes.
+// node prototypes.
 
 list_node_t *
 list_node_new(void *val);
 
-// list_t prototypes.
+// list prototypes
 
 list_t *
 list_new();
@@ -106,7 +84,7 @@ list_remove(list_t *self, list_node_t *node);
 void
 list_destroy(list_t *self);
 
-// list_t iterator prototypes.
+// iterator prototypes.
 
 list_iterator_t *
 list_iterator_new(list_t *list, list_direction_t direction);
@@ -120,8 +98,4 @@ list_iterator_next(list_iterator_t *self);
 void
 list_iterator_destroy(list_iterator_t *self);
 
-#ifdef __cplusplus
-}
-#endif
-
-#endif /* __LIST_H__ */
+#endif /* __LUNA_LIST__ */
