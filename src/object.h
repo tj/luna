@@ -55,6 +55,9 @@ typedef enum {
  * 
  * A simple tagged union forming
  * the basis of a Luna values.
+ * 
+ * TODO: move .hash as constants
+ * wont need this here.
  */
 
 struct luna_object_struct {
