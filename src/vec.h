@@ -15,7 +15,7 @@
  * Luna array.
  */
 
-typedef kvec_t(luna_value_t *) luna_vec_t;
+typedef kvec_t(luna_object_t *) luna_vec_t;
 
 /*
  * Initialize an array.
@@ -34,7 +34,7 @@ typedef kvec_t(luna_value_t *) luna_vec_t;
  */
 
 #define luna_vec_push(self, obj) \
-  kv_push(luna_value_t *, *self, obj)
+  kv_push(luna_object_t *, *self, obj)
 
 /*
  * Pop an object out of the array.
@@ -59,7 +59,7 @@ typedef kvec_t(luna_value_t *) luna_vec_t;
  */
 
 #define luna_vec_each(self, block) { \
-    luna_value_t *val; \
+    luna_object_t *val; \
     int len = luna_vec_length(self); \
     for (int i = 0; i < len; ++i) { \
       val = luna_vec_at(self, i); \

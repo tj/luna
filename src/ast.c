@@ -14,9 +14,9 @@
  * Alloc a luna value and assign the given `node`.
  */
 
-luna_value_t *
+luna_object_t *
 luna_node(luna_node_t *node) {
-  luna_value_t *self = malloc(sizeof(luna_value_t));
+  luna_object_t *self = malloc(sizeof(luna_object_t));
   if (!self) return NULL;
   self->type = LUNA_TYPE_NODE;
   self->value.as_pointer = node;

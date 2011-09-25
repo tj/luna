@@ -18,21 +18,21 @@
  * Check if `val` is the given type.
  */
 
-#define luna_value_is(val, t) ((val)->type == LUNA_TYPE_##t)
+#define luna_object_is(val, t) ((val)->type == LUNA_TYPE_##t)
 
 /*
  * Specific type macros.
  */
 
-#define luna_is_node(val) luna_value_is(val, NODE)
-#define luna_is_list(val) luna_value_is(val, LIST)
-#define luna_is_array(val) luna_value_is(val, ARRAY)
-#define luna_is_object(val) luna_value_is(val, OBJECT)
-#define luna_is_string(val) luna_value_is(val, STRING)
-#define luna_is_float(val) luna_value_is(val, FLOAT)
-#define luna_is_int(val) luna_value_is(val, INT)
-#define luna_is_bool(val) luna_value_is(val, BOOL)
-#define luna_is_null(val) luna_value_is(val, NULL)
+#define luna_is_node(val) luna_object_is(val, NODE)
+#define luna_is_list(val) luna_object_is(val, LIST)
+#define luna_is_array(val) luna_object_is(val, ARRAY)
+#define luna_is_object(val) luna_object_is(val, OBJECT)
+#define luna_is_string(val) luna_object_is(val, STRING)
+#define luna_is_float(val) luna_object_is(val, FLOAT)
+#define luna_is_int(val) luna_object_is(val, INT)
+#define luna_is_bool(val) luna_object_is(val, BOOL)
+#define luna_is_null(val) luna_object_is(val, NULL)
 
 /*
  * Luna value types.
@@ -48,7 +48,7 @@ typedef enum {
   , LUNA_TYPE_OBJECT
   , LUNA_TYPE_ARRAY
   , LUNA_TYPE_LIST
-} luna_value;
+} luna_object;
 
 /*
  * Luna object.
@@ -61,7 +61,7 @@ typedef enum {
  */
 
 struct luna_object_struct {
-  luna_value type;
+  luna_object type;
   luna_hash_t *hash;
   union {
     void *as_pointer;
@@ -121,7 +121,7 @@ struct luna_object_struct {
 
 #define luna_object_remove(self, key) luna_hash_remove((self)->hash, key)
 
-luna_value_t *
+luna_object_t *
 luna_int_new(int val);
 
 #endif /* __LUNA_OBJECT__ */

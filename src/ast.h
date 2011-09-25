@@ -189,7 +189,7 @@ typedef struct {
 
 // protos
 
-luna_value_t *
+luna_object_t *
 luna_node(luna_node_t *node);
 
 luna_block_node_t *

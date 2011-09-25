@@ -12,7 +12,7 @@
  */
 
 inline void
-luna_hash_set(khash_t(value) *self, char *key, luna_value_t *val) {
+luna_hash_set(khash_t(value) *self, char *key, luna_object_t *val) {
   int ret;
   khiter_t k = kh_put(value, self, key, &ret);
   kh_value(self, k) = val;
@@ -22,7 +22,7 @@ luna_hash_set(khash_t(value) *self, char *key, luna_value_t *val) {
  * Get hash `key`, or NULL.
  */
 
-inline luna_value_t *
+inline luna_object_t *
 luna_hash_get(khash_t(value) *self, char *key) {
   khiter_t k = kh_get(value, self, key);
   return k == kh_end(self) ? NULL : kh_value(self, k);

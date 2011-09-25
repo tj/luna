@@ -10,13 +10,13 @@
 
 #include "khash.h"
 
-// luna value
+// luna object
 
-typedef struct luna_object_struct luna_value_t;
+typedef struct luna_object_struct luna_object_t;
 
 // value hash
 
-KHASH_MAP_INIT_STR(value, luna_value_t *);
+KHASH_MAP_INIT_STR(value, luna_object_t *);
 
 /*
  * Luna hash.
@@ -49,7 +49,7 @@ typedef khash_t(value) luna_hash_t;
 
 #define luna_hash_each(self, block) { \
    char *slot; \
-   luna_value_t *val; \
+   luna_object_t *val; \
     for (khiter_t k = kh_begin(self); k < kh_end(self); ++k) { \
       if (!kh_exist(self, k)) continue; \
       slot = kh_key(self, k); \
@@ -76,7 +76,7 @@ typedef khash_t(value) luna_hash_t;
  */
 
 #define luna_hash_each_val(self, block) { \
-    luna_value_t *val; \
+    luna_object_t *val; \
     for (khiter_t k = kh_begin(self); k < kh_end(self); ++k) { \
       if (!kh_exist(self, k)) continue; \
       val = kh_value(self, k); \
@@ -87,9 +87,9 @@ typedef khash_t(value) luna_hash_t;
 // protos
 
 void
-luna_hash_set(khash_t(value) *self, char *key, luna_value_t *val);
+luna_hash_set(khash_t(value) *self, char *key, luna_object_t *val);
 
-luna_value_t *
+luna_object_t *
 luna_hash_get(khash_t(value) *self, char *key);
 
 int

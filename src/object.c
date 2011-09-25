@@ -13,9 +13,9 @@
  * Allocate an initialize a new object of the given `type`.
  */
 
-static luna_value_t *
-alloc_value(luna_value type) {
-  luna_value_t *self = malloc(sizeof(luna_value_t));
+static luna_object_t *
+alloc_object(luna_object type) {
+  luna_object_t *self = malloc(sizeof(luna_object_t));
   if (!self) return NULL;
   self->type = type;
   self->hash = luna_hash_new();
@@ -26,9 +26,9 @@ alloc_value(luna_value type) {
  * Allocate a new int object with the given `val`.
  */
 
-luna_value_t *
+luna_object_t *
 luna_int_new(int val) {
-  luna_value_t *self = alloc_value(LUNA_TYPE_INT);
+  luna_object_t *self = alloc_object(LUNA_TYPE_INT);
   if (!self) return NULL;
   self->value.as_int = val;
   return self;

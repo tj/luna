@@ -15,11 +15,11 @@
 
 static void
 test_value_is() {
-  luna_value_t one = { .type = LUNA_TYPE_INT, .value.as_int = 1 };
+  luna_object_t one = { .type = LUNA_TYPE_INT, .value.as_int = 1 };
   assert(luna_is_int(&one));
   assert(!luna_is_string(&one));
 
-  luna_value_t two = { .type = LUNA_TYPE_NULL };
+  luna_object_t two = { .type = LUNA_TYPE_NULL };
   assert(luna_is_null(&two));
 }
 
@@ -32,9 +32,9 @@ test_array_length() {
   luna_vec_t arr;
   luna_vec_init(&arr);
 
-  luna_value_t one = { .type = LUNA_TYPE_INT, .value.as_int = 1 };
-  luna_value_t two = { .type = LUNA_TYPE_INT, .value.as_int = 2 };
-  luna_value_t three = { .type = LUNA_TYPE_INT, .value.as_int = 3 };
+  luna_object_t one = { .type = LUNA_TYPE_INT, .value.as_int = 1 };
+  luna_object_t two = { .type = LUNA_TYPE_INT, .value.as_int = 2 };
+  luna_object_t three = { .type = LUNA_TYPE_INT, .value.as_int = 3 };
 
   assert(0 == luna_vec_length(&arr));
 
@@ -57,9 +57,9 @@ test_array_push() {
   luna_vec_t arr;
   luna_vec_init(&arr);
 
-  luna_value_t one = { .type = LUNA_TYPE_INT, .value.as_int = 1 };
-  luna_value_t two = { .type = LUNA_TYPE_INT, .value.as_int = 2 };
-  luna_value_t three = { .type = LUNA_TYPE_INT, .value.as_int = 3 };
+  luna_object_t one = { .type = LUNA_TYPE_INT, .value.as_int = 1 };
+  luna_object_t two = { .type = LUNA_TYPE_INT, .value.as_int = 2 };
+  luna_object_t three = { .type = LUNA_TYPE_INT, .value.as_int = 3 };
 
   assert(0 == luna_vec_length(&arr));
 
@@ -94,9 +94,9 @@ test_array_at() {
   luna_vec_t arr;
   luna_vec_init(&arr);
 
-  luna_value_t one = { .type = LUNA_TYPE_INT, .value.as_int = 1 };
-  luna_value_t two = { .type = LUNA_TYPE_INT, .value.as_int = 2 };
-  luna_value_t three = { .type = LUNA_TYPE_INT, .value.as_int = 3 };
+  luna_object_t one = { .type = LUNA_TYPE_INT, .value.as_int = 1 };
+  luna_object_t two = { .type = LUNA_TYPE_INT, .value.as_int = 2 };
+  luna_object_t three = { .type = LUNA_TYPE_INT, .value.as_int = 3 };
 
   luna_vec_push(&arr, &one);
   luna_vec_push(&arr, &two);
@@ -120,9 +120,9 @@ test_array_iteration() {
   luna_vec_t arr;
   luna_vec_init(&arr);
 
-  luna_value_t one = { .type = LUNA_TYPE_INT, .value.as_int = 1 };
-  luna_value_t two = { .type = LUNA_TYPE_INT, .value.as_int = 2 };
-  luna_value_t three = { .type = LUNA_TYPE_INT, .value.as_int = 3 };
+  luna_object_t one = { .type = LUNA_TYPE_INT, .value.as_int = 1 };
+  luna_object_t two = { .type = LUNA_TYPE_INT, .value.as_int = 2 };
+  luna_object_t three = { .type = LUNA_TYPE_INT, .value.as_int = 3 };
 
   luna_vec_push(&arr, &one);
   luna_vec_push(&arr, &two);
@@ -139,9 +139,9 @@ test_array_iteration() {
 
 static void
 test_hash_set() {
-  luna_value_t one = { .type = LUNA_TYPE_INT, .value.as_int = 1 };
-  luna_value_t two = { .type = LUNA_TYPE_INT, .value.as_int = 2 };
-  luna_value_t three = { .type = LUNA_TYPE_INT, .value.as_int = 3 };
+  luna_object_t one = { .type = LUNA_TYPE_INT, .value.as_int = 1 };
+  luna_object_t two = { .type = LUNA_TYPE_INT, .value.as_int = 2 };
+  luna_object_t three = { .type = LUNA_TYPE_INT, .value.as_int = 3 };
 
   luna_hash_t *obj = luna_hash_new();
 
@@ -170,7 +170,7 @@ test_hash_set() {
 
 static void
 test_hash_has() {
-  luna_value_t one = { .type = LUNA_TYPE_INT, .value.as_int = 1 };
+  luna_object_t one = { .type = LUNA_TYPE_INT, .value.as_int = 1 };
 
   luna_hash_t *obj = luna_hash_new();
 
@@ -188,7 +188,7 @@ test_hash_has() {
 
 static void
 test_hash_remove() {
-  luna_value_t one = { .type = LUNA_TYPE_INT, .value.as_int = 1 };
+  luna_object_t one = { .type = LUNA_TYPE_INT, .value.as_int = 1 };
 
   luna_hash_t *obj = luna_hash_new();
 
@@ -226,9 +226,9 @@ valid_slot(char *slot) {
 
 static void
 test_hash_iteration() {
-  luna_value_t one = { .type = LUNA_TYPE_INT, .value.as_int = 1 };
-  luna_value_t two = { .type = LUNA_TYPE_INT, .value.as_int = 2 };
-  luna_value_t three = { .type = LUNA_TYPE_INT, .value.as_int = 3 };
+  luna_object_t one = { .type = LUNA_TYPE_INT, .value.as_int = 1 };
+  luna_object_t two = { .type = LUNA_TYPE_INT, .value.as_int = 2 };
+  luna_object_t three = { .type = LUNA_TYPE_INT, .value.as_int = 3 };
 
   luna_hash_t *obj = luna_hash_new();
 
@@ -264,7 +264,7 @@ test_hash_iteration() {
 
 static void
 test_hash_mixins() {
-  luna_value_t type = { .type = LUNA_TYPE_INT, .value.as_int = 1 };
+  luna_object_t type = { .type = LUNA_TYPE_INT, .value.as_int = 1 };
   luna_vec_t arr;
   luna_vec_init(&arr);
 }
@@ -296,14 +296,14 @@ test_string() {
 
 static void
 test_object_set() {
-  luna_value_t foo = {
+  luna_object_t foo = {
       .type = LUNA_TYPE_INT
     , .value.as_int = 1
     , .hash = luna_hash_new() 
   };
 
-  luna_value_t bar = { .type = LUNA_TYPE_INT, .value.as_int = 2 };
-  luna_value_t baz = { .type = LUNA_TYPE_INT, .value.as_int = 3 };
+  luna_object_t bar = { .type = LUNA_TYPE_INT, .value.as_int = 2 };
+  luna_object_t baz = { .type = LUNA_TYPE_INT, .value.as_int = 3 };
 
   assert(0 == luna_object_size(&foo));
 
@@ -324,7 +324,7 @@ test_object_set() {
 
 static void
 test_object_mixins() {
-  luna_value_t *num = luna_int_new(11);
+  luna_object_t *num = luna_int_new(11);
   assert(LUNA_TYPE_INT == num->type);
   assert(11 == num->value.as_int);
 }
@@ -359,7 +359,7 @@ int
 main(int argc, const char **argv){
   clock_t start = clock();
 
-  size(luna_value_t);
+  size(luna_object_t);
 
   suite("value");
   test(value_is);
