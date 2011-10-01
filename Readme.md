@@ -135,6 +135,18 @@ Evaluates as:
      User allowed =: realm
        !(banned || blocked_from(realm))
 
+### "self"
+
+ The `self` argument will be much like the one you find in JavaScript, that is, it will be "unbound". This is a powerful concept, however one of the large flaws in JavaScript is that when you invoke a function without a receiver `this` becomes the global, not so useful :). With Luna functions called without receivers will use the `self` value of the parent function.
+
+ Consider the following example, where `self visit(node)`, this would reference the `Block` instance, even though it's nested within another function.
+
+``` 
+Block visit =:
+  self nodes each: node
+    self visit(node)
+``` 
+
 ### Heredocs
 
 To make heredocs convenient you'd then also need interpolation, which ends up being a bit silly as this could simply be a built-in function to provide similar functionality. A function like `doc()` below could easily check the indentation level of the first line, and trim the following lines based on that.
