@@ -14,9 +14,4 @@
 
 #define LUNA_VERSION "0.0.1"
 
-// branch prediction
-
-#define likely(val) __builtin_expect((val), 1)
-#define unlikely(val) __builtin_expect((val), 0)
-
 #endif /* __LUNA__ */
