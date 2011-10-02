@@ -8,6 +8,7 @@
 #include "object.h"
 #include "hash.h"
 #include "list.h"
+#include "internal.h"
 
 /*
  * Allocate an initialize a new object of the given `type`.
@@ -16,7 +17,7 @@
 static luna_object_t *
 alloc_object(luna_object type) {
   luna_object_t *self = malloc(sizeof(luna_object_t));
-  if (!self) return NULL;
+  if (unlikely(!self)) return NULL;
   self->type = type;
   self->hash = luna_hash_new();
   return self;
@@ -29,7 +30,7 @@ alloc_object(luna_object type) {
 luna_object_t *
 luna_int_new(int val) {
   luna_object_t *self = alloc_object(LUNA_TYPE_INT);
-  if (!self) return NULL;
+  if (unlikely(!self)) return NULL;
   self->value.as_int = val;
   return self;
 }
