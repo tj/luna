@@ -6,6 +6,7 @@
 //
 
 #include "list.h"
+#include "internal.h"
 
 /*
  * Allocate a new list_t. NULL on failure.
@@ -13,9 +14,8 @@
 
 list_t *
 list_new() {
-  list_t *self;
-  if (!(self = calloc(1, sizeof(list_t))))
-    return NULL;
+  list_t *self = calloc(1, sizeof(list_t));
+  if (unlikely(!self)) return NULL;
   return self;
 }
 
@@ -44,7 +44,7 @@ list_destroy(list_t *self) {
 
 list_node_t *
 list_rpush(list_t *self, list_node_t *node) {
-  if (!node) return NULL;
+  if (unlikely(!node)) return NULL;
   if (self->len) {
     node->prev = self->tail;
     node->next = NULL;
@@ -201,9 +201,8 @@ list_iterator_new(list_t *list, list_direction_t direction) {
 
 list_iterator_t *
 list_iterator_new_from_node(list_node_t *node, list_direction_t direction) {
-  list_iterator_t *self;
-  if (!(self = malloc(sizeof(list_iterator_t))))
-    return NULL;
+  list_iterator_t *self = malloc(sizeof(list_iterator_t));
+  if (unlikely(!self)) return NULL;
   self->next = node;
   self->direction = direction;
   return self;
@@ -240,9 +239,8 @@ list_iterator_destroy(list_iterator_t *self) {
 
 list_node_t *
 list_node_new(void *val) {
-  list_node_t *self;
-  if (!(self = calloc(1, sizeof(list_node_t))))
-    return NULL;
+  list_node_t *self = calloc(1, sizeof(list_node_t));
+  if (unlikely(!self)) return NULL;
   self->val = val;
   return self;
 }
