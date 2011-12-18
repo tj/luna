@@ -4,7 +4,7 @@ OBJ = ${SRC:.c=.o}
 
 CC = clang
 PREFIX = /usr/local
-CFLAGS = -std=c99 -g -O0
+CFLAGS = -std=c99 -g -O0 -Wno-parentheses -Wno-switch-enum
 CFLAGS += -I deps
 
 # linenoise
