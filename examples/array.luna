@@ -11,11 +11,12 @@ Array sum =:
 
 Array min =:
   self reduce: min, n
-    n if n < min
-    min
+    n < min ? n : min
 
 Array max =:
   self reduce: max, n
-    n if n > max
-    max
+    n > max ? n : max
+
+
+
 
