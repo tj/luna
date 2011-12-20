@@ -9,8 +9,6 @@
 #include "ast.h"
 #include "internal.h"
 
-// TODO: error handling
-
 /*
  * Alloc a luna value and assign the given `node`.
  */
