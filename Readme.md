@@ -13,7 +13,7 @@
   - small (~2000 SLOC)
   - simple, elegant, explicit
   - differential inheritance (proto chain)
-  - avoid keywords and additional syntax where possible
+  - favour simplicity in place of minor syntactic conveniences
   - reflection capabilities
   - register based VM (then JIT)
   - ...
@@ -41,6 +41,7 @@
   - ◦ virtual machine
   - ◦ C public/internal apis
   - ◦ garbage collection
+  - ◦ continuations
   - ◦ optimizations (TCO etc)
   - ◦ portability
   - ◦ closures
