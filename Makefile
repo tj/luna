@@ -2,7 +2,7 @@
 SRC = $(shell find src/*.c)
 OBJ = ${SRC:.c=.o}
 
-CC = clang
+CC = gcc
 PREFIX = /usr/local
 CFLAGS = -std=c99 -g -O0 -Wno-parentheses -Wno-switch-enum
 CFLAGS += -I deps
