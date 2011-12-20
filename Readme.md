@@ -108,19 +108,21 @@ __NOTE__: forgive the bad syntax highlighting, until I have time to write a lexe
  In contrast, when used appropriately it can lead to syntactically pleasing code. For this reason I have chosen to adopt significant whitespace for Luna, _however_ since Luna's inheritance is prototype-based, excessive nesting is at a minimum, because the receiving object (or class in class-based languages), must be explicitly defined, reaffirming context, as shown in the example below:
 
 ```js 
-Person = Object clone
 
-Person init =: first last
- self first = first
- self last = last
+User =: first, last
+  user = User clone()
+  user first = first
+  user last = last
+  user
 
-Person to_string_ =:
- self first + ' ' + self last
+User string =:
+  self first + ' ' + self last
 
-Person inspect =:
- '#<Person' + self + '>'
+User inspect =:
+  '#<User' + self + '>'
 
-tj = Person init('tj', 'holowaychuk')
+tj = User('tj', 'holowaychuk')
+
 stdout write(tj)
 // => 'tj holowaychuk'
 ```
