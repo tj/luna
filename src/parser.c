@@ -17,7 +17,7 @@
 
 #ifdef EBUG_PARSER
 #define debug(name) \
-  fprintf(stderr, "\n\033[90m%s\033[0m\n", name); \
+  fprintf(stderr, "\n\e[90m%s\e[0m\n", name); \
   luna_token_inspect(&self->lex->tok);
 #else
 #define debug(name)
@@ -30,7 +30,7 @@
 #ifdef EBUG_PARSER
 #define accept(t) \
   (peek->type == LUNA_TOKEN_##t \
-    ? (fprintf(stderr, "\033[90maccepted \033[33m%s\033[0m\n", #t), \
+    ? (fprintf(stderr, "\e[90maccepted \e[33m%s\e[0m\n", #t), \
       (self->lb = *self->la, self->la = NULL, &self->lb)) \
     : 0)
 #else

@@ -15,16 +15,16 @@
 
 void
 luna_token_inspect(luna_token_t *tok) {
-  printf("\033[90m%s\033[0m", luna_token_type_string(tok->type));
+  printf("\e[90m%s\e[0m", luna_token_type_string(tok->type));
   switch (tok->type) {
     case LUNA_TOKEN_INT:
-      printf(" \033[36m%d\033[0m", tok->value.as_int);
+      printf(" \e[36m%d\e[0m", tok->value.as_int);
       break;
     case LUNA_TOKEN_FLOAT:
-      printf(" \033[36m%f\033[0m", tok->value.as_float);
+      printf(" \e[36m%f\e[0m", tok->value.as_float);
       break;
     case LUNA_TOKEN_STRING:
-      printf(" \033[32m'%s'\033[0m", tok->value.as_string);
+      printf(" \e[32m'%s'\e[0m", tok->value.as_string);
       break;
     case LUNA_TOKEN_ID:
       printf(" %s", tok->value.as_string);
