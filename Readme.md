@@ -14,6 +14,8 @@
   - favour simplicity in place of minor syntactic conveniences
   - reflection capabilities
   - register based VM (then JIT)
+  - small embeddable core
+  - robust, rich standard library
   - ...
 
 ## Build
