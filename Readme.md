@@ -15,7 +15,7 @@
   - reflection capabilities
   - register based VM (then JIT)
   - small embeddable core
-  - robust, rich standard library
+  - robust & rich standard library
   - ...
 
 ## Build
@@ -45,8 +45,6 @@
   - ◦ optimizations (TCO etc)
   - ◦ portability
   - ◦ closures
-  - ◦ module system
-  - ◦ PCRE
   - ◦ VIM / TM / syntaxes
   - ◦ website
 
