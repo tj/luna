@@ -28,10 +28,13 @@ test: test_runner
 test_runner: $(TEST_OBJ)
 	$(CC) $^ -o $@
 
-update:
-	cp -fr ../list/* deps/list/
+install: luna
+	install luna $(PREFIX)/bin
+
+uninstall:
+	rm $(PREFIX)/bin/luna
 
 clean:
 	rm -f luna test_runner $(OBJ) $(TEST_OBJ)
 
-.PHONY: clean update test
+.PHONY: clean test install uninstall
