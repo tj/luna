@@ -1,0 +1,23 @@
+
+Vector: x, y
+  self x = x || 0.0
+  self y = y || 0.0
+
+Vector add: v
+  self x += v x
+  self y += v y
+
+Vector sub: v
+  self x -= v x
+  self y -= v y
+
+Vector dot: v
+  self x * v x + self y * v y
+
+Vector clone:
+  Vector(self x, self y)
+
+Vector clear:
+  self x = 0.0
+  self y = 0.0
+  self
