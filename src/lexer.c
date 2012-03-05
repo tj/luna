@@ -57,6 +57,7 @@ luna_lexer_init(luna_lexer_t *self, FILE *stream, const char *filename) {
   self->error = NULL;
   self->stream = stream;
   self->filename = filename;
+  self->indent_stack[0] = 0;
   self->indents = 0;
   self->outdents = 0;
   self->lineno = 1;
