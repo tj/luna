@@ -675,7 +675,7 @@ if_expr(luna_parser_t *self) {
 }
 
 /*
- * if_expr (',' if_expr)*
+ * if_expr
  */
 
 static luna_node_t *
@@ -683,9 +683,6 @@ expr(luna_parser_t *self) {
   luna_node_t *node;
   debug("expr");
   if (!(node = if_expr(self))) return NULL;
-  // while (accept(COMMA)) {
-  //   if (!not_expr(self)) return NULL;
-  // }
   return node;
 }
 
