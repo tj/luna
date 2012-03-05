@@ -784,8 +784,30 @@ while_stmt(luna_parser_t *self) {
 }
 
 /*
+ *   'return' expr
+ * | 'return'
+ */
+
+static luna_node_t *
+return_stmt(luna_parser_t *self) {
+  accept(RETURN);
+  debug("return");
+
+  // 'return'
+  if (is(NEWLINE)) {
+    return (luna_node_t *) luna_return_node_new(NULL);
+  }
+
+  // 'return' expr
+  luna_node_t *node;
+  if (!(node = expr(self))) return NULL;
+  return (luna_node_t *) luna_return_node_new(node);
+}
+
+/*
  *   if_stmt
  * | while_stmt
+ * | return_stmt
  * | expr_stmt
  */
 
@@ -795,6 +817,7 @@ stmt(luna_parser_t *self) {
   context("statement");
   if (is(IF) || is(UNLESS)) return if_stmt(self);
   if (is(WHILE) || is(UNTIL)) return while_stmt(self);
+  if (is(RETURN)) return return_stmt(self);
   return expr_stmt(self);
 }
 

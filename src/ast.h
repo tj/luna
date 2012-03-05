@@ -187,6 +187,15 @@ typedef struct {
   luna_block_node_t *block;
 } luna_while_node_t;
 
+/*
+ * Luna return node.
+ */
+
+typedef struct {
+  luna_node_t base;
+  luna_node_t *expr;
+} luna_return_node_t;
+
 // protos
 
 luna_object_t *
@@ -230,5 +239,8 @@ luna_if_node_new(int negate, luna_node_t *expr, luna_block_node_t *block);
 
 luna_while_node_t *
 luna_while_node_new(int negate, luna_node_t *expr, luna_block_node_t *block);
+
+luna_return_node_t *
+luna_return_node_new(luna_node_t *expr);
 
 #endif /* __LUNA_AST__ */
