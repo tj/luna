@@ -700,7 +700,7 @@ expr_stmt(luna_parser_t *self) {
   
   if (!(node = expr(self))) return NULL;
 
-  if (!(accept(NEWLINE) || is(OUTDENT))) {
+  if (!(accept(NEWLINE) || is(OUTDENT) || is(EOS))) {
     return error("missing newline");
   }
 
