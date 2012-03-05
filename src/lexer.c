@@ -288,6 +288,7 @@ luna_scan(luna_lexer_t *self) {
     case '^': return token(OP_BIT_XOR);
     case '~': return token(OP_BIT_NOT);
     case '?': return token(QMARK);
+    case ':': return token(COLON);
     case '#':
       self->tok.value.as_int = next;
       return token(INT);
@@ -307,10 +308,6 @@ luna_scan(luna_lexer_t *self) {
       return '*' == next
         ? token(OP_POW)
         : (undo, token(OP_MULT));
-    case ':':
-      return '=' == next
-        ? token(OP_SLOT_ASSIGN)
-        : (undo, token(COLON));
     case '!':
       return '=' == next
         ? token(OP_NEQ)

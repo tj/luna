@@ -69,7 +69,7 @@ operator       |  associativity
 &&             |  left
 ||             |  left
 ?:             |  right
-= :=           |  right
+= += -=        |  right
 not            |  right
 ,              |  left
 if unless      |  left
