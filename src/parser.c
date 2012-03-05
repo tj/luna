@@ -690,7 +690,7 @@ expr(luna_parser_t *self) {
 }
 
 /*
- * expr (';' | newline)
+ * expr (newline)
  */
 
 static luna_node_t *
