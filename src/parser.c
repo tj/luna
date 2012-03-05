@@ -700,8 +700,8 @@ expr_stmt(luna_parser_t *self) {
   
   if (!(node = expr(self))) return NULL;
 
-  if (!(accept(SEMICOLON) || accept(NEWLINE) || is(OUTDENT))) {
-    return error("missing newline or semi-colon");
+  if (!(accept(NEWLINE) || is(OUTDENT))) {
+    return error("missing newline");
   }
 
   return node;

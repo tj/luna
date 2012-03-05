@@ -282,7 +282,6 @@ luna_scan(luna_lexer_t *self) {
     case '}': return token(RBRACE);
     case '[': return token(LBRACK);
     case ']': return token(RBRACK);
-    case ';': return token(SEMICOLON);
     case ',': return token(COMMA);
     case '.': return token(OP_DOT);
     case '%': return token(OP_MOD);
