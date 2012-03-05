@@ -292,13 +292,17 @@ luna_scan(luna_lexer_t *self) {
       self->tok.value.as_int = next;
       return token(INT);
     case '+':
-      return '+' == next
-        ? token(OP_INCR)
-        : (undo, token(OP_PLUS));
+      switch (next) {
+        case '+': return token(OP_INCR);
+        case '=': return token(OP_PLUS_ASSIGN);
+        default: return undo, token(OP_PLUS);
+      }
     case '-':
-      return '-' == next
-        ? token(OP_DECR)
-        : (undo, token(OP_MINUS));
+      switch (next) {
+        case '-': return token(OP_DECR);
+        case '=': return token(OP_MINUS_ASSIGN);
+        default: return undo, token(OP_MINUS);
+      }
     case '*':
       return '*' == next
         ? token(OP_POW)

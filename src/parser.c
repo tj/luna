@@ -599,6 +599,8 @@ call_expr(luna_parser_t *self) {
 /*
  *   logical_or_expr
  * | call_expr '=' not_expr
+ * | call_expr '+=' not_expr
+ * | call_expr '-=' not_expr
  * | call_expr ':=' not_expr
  */
 
@@ -609,7 +611,10 @@ assignment_expr(luna_parser_t *self) {
   debug("assignment_expr");
   if (!(node = logical_or_expr(self))) return NULL;
 
-  if (accept(OP_ASSIGN) || accept(OP_SLOT_ASSIGN)) {
+  if ( accept(OP_ASSIGN)
+    || accept(OP_PLUS_ASSIGN)
+    || accept(OP_MINUS_ASSIGN)
+    || accept(OP_SLOT_ASSIGN)) {
     op = prev->type;
     context("assignment");
     if (!(right = not_expr(self))) return NULL;
