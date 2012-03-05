@@ -792,6 +792,7 @@ static luna_node_t *
 return_stmt(luna_parser_t *self) {
   accept(RETURN);
   debug("return");
+  context("return statement");
 
   // 'return'
   if (is(NEWLINE)) {
