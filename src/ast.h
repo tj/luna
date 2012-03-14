@@ -37,7 +37,6 @@
   n(FUNCTION) \
   n(SLOT)
 
-
 /*
  * Nodes enum.
  */
