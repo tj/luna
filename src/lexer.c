@@ -132,7 +132,7 @@ scan_ident(luna_lexer_t *self, int c) {
   undo;
 
   buf[len++] = 0;
-  // TODO: refactor this lameness when string api is implemented
+  // TODO: refactor this lameness with length checks etc
   if (0 == strcmp("if", buf)) return token(IF); 
   else if (0 == strcmp("else", buf)) return token(ELSE); 
   else if (0 == strcmp("unless", buf)) return token(UNLESS); 

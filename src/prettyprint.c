@@ -254,6 +254,23 @@ visit_while(luna_visitor_t *self, luna_while_node_t *node) {
 }
 
 /*
+ * Visit `return` node.
+ */
+
+static void
+visit_return(luna_visitor_t *self, luna_return_node_t *node) {
+  printf("(return");
+  if (node->expr) {
+    ++indents;
+    printf("\n");
+    INDENT;
+    visit((luna_node_t *) node->expr);
+    --indents;
+  }
+  printf(")");
+}
+
+/*
  * Visit if `node`.
  */
 
@@ -311,6 +328,7 @@ luna_prettyprint(luna_node_t *node) {
     .visit_block = visit_block,
     .visit_float = visit_float,
     .visit_string = visit_string,
+    .visit_return = visit_return,
     .visit_function = visit_function,
     .visit_unary_op = visit_unary_op,
     .visit_binary_op = visit_binary_op

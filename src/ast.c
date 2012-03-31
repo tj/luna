@@ -173,6 +173,30 @@ luna_function_node_new(luna_block_node_t *block, luna_vec_t *params) {
 }
 
 /*
+ * Alloc and initialize a new function node with the given `expr`,
+ * with an implicit return.
+ */
+
+luna_function_node_t *
+luna_function_node_new_from_expr(luna_node_t *expr, luna_vec_t *params) {
+  luna_function_node_t *self = malloc(sizeof(luna_function_node_t));
+  if (unlikely(!self)) return NULL;
+  self->base.type = LUNA_NODE_FUNCTION;
+  self->params = params;
+
+  // block
+  self->block = luna_block_node_new();
+  if (unlikely(!self->block)) return NULL;
+
+  // return
+  luna_return_node_t *ret = luna_return_node_new(expr);
+  ret->expr = expr; // TODO: ...?
+  luna_vec_push(self->block->stmts, luna_node(ret));
+
+  return self;
+}
+
+/*
  * Alloc and initialize a new if stmt node, negated for "unless",
  * with required `expr` and `block`.
  */
@@ -205,6 +229,10 @@ luna_while_node_new(int negate, luna_node_t *expr, luna_block_node_t *block) {
   self->block = block;
   return self;
 }
+
+/*
+ * Alloc and initialize a new return node with the given `expr`.
+ */
 
 luna_return_node_t *
 luna_return_node_new(luna_node_t *expr) {

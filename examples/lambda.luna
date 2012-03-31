@@ -1,0 +1,3 @@
+
+users map(:user | user pet) select(:pet | pet age > 10)
+puts = :str | stdout write(str + '\n')

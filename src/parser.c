@@ -493,7 +493,8 @@ function_params(luna_parser_t *self) {
 }
 
 /*
- * ':' params? block
+ *   ':' params? block
+ * | ':' params? '|' expr
  */
 
 static luna_node_t *
@@ -501,13 +502,26 @@ function_expr(luna_parser_t *self) {
   luna_block_node_t *body;
   luna_vec_t *params;
   debug("function_expr");
+
+  // ':'
   if (accept(COLON)) {
+    // params?
     if (!(params = function_params(self))) return NULL;
-    context("function literal");
+    context("function");
+
+    // '|' expr
+    if (accept(OP_BIT_OR)) {
+      luna_node_t *node;
+      if (!(node = expr(self))) return NULL;
+      return (luna_node_t *) luna_function_node_new_from_expr(node, params);
+    }
+
+    // block
     if (body = block(self)) {
       return (luna_node_t *) luna_function_node_new(body, params);
     }
   }
+
   return NULL;
 }
 

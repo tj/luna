@@ -206,6 +206,9 @@ luna_block_node_new();
 luna_function_node_t *
 luna_function_node_new(luna_block_node_t *block, luna_vec_t *params);
 
+luna_function_node_t *
+luna_function_node_new_from_expr(luna_node_t *expr, luna_vec_t *params);
+
 luna_slot_node_t *
 luna_slot_node_new(luna_node_t *left, luna_node_t *right);
 
