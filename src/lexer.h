@@ -9,6 +9,7 @@
 #define __LUNA_LEXER__
 
 #include <stdio.h>
+#include <sys/stat.h>
 #include "token.h"
 
 #ifndef LUNA_BUF_SIZE
@@ -30,7 +31,8 @@ typedef struct {
   int indent_stack[LUNA_MAX_INDENTS];
   int indents;
   int outdents;
-  FILE *stream;
+  off_t offset;
+  char *source;
   const char *filename;
   luna_token_t tok;
   char buf[LUNA_BUF_SIZE];
@@ -42,6 +44,6 @@ int
 luna_scan(luna_lexer_t *self);
 
 void
-luna_lexer_init(luna_lexer_t *self, FILE *stream, const char *filename);
+luna_lexer_init(luna_lexer_t *self, char *source, const char *filename);
 
 #endif /* __LUNA_LEXER__ */

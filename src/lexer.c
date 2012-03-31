@@ -12,23 +12,23 @@
 #include "lexer.h"
 
 /*
- * Next char in the stream.
+ * Next char in the array.
  */
 
 #ifdef EBUG_LEXER
 #define next \
-  (self->stash = fgetc(self->stream)\
+  (self->stash = self->source[self->offset++]\
     , fprintf(stderr, "'%c'\n", self->stash)\
     , self->stash)
 #else
-#define next (self->stash = fgetc(self->stream))
+#define next (self->stash = self->source[self->offset++])
 #endif
 
 /*
  * Undo the previous char.
  */
 
-#define undo ungetc(self->stash, self->stream)
+#define undo (self->source[--self->offset] = self->stash)
 
 /*
  * Assign token `t`.
@@ -49,18 +49,19 @@
 #define error(msg) (self->error = msg, token(ILLEGAL))
 
 /*
- * Initialize lexer with the given `stream` and `filename`.
+ * Initialize lexer with the given `source` and `filename`.
  */
 
 void
-luna_lexer_init(luna_lexer_t *self, FILE *stream, const char *filename) {
+luna_lexer_init(luna_lexer_t *self, char *source, const char *filename) {
   self->error = NULL;
-  self->stream = stream;
+  self->source = source;
   self->filename = filename;
   self->indent_stack[0] = 0;
   self->indents = 0;
   self->outdents = 0;
   self->lineno = 1;
+  self->offset = 0;
 }
 
 /*
@@ -334,7 +335,7 @@ luna_scan(luna_lexer_t *self) {
       return token(OP_GT);
     case '/':
       if ('/' == next) {
-        while ((c = next) != '\n' && EOF != c) ; undo;
+        while ((c = next) != '\n' && c) ; undo;
         goto scan;
       }
       return token(OP_DIV);
@@ -343,7 +344,7 @@ luna_scan(luna_lexer_t *self) {
     case '"':
     case '\'':
       return scan_string(self, c);
-    case EOF:
+    case 0:
       if (self->indents) {
         --self->indents;
         return token(OUTDENT);

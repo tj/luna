@@ -342,14 +342,14 @@ test_object_mixins() {
  */
 
 #define suite(title) \
-  printf("\n  \e[96m%s\e[0m\n", title)
+  printf("\n  \e[36m%s\e[0m\n", title)
 
 /*
  * Report sizeof.
  */
 
 #define size(type) \
-  printf("\n  \e[90m%s: %d bytes\e[0m\n", #type, sizeof(type));
+  printf("\n  \e[90m%s: %ld bytes\e[0m\n", #type, sizeof(type));
 
 /*
  * Run all test suites.
@@ -385,7 +385,7 @@ main(int argc, const char **argv){
   test(string);
 
   printf("\n");
-  printf("  \e[90mcompleted in \e[33m%.5fs\e[0m\n", (float) (clock() - start) / CLOCKS_PER_SEC);
+  printf("  \e[90mcompleted in \e[32m%.5fs\e[0m\n", (float) (clock() - start) / CLOCKS_PER_SEC);
   printf("\n");
   return 0;
 }
