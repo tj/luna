@@ -236,7 +236,7 @@ luna_while_node_new(int negate, luna_node_t *expr, luna_block_node_t *block) {
 
 luna_return_node_t *
 luna_return_node_new(luna_node_t *expr) {
-  luna_while_node_t *self = malloc(sizeof(luna_return_node_t));
+  luna_return_node_t *self = malloc(sizeof(luna_return_node_t));
   if (unlikely(!self)) return NULL;
   self->base.type = LUNA_NODE_RETURN;
   self->expr = expr;
