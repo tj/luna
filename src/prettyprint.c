@@ -34,7 +34,8 @@ static char escapes[] = {
 };
 
 /*
- * Return the length of an "inspected" string.
+ * Return the length of an "inspected" string
+ * including the null byte.
  */
 
 static int
@@ -56,7 +57,7 @@ inspect_length(const char *str) {
         ++len;
     }
   }
-  return len;
+  return len + 1;
 }
 
 /*
@@ -65,9 +66,10 @@ inspect_length(const char *str) {
 
 static const char *
 inspect(const char *str) {
+  int j = 0;
   int len = inspect_length(str);
   char *buf = malloc(len);
-  for (int i = 0, j = 0; str[i]; ++i) {
+  for (int i = 0; str[i]; ++i) {
     switch (str[i]) {
       case '\a':
       case '\b':
@@ -87,6 +89,7 @@ inspect(const char *str) {
         buf[j++] = str[i];
     }
   }
+  buf[j] = 0;
   return buf;
 }
 
