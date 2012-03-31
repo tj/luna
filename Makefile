@@ -20,7 +20,8 @@ luna: $(OBJ)
 	$(CC) $^ $(LDFLAGS) -o $@
 
 %.o: %.c
-	$(CC) -c $(CFLAGS) $< -o $@
+	@$(CC) -c $(CFLAGS) $< -o $@
+	@echo CC $@
 
 test: test_runner
 	@./$<
