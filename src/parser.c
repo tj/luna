@@ -90,8 +90,8 @@
 
 // forward declarations
 
-static luna_block_node_t * block(luna_parser_t *self);
-static luna_node_t * expr(luna_parser_t *self);
+static luna_block_node_t *block(luna_parser_t *self);
+static luna_node_t *expr(luna_parser_t *self);
 static luna_node_t *call_expr(luna_parser_t *self);
 static luna_node_t *not_expr(luna_parser_t *self);
 
