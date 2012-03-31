@@ -190,8 +190,7 @@ luna_function_node_new_from_expr(luna_node_t *expr, luna_vec_t *params) {
 
   // return
   luna_return_node_t *ret = luna_return_node_new(expr);
-  ret->expr = expr; // TODO: ...?
-  luna_vec_push(self->block->stmts, luna_node(ret));
+  luna_vec_push(self->block->stmts, luna_node((luna_node_t *) ret));
 
   return self;
 }
