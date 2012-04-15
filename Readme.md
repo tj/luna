@@ -35,7 +35,7 @@
   - ✔ test suite
   - ✔ ast
   - ✔ linenoise integration for REPL
-  - ◦ opcode generation
+  - ◦ code generation
   - ◦ virtual machine
   - ◦ C public/internal apis
   - ◦ garbage collection
