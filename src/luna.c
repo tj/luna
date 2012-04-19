@@ -68,7 +68,21 @@ repl() {
   char *line;
   while(line = linenoise("luna> ")) {
     if ('\0' != line[0]) {
-      printf("%s\n", line);
+      // parse the input
+      luna_lexer_t lex;
+      luna_lexer_init(&lex, line, "stdin");
+      luna_parser_t parser;
+      luna_parser_init(&parser, &lex);
+      luna_block_node_t *root;
+  
+      // oh noes!
+      if (!(root = luna_parse(&parser))) {
+        luna_report_error(&parser);
+        exit(1);
+      }
+
+      // print
+      luna_prettyprint((luna_node_t *) root);
       linenoiseHistoryAdd(line);
     }
     free(line);
