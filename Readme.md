@@ -84,13 +84,9 @@ while until
   - khash
   - kvec
 
-## Inspiration
-
- Luna's inspiration comes from bits of many languages that I have worked work as I aim for the minimalism and performance of [Lua](http://www.lua.org/), elegance of Steve Dekorte's [io](http://www.iolanguage.com/), and bits of syntax inspired by Python (whitespace) and Ruby (low precedence `not`, `**` etc).
-
 ## Syntax
 
- The syntax, though very much still a work-in-progress, consists of concepts from various languages, as well as some I've not personally seen.
+  Luna's syntactic & general philosophy is to encourage simple, explicit programs. For example explicit __return__s rather than implicit, providing (usually) one reasonable way to perform a task rather than several, providing a single method of concurrency rather than many, and the list goes on. The syntax, though very much still a work-in-progress, consists of concepts from various languages, as well as some I've not personally seen.
 
 ### Significant Whitespace
 
@@ -98,21 +94,20 @@ __NOTE__: forgive the bad syntax highlighting, until I have time to write a lexe
 
  Those of you who know me, might think _"but TJ, you hate significant white-space?"_, well that's not quite accurate; the primary issue I have with significant white-space is its abuse. It's very easy to get lost when the indentation level is deep, or when methods (or classes etc) span many rows. For example, class-based languages with significant whitespace make it very easy to lose context, and pairing outdents is more of a visual challenge than braces or other block delimiters.
 
- In contrast, when used appropriately it can lead to syntactically pleasing code. For this reason I have chosen to adopt significant whitespace for Luna, _however_ since Luna's inheritance is prototype-based, excessive nesting is at a minimum, because the receiving object (or class in class-based languages), must be explicitly defined, reaffirming context, as shown in the example below:
+ In contrast, when used appropriately it can lead to syntactically pleasing code. For this reason I have chosen to adopt significant whitespace for Luna, _however_ since Luna's inheritance is prototype-based, excessive nesting is at a minimum, because the receiving object must be explicitly defined, reaffirming context, as shown in the example below:
 
 ```js 
-
 User =: first, last
   user = User clone()
   user first = first
   user last = last
-  user
+  ret user
 
 User string =:
-  self first + ' ' + self last
+  ret self first + ' ' + self last
 
 User inspect =:
-  '#<User' + self + '>'
+  ret '#<User' + self + '>'
 
 tj = User('tj', 'holowaychuk')
 
@@ -144,20 +139,9 @@ Block visit =:
     self visit(node)
 ``` 
 
-### Heredocs
-
-To make heredocs convenient you'd then also need interpolation, which ends up being a bit silly as this could simply be a built-in function to provide similar functionality. A function like `doc()` below could easily check the indentation level of the first line, and trim the following lines based on that.
-
-```
-foo = doc('
-   foo
-   bar
-   baz')
-```
-
 ### Slot Access
 
- In the example above, you will notice that the use of whitespace is used to convey member (slot) access, where typically the `.` character is used. I find this pleasing to the eye, while maintaining explicit function calls. Typically languages such as Ruby allow optional parenthesis for calls, creating ambiguity with property access:
+ In the example above, you will notice that the use of whitespace is used to convey member (slot) access, where typically the `.` character is used. I find this pleasing to the eye, while maintaining explicit function calls. Some languages such as Ruby allow optional parenthesis for calls, creating ambiguity with property access:
 
 ```ruby 
 person.pets.push 'tobi'
@@ -182,18 +166,12 @@ While the former approach is fine in small use-cases, and of course when it's _y
  Another aspect I want to avoid, which I consider an annoyance in JavaScript, is using operators such as `typeof`, or `instanceof`, when a simple method or property will do, I would much rather use built-in language features.
 
 ```js
-User = Object clone
+User = Object clone()
 
-tj = User clone
+tj = User clone()
 
 tj is_a =: type
   'user' == type
-
-tj proto == User
-// => true
-
-tj proto proto == Object
-// => true
 
 tj is_a('user')
 // => true
