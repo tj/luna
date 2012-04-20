@@ -18,7 +18,7 @@
   t(NEWLINE, "newline") \
   t(INDENT, "indent") \
   t(OUTDENT, "outdent") \
-  t(ID, "identifier") \
+  t(ID, "id") \
   t(INT, "int") \
   t(FLOAT, "float") \
   t(STRING, "string") \
