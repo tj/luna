@@ -166,6 +166,7 @@ main(int argc, const char **argv){
   // --tokens
   if (tokens) {
     while (luna_scan(&lex)) {
+      printf("  \e[90m%d : \e[m", lex.lineno);
       luna_token_inspect(&lex.tok);
     }
     exit(0);
