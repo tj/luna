@@ -1,24 +1,21 @@
 
 Array first =: n
   if n
-    self slice(0, n)
+    ret self slice(0, n)
   else
-    self at(n)
+    ret self at(n)
 
 Array sum =:
-  self reduce: sum, n
-    sum + n
+  ret self reduce: sum, n
+    ret sum + n
 
 Array min =:
-  self reduce: min, n
-    return n if n < min
-    min
+  ret self reduce: min, n
+    ret n if n < min
+    ret min
 
 Array max =:
-  self reduce: max, n
-    return n if n > max
-    max
-
-
-
+  ret self reduce: max, n
+    ret n if n > max
+    ret max
 
