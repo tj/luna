@@ -22,6 +22,10 @@
 
 static int ast = 0;
 
+// --tokens
+
+static int tokens = 0;
+
 /*
  * Output usage information.
  */
@@ -33,7 +37,8 @@ usage() {
     "\n"
     "\n  Options:"
     "\n"
-    "\n    -a, --ast       output ast to stdout"
+    "\n    -A, --ast       output ast to stdout"
+    "\n    -T, --tokens    output tokens to stdout"
     "\n    -h, --help      output help information"
     "\n    -V, --version   output luna version"
     "\n"
@@ -104,10 +109,12 @@ parse_args(int *argc, const char **argv) {
       usage();
     else if (!strcmp("-V", arg) || !strcmp("--version", arg))
       version();
-    else if (!strcmp("-a", arg) || !strcmp("--ast", arg)) {
+    else if (!strcmp("-A", arg) || !strcmp("--ast", arg)) {
       ast = 1;
-      --*argc;
-      ++argv;
+      --*argc; ++argv;
+    } else if (!strcmp("-T", arg) || !strcmp("--tokens", arg)) {
+      tokens = 1;
+      --*argc; ++argv;
     } else if ('-' == arg[0]) {
       fprintf(stderr, "unknown flag %s\n", arg);
       exit(1);
@@ -155,7 +162,15 @@ main(int argc, const char **argv){
   luna_parser_t parser;
   luna_parser_init(&parser, &lex);
   luna_block_node_t *root;
-  
+
+  // --tokens
+  if (tokens) {
+    while (luna_scan(&lex)) {
+      luna_token_inspect(&lex.tok);
+    }
+    exit(0);
+  }
+
   // oh noes!
   if (!(root = luna_parse(&parser))) {
     luna_report_error(&parser);
