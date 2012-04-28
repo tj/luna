@@ -1,8 +1,0 @@
-
-char = #0 // 48
-char = #a // 97
-char = #Z // 90
-char = #- // 45
-char = ## // 35
-char = #  // 32
-
