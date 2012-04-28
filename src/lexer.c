@@ -290,6 +290,7 @@ luna_scan(luna_lexer_t *self) {
     case '~': return token(OP_BIT_NOT);
     case '?': return token(QMARK);
     case ':': return token(COLON);
+    case '/': return token(OP_DIV);
     case '+':
       switch (next) {
         case '+': return token(OP_INCR);
@@ -330,12 +331,9 @@ luna_scan(luna_lexer_t *self) {
       if ('=' == next) return token(OP_GTE); undo;
       if ('>' == next) return token(OP_BIT_SHR); undo;
       return token(OP_GT);
-    case '/':
-      if ('/' == next) {
-        while ((c = next) != '\n' && c) ; undo;
-        goto scan;
-      }
-      return token(OP_DIV);
+    case '#':
+      while ((c = next) != '\n' && c) ; undo;
+      goto scan;
     case '\n':
       return scan_newline(self);
     case '"':
