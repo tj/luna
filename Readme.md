@@ -98,7 +98,8 @@ __NOTE__: forgive the bad syntax highlighting, until I have time to write a lexe
 
 ```js 
 User =: first, last
-  user = User clone()
+  user = {}
+  user mixin(User)
   user first = first
   user last = last
   ret user
@@ -166,9 +167,7 @@ While the former approach is fine in small use-cases, and of course when it's _y
  Another aspect I want to avoid, which I consider an annoyance in JavaScript, is using operators such as `typeof`, or `instanceof`, when a simple method or property will do, I would much rather use built-in language features.
 
 ```js
-User = Object clone()
-
-tj = User clone()
+tj = User('tj', 'holowaychuk')
 
 tj is_a =: type
   'user' == type
@@ -190,7 +189,7 @@ tj is_a('user')
 where `params` is simply:
 
 ```js
-id*
+(id (',' id)*)
 ```
 
 and `block` is:

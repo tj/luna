@@ -1,7 +1,10 @@
 
 Vector =: x, y
-  self x = x || 0.0
-  self y = y || 0.0
+  vec = {}
+  mixin(vec, Vector)
+  vec x = x || 0.0
+  vec y = y || 0.0
+  ret vec
 
 Vector add =: v
   self x += v x
