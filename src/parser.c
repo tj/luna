@@ -470,7 +470,7 @@ logical_or_expr(luna_parser_t *self) {
 }
 
 /*
- * (id (',' id)*)
+ * (id ('=' expr)? (',' id ('=' expr)?)*)
  */
 
 static luna_vec_t *
@@ -478,17 +478,25 @@ function_params(luna_parser_t *self) {
   luna_vec_t *params = luna_vec_new();
   debug("params");
   context("function params");
-  if (accept(ID)) {
-    luna_vec_push(params, luna_node((luna_node_t *) luna_id_node_new(prev->value.as_string)));
-    while (accept(COMMA)) {
-      if (accept(ID)) {
-        // TODO: use string api
-        luna_vec_push(params, luna_node((luna_node_t *) luna_id_node_new(prev->value.as_string)));
-      } else {
-        return error("missing identifier");
-      };
+  if (!is(ID)) return params;
+
+  do {
+    // id
+    if (!accept(ID)) return error("missing identifier");
+
+    // ('=' expr)?
+    luna_object_t *param;
+    if (accept(OP_ASSIGN)) {
+      luna_node_t *val = expr(self);
+      if (!val) return NULL;
+      param = luna_node((luna_node_t *) luna_param_node_new(prev->value.as_string, val));
+    } else {
+      param = luna_node((luna_node_t *) luna_param_node_new(prev->value.as_string, NULL));
     }
-  }
+    luna_vec_push(params, param);
+
+  } while (accept(COMMA));
+
   return params;
 }
 
@@ -804,11 +812,11 @@ while_stmt(luna_parser_t *self) {
 
 static luna_node_t *
 return_stmt(luna_parser_t *self) {
-  accept(RETURN);
   debug("return");
   context("return statement");
 
   // 'return'
+  if (!accept(RETURN)) return NULL;
   if (is(NEWLINE)) {
     return (luna_node_t *) luna_return_node_new(NULL);
   }
