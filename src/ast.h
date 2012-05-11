@@ -29,7 +29,6 @@
   n(BOOL) \
   n(NULL) \
   n(ID) \
-  n(PARAM) \
   n(CALL) \
   n(INT) \
   n(FLOAT) \
@@ -124,16 +123,6 @@ typedef struct {
   luna_node_t base;
   const char *val;
 } luna_id_node_t;
-
-/*
- * Luna param node.
- */
-
-typedef struct {
-  luna_node_t base;
-  const char *name;
-  luna_node_t *val;
-} luna_param_node_t;
 
 /*
  * Luna string node.
@@ -234,9 +223,6 @@ luna_binary_op_node_new(luna_token op, luna_node_t *left, luna_node_t *right);
 
 luna_id_node_t *
 luna_id_node_new(const char *val);
-
-luna_param_node_t *
-luna_param_node_new(const char *name, luna_node_t *val);
 
 luna_int_node_t *
 luna_int_node_new(int val);
