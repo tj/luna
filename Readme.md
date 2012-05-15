@@ -130,9 +130,7 @@ Evaluates as:
 
 ### "self"
 
- The `self` argument will be much like the one you find in JavaScript, that is, it will be "unbound". In fact `self` is nothing more than an argument like any other, although it is implicitly passed.
-
-Luna functions called without receivers will use the `self` value of the caller. Consider the following example, where `self visit(node)`, this would reference the `Block` instance, even though it's nested within another function.
+ The `self` argument will be much like the one you find in JavaScript, that is, it will be "unbound", this means `foo bar()`, and `x = foo bar; x()` are not the same.Luna functions called without receivers will use the `self` value of the caller. Consider the following example, where `self visit(node)`, this would reference the `Block` instance, even though it's nested within another function.
 
 ``` 
 Block visit =:
