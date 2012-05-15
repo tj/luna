@@ -41,15 +41,12 @@
   t(COMMA, ",") \
   t(OP_DOT, ".") \
   t(OP_LNOT, "not") \
-  t(OP_ASSIGN, "=") \
   t(OP_NOT, "!") \
   t(OP_PLUS, "+") \
   t(OP_INCR, "++") \
-  t(OP_PLUS_ASSIGN, "+=") \
   t(OP_MINUS, "-") \
   t(OP_DECR, "--") \
-  t(OP_MINUS_ASSIGN, "-=") \
-  t(OP_MULT, "*") \
+  t(OP_MUL, "*") \
   t(OP_DIV, "/") \
   t(OP_MOD, "%") \
   t(OP_POW, "**") \
@@ -61,6 +58,13 @@
   t(OP_NEQ, "!=") \
   t(OP_AND, "&&") \
   t(OP_OR, "||") \
+  t(OP_ASSIGN, "=") \
+  t(OP_PLUS_ASSIGN, "+=") \
+  t(OP_MINUS_ASSIGN, "-=") \
+  t(OP_MUL_ASSIGN, "*=") \
+  t(OP_DIV_ASSIGN, "/=") \
+  t(OP_AND_ASSIGN, "&&=") \
+  t(OP_OR_ASSIGN, "||=") \
   t(OP_BIT_AND, "&") \
   t(OP_BIT_OR, "|") \
   t(OP_BIT_XOR, "^") \

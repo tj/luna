@@ -290,7 +290,6 @@ luna_scan(luna_lexer_t *self) {
     case '~': return token(OP_BIT_NOT);
     case '?': return token(QMARK);
     case ':': return token(COLON);
-    case '/': return token(OP_DIV);
     case '@':
       self->tok.value.as_string = "self";
       return token(ID);
@@ -307,9 +306,15 @@ luna_scan(luna_lexer_t *self) {
         default: return undo, token(OP_MINUS);
       }
     case '*':
-      return '*' == next
-        ? token(OP_POW)
-        : (undo, token(OP_MULT));
+      switch (next) {
+        case '=': return token(OP_MUL_ASSIGN);
+        case '*': return token(OP_POW);
+        default: return undo, token(OP_MUL);
+      }
+    case '/':
+      return '=' == next
+        ? token(OP_DIV_ASSIGN)
+        : (undo, token(OP_DIV));
     case '!':
       return '=' == next
         ? token(OP_NEQ)
@@ -319,21 +324,35 @@ luna_scan(luna_lexer_t *self) {
         ? token(OP_EQ)
         : (undo, token(OP_ASSIGN));
     case '&':
-      return '&' == next
-        ? token(OP_AND)
-        : (undo, token(OP_BIT_AND));
+      switch (next) {
+        case '&':
+          return '=' == next
+            ? token(OP_AND_ASSIGN)
+            : (undo, token(OP_AND));
+        default:
+          return undo, token(OP_BIT_AND);
+      }
     case '|':
-      return '|' == next
-        ? token(OP_OR)
-        : (undo, token(OP_BIT_OR));
+      switch (next) {
+        case '|':
+          return '=' == next
+            ? token(OP_OR_ASSIGN)
+            : (undo, token(OP_OR));
+        default:
+          return undo, token(OP_BIT_OR);
+      }
     case '<':
-      if ('=' == next) return token(OP_LTE); undo;
-      if ('<' == next) return token(OP_BIT_SHL); undo;
-      return token(OP_LT);
+      switch (next) {
+        case '=': return token(OP_LTE);
+        case '<': return token(OP_BIT_SHL);
+        default: return undo, token(OP_LT);
+      }
     case '>':
-      if ('=' == next) return token(OP_GTE); undo;
-      if ('>' == next) return token(OP_BIT_SHR); undo;
-      return token(OP_GT);
+      switch (next) {
+        case '=': return token(OP_GTE);
+        case '>': return token(OP_BIT_SHR);
+        default: return undo, token(OP_GT);
+      }
     case '#':
       while ((c = next) != '\n' && c) ; undo;
       goto scan;

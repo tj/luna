@@ -269,7 +269,7 @@ multiplicative_expr(luna_parser_t *self) {
   luna_node_t *node, *right;
   debug("multiplicative_expr");
   if (!(node = unary_expr(self))) return NULL;
-  while (accept(OP_MULT) || accept(OP_DIV) || accept(OP_MOD)) {
+  while (accept(OP_MUL) || accept(OP_DIV) || accept(OP_MOD)) {
     op = prev->type;
     context("multiplicative operation");
     if (right = unary_expr(self)) {
@@ -615,6 +615,9 @@ call_expr(luna_parser_t *self) {
  * | call_expr '=' not_expr
  * | call_expr '+=' not_expr
  * | call_expr '-=' not_expr
+ * | call_expr '/=' not_expr
+ * | call_expr '*=' not_expr
+ * | call_expr '||=' not_expr
  */
 
 static luna_node_t *
@@ -626,7 +629,11 @@ assignment_expr(luna_parser_t *self) {
 
   if ( accept(OP_ASSIGN)
     || accept(OP_PLUS_ASSIGN)
-    || accept(OP_MINUS_ASSIGN)) {
+    || accept(OP_MINUS_ASSIGN)
+    || accept(OP_DIV_ASSIGN)
+    || accept(OP_MUL_ASSIGN)
+    || accept(OP_OR_ASSIGN)
+    || accept(OP_AND_ASSIGN)) {
     op = prev->type;
     context("assignment");
     if (!(right = not_expr(self))) return NULL;
