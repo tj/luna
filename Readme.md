@@ -130,15 +130,23 @@ Evaluates as:
 
 ### "self"
 
- The `self` argument will be much like the one you find in JavaScript, that is, it will be "unbound". This is a powerful concept, however one of the large flaws in JavaScript is that when you invoke a function without a receiver `this` becomes the global, not so useful :). With Luna functions called without receivers will use the `self` value of the parent function.
+ The `self` argument will be much like the one you find in JavaScript, that is, it will be "unbound". In fact `self` is nothing more than an argument like any other, although it is implicitly passed.
 
- Consider the following example, where `self visit(node)`, this would reference the `Block` instance, even though it's nested within another function.
+Luna functions called without receivers will use the `self` value of the caller. Consider the following example, where `self visit(node)`, this would reference the `Block` instance, even though it's nested within another function.
 
 ``` 
 Block visit =:
   self nodes each: node
     self visit(node)
-``` 
+```
+
+ The variable `self` is also aliased as `@`, which is expanded in the lexer.
+
+```
+Block visit =:
+  @nodes each: node
+    @visit(node)
+```
 
 ### Slot Access
 

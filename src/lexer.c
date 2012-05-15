@@ -291,6 +291,9 @@ luna_scan(luna_lexer_t *self) {
     case '?': return token(QMARK);
     case ':': return token(COLON);
     case '/': return token(OP_DIV);
+    case '@':
+      self->tok.value.as_string = "self";
+      return token(ID);
     case '+':
       switch (next) {
         case '+': return token(OP_INCR);
