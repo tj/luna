@@ -6,6 +6,7 @@
 //
 
 #include "vec.h"
+#include "hash.h"
 #include "ast.h"
 #include "internal.h"
 
@@ -155,6 +156,19 @@ luna_array_node_new() {
   if (unlikely(!self)) return NULL;
   self->base.type = LUNA_NODE_ARRAY;
   self->vals = luna_vec_new();
+  return self;
+}
+
+/*
+ * Alloc and initialize a new hash node.
+ */
+
+luna_hash_node_t *
+luna_hash_node_new() {
+  luna_hash_node_t *self = malloc(sizeof(luna_hash_node_t));
+  if (unlikely(!self)) return NULL;
+  self->base.type = LUNA_NODE_HASH;
+  self->vals = luna_hash_new();
   return self;
 }
 

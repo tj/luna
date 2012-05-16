@@ -147,19 +147,18 @@ arg_list(luna_parser_t *self, luna_array_node_t *arr, luna_token delim) {
 
   // ',' arg_list
   if (accept(COMMA)) {
-    arg_list(self, arr, delim);
+    if (!arg_list(self, arr, delim)) return 0;
   }
 
   return 1;
 }
 
 /*
- * '[' (expr (',' expr)*)? ']'
+ * '[' arg_list? ']'
  */
 
 static luna_node_t *
 array_expr(luna_parser_t *self) {
-  int indents = 0;
   luna_array_node_t *node = luna_array_node_new();
   debug("array_expr");
 
@@ -171,11 +170,58 @@ array_expr(luna_parser_t *self) {
 }
 
 /*
+ *   id ':' expr
+ * | id ':' expr ',' hash_pairs
+ */
+
+int
+hash_pairs(luna_parser_t *self, luna_hash_node_t *hash, luna_token delim) {
+  // trailing ','
+  if (delim == peek->type) return 1;
+
+  // id
+  if (!is(ID)) return error("hash pair key expected");
+  char *id = next->value.as_string;
+
+  // :
+  if (!accept(COLON)) return error("hash pair ':' missing");
+
+  // expr
+  luna_node_t *val;
+  if (!(val = expr(self))) return 0;
+  luna_hash_set(hash->vals, id, luna_node(val));
+
+  // ',' hash_pairs
+  if (accept(COMMA)) {
+    if (!hash_pairs(self, hash, delim)) return 0;
+  }
+
+  return 1;
+}
+
+/*
+ * '{' hash_pairs? '}'
+ */
+
+static luna_node_t *
+hash_expr(luna_parser_t *self) {
+  luna_hash_node_t *node = luna_hash_node_new();
+  debug("hash_expr");
+
+  if (!accept(LBRACE)) return NULL;
+  context("hash");
+  if (!hash_pairs(self, node, LUNA_TOKEN_RBRACE)) return NULL;
+  if (!accept(RBRACE)) return error("hash missing closing '}'");
+  return (luna_node_t *) node;
+}
+
+/*
  *   id
  * | int
  * | float
  * | string
  * | array
+ * | hash
  * | paren_expr
  */
 
@@ -193,6 +239,8 @@ primary_expr(luna_parser_t *self) {
       return (luna_node_t *) luna_string_node_new(next->value.as_string);
     case LUNA_TOKEN_LBRACK:
       return array_expr(self);
+    case LUNA_TOKEN_LBRACE:
+      return hash_expr(self);
   }
   return paren_expr(self);
 }

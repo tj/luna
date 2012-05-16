@@ -22,7 +22,6 @@
   t(INT, "int") \
   t(FLOAT, "float") \
   t(STRING, "string") \
-  t(LBRACE, "{") \
   t(WHILE, "while") \
   t(UNTIL, "until") \
   t(IF, "if") \
@@ -30,6 +29,7 @@
   t(ELSE, "else") \
   t(FOR, "for") \
   t(RETURN, "return") \
+  t(LBRACE, "{") \
   t(RBRACE, "}") \
   t(LPAREN, "(") \
   t(RPAREN, ")") \

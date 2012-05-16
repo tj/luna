@@ -34,6 +34,7 @@
   n(FLOAT) \
   n(STRING) \
   n(ARRAY) \
+  n(HASH) \
   n(FUNCTION) \
   n(SLOT)
 
@@ -143,6 +144,15 @@ typedef struct {
 } luna_array_node_t;
 
 /*
+ * Luna hash node.
+ */
+
+typedef struct {
+  luna_node_t base;
+  luna_hash_t *vals;
+} luna_hash_node_t;
+
+/*
  * Luna call node.
  */
 
@@ -232,6 +242,9 @@ luna_float_node_new(float val);
 
 luna_array_node_t *
 luna_array_node_new();
+
+luna_hash_node_t *
+luna_hash_node_new();
 
 luna_string_node_t *
 luna_string_node_new(const char *val);

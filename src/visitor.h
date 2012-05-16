@@ -33,6 +33,7 @@ typedef struct luna_visitor {
   void (* visit_binary_op)(struct luna_visitor *self, luna_binary_op_node_t *node);
   void (* visit_function)(struct luna_visitor *self, luna_function_node_t *node);
   void (* visit_array)(struct luna_visitor *self, luna_array_node_t *node);
+  void (* visit_hash)(struct luna_visitor *self, luna_hash_node_t *node);
   void (* visit_return)(struct luna_visitor *self, luna_return_node_t *node);
   void (* visit_if)(struct luna_visitor *self, luna_if_node_t *node);
 } luna_visitor_t;

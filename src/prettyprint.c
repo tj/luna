@@ -185,6 +185,24 @@ visit_array(luna_visitor_t *self, luna_array_node_t *node) {
 }
 
 /*
+ * Visit hash `node`.
+ */
+
+static void
+visit_hash(luna_visitor_t *self, luna_hash_node_t *node) {
+  printf("(hash\n");
+  ++indents;
+  luna_hash_each(node->vals, {
+    INDENT;
+    printf("%s: ", slot);
+    visit((luna_node_t *) val->value.as_pointer);
+    printf("\n");
+  });
+  --indents;
+  printf(")");
+}
+
+/*
  * Visit slot `node`.
  */
 
@@ -326,6 +344,7 @@ luna_prettyprint(luna_node_t *node) {
     .visit_int = visit_int,
     .visit_slot = visit_slot,
     .visit_call = visit_call,
+    .visit_hash = visit_hash,
     .visit_array = visit_array,
     .visit_while = visit_while,
     .visit_block = visit_block,
