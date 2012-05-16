@@ -180,11 +180,11 @@ hash_pairs(luna_parser_t *self, luna_hash_node_t *hash, luna_token delim) {
   if (delim == peek->type) return 1;
 
   // id
-  if (!is(ID)) return error("hash pair key expected");
+  if (!is(ID)) return error("hash pair key expected"), 0;
   char *id = next->value.as_string;
 
   // :
-  if (!accept(COLON)) return error("hash pair ':' missing");
+  if (!accept(COLON)) return error("hash pair ':' missing"), 0;
 
   // expr
   luna_node_t *val;
