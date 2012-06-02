@@ -138,7 +138,7 @@ Block visit =:
     self visit(node)
 ```
 
- The variable `self` is also aliased as `@`, which is expanded in the lexer.
+ The variable `self` is also aliased as `@` similar to Ruby, which is expanded in the lexer.
 
 ```
 Block visit =:
