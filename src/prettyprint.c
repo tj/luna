@@ -247,9 +247,15 @@ visit_call(luna_visitor_t *self, luna_call_node_t * node) {
   if (node->args) {
     printf("\n");
     INDENT;
-    luna_vec_each(node->args, {
+    luna_vec_each(node->args->vec, {
       visit((luna_node_t *) val->value.as_pointer);
       if (i != len - 1) printf(" ");
+    });
+
+    luna_hash_each(node->args->hash, {
+      printf(": ", slot);
+      visit((luna_node_t *) val->value.as_pointer);
+      printf(" ");
     });
   }
   --indents;

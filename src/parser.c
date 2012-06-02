@@ -105,6 +105,7 @@ luna_parser_init(luna_parser_t *self, luna_lexer_t *lex) {
   self->la = NULL;
   self->ctx = NULL;
   self->err = NULL;
+  self->in_args = 0;
 }
 
 /*
@@ -143,6 +144,7 @@ arg_list(luna_parser_t *self, luna_array_node_t *arr, luna_token delim) {
   // expr
   luna_node_t *val;
   if (!(val = expr(self))) return 0;
+
   luna_vec_push(arr->vals, luna_node(val));
 
   // ',' arg_list
@@ -609,19 +611,31 @@ slot_access_expr(luna_parser_t * self) {
  * (expr (',' expr)*)
  */
 
-static luna_vec_t *
+luna_args_node_t *
 call_args(luna_parser_t *self) {
   luna_node_t *node;
-  luna_vec_t *args = luna_vec_new();
+  luna_args_node_t *args = luna_args_node_new();
+
+  self->in_args++;
+
   debug("args");
   context("function arguments");
   do {
     if (node = expr(self)) {
-      luna_vec_push(args, luna_node(node));
+      // TODO: assert string or id
+      if (accept(COLON)) {
+        luna_node_t *val = expr(self);
+        const char *str = ((luna_id_node_t *) node)->val;
+        luna_hash_set(args->hash, (char *) str, luna_node(val));
+      }
+      luna_vec_push(args->vec, luna_node(node));
     } else {
       return NULL;
     }
   } while (accept(COMMA));
+
+  self->in_args--;
+
   return args;
 }
 
@@ -654,12 +668,12 @@ call_expr(luna_parser_t *self) {
   }
 
   // function_expr?
-  if (is(COLON)) {
+  if (is(COLON) && !self->in_args) {
     if (!call) call = luna_call_node_new(node);
-    if (!call->args) call->args = luna_vec_new();
+    if (!call->args) call->args = luna_args_node_new();
     luna_node_t *fn = function_expr(self);
     if (!fn) return NULL;
-    luna_vec_push(call->args, luna_node(fn));
+    luna_vec_push(call->args->vec, luna_node(fn));
     node = (luna_node_t *) call;
   }
 

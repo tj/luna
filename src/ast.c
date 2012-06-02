@@ -36,6 +36,16 @@ luna_block_node_new() {
   return self;
 }
 
+luna_args_node_t *
+luna_args_node_new() {
+  luna_args_node_t *self = malloc(sizeof(luna_args_node_t));
+  if (unlikely(!self)) return NULL;
+  self->base.type = LUNA_NODE_ARGS;
+  self->vec = luna_vec_new();
+  self->hash = luna_hash_new();
+  return self;
+}
+
 /*
  * Alloc and initialize a new int node with the given `val`.
  */

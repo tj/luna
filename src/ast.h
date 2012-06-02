@@ -31,6 +31,7 @@
   n(ID) \
   n(PARAM) \
   n(CALL) \
+  n(ARGS) \
   n(INT) \
   n(FLOAT) \
   n(STRING) \
@@ -66,6 +67,16 @@ typedef struct {
   luna_node_t base;
   luna_vec_t *stmts;
 } luna_block_node_t;
+
+/*
+ * Luna args node.
+ */
+
+typedef struct {
+  luna_node_t base;
+  luna_vec_t *vec;
+  luna_hash_t *hash;
+} luna_args_node_t;
 
 /*
  * Luna slot access node.
@@ -170,7 +181,7 @@ typedef struct {
 typedef struct {
   luna_node_t base;
   luna_node_t *expr;
-  luna_vec_t *args;
+  luna_args_node_t *args;
 } luna_call_node_t;
 
 /*
@@ -271,5 +282,8 @@ luna_while_node_new(int negate, luna_node_t *expr, luna_block_node_t *block);
 
 luna_return_node_t *
 luna_return_node_new(luna_node_t *expr);
+
+luna_args_node_t *
+luna_args_node_new();
 
 #endif /* __LUNA_AST__ */
