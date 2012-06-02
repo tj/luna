@@ -192,10 +192,10 @@ tj is_a('user')
 ':' params? block
 ```
 
-where `params` is simply:
+where `params` is defined as:
 
 ```js
-(id (',' id)*)
+(id ('=' expr)? (',' id ('=' expr)?)*)
 ```
 
 and `block` is:
