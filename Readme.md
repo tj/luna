@@ -249,6 +249,32 @@ person pets select: pet
 
 This approach is syntactically similar to Ruby "blocks", though simply sugar on top of regular old first-class Luna functions.
 
+### Argument defaults
+
+  Arguments may be defaulted:
+
+```js
+Response json =: obj, status = 200, charset = 'utf-8'
+  self status = status
+  self charset = charset
+  self set('Content-Type', 'application/json')
+  self write(json(obj))
+  self end()
+```
+
+### Keyword arguments
+
+  Keyword arguments can increase readability in many cases, and allow order-independent invocation. The following would be equivalent:
+
+```js
+rm('Makefile')
+rm('Makefile', true)
+rm('Makefile', verbose: true)
+rm('Makefile', verbose: true)
+rm(path: 'Makefile', verbose: true)
+rm(verbose: true, path: 'Makefile')
+```
+
 ### Number Literals
 
  Luna currently provides literals for base 16 (hexadecimal):

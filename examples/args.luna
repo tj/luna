@@ -1,5 +1,5 @@
 
-User =: first, last = ['foo', 'bar', 'baz']
+User =: first, last = first
   self first = first
   self last = last
 
