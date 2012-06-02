@@ -48,7 +48,7 @@ typedef khash_t(value) luna_hash_t;
  */
 
 #define luna_hash_each(self, block) { \
-   char *slot; \
+   const char *slot; \
    luna_object_t *val; \
     for (khiter_t k = kh_begin(self); k < kh_end(self); ++k) { \
       if (!kh_exist(self, k)) continue; \
@@ -63,7 +63,7 @@ typedef khash_t(value) luna_hash_t;
  */
 
 #define luna_hash_each_slot(self, block) { \
-    char *slot; \
+    const char *slot; \
     for (khiter_t k = kh_begin(self); k < kh_end(self); ++k) { \
       if (!kh_exist(self, k)) continue; \
       slot = kh_key(self, k); \
