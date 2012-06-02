@@ -255,11 +255,11 @@ This approach is syntactically similar to Ruby "blocks", though simply sugar on 
 
 ```js
 Response json =: obj, status = 200, charset = 'utf-8'
-  self status = status
-  self charset = charset
-  self set('Content-Type', 'application/json')
-  self write(json(obj))
-  self end()
+  @status = status
+  @charset = charset
+  @set('Content-Type', 'application/json')
+  @write(json(obj))
+  @end()
 ```
 
 ### Keyword arguments
