@@ -128,9 +128,13 @@ test_array_iteration() {
   luna_vec_push(&arr, &two);
   luna_vec_push(&arr, &three);
 
-  luna_vec_each(&arr, {
-    
-  });
+  int vals[3];
+  int k = 0;
+
+  luna_vec_each(&arr, { vals[k++] = val->value.as_int; });
+  assert(1 == vals[0]);
+  assert(2 == vals[1]);
+  assert(3 == vals[2]);
 }
 
 /*
