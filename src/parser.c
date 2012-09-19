@@ -746,53 +746,14 @@ not_expr(luna_parser_t *self) {
 }
 
 /*
- *   not_expr 'if' expr
- * | not_expr 'unless' expr
- * | not_expr 'while' expr
- * | not_expr 'until' expr
- * | not_expr
- */
-
-static luna_node_t *
-if_expr(luna_parser_t *self) {
-  luna_node_t *node;
-  debug("if_expr");
-  if (!(node = not_expr(self))) return NULL;
-
-  // ('if' | 'unless') expr
-  if (accept(IF) || accept(UNLESS)) {
-    int negate = LUNA_TOKEN_UNLESS == prev->type;
-    context(negate ? "unless operation" : "if operation");
-    luna_node_t *cond;
-    if (!(cond = expr(self))) return NULL;
-    luna_block_node_t *block = luna_block_node_new();
-    luna_vec_push(block->stmts, luna_node(node));
-    node = (luna_node_t *) luna_if_node_new(negate, cond, block);
-  }
-
-  // ('while' | 'until') expr
-  if (accept(WHILE) || accept(UNTIL)) {
-    int negate = LUNA_TOKEN_UNTIL == prev->type;
-     context(negate ? "until operation" : "while operation");
-    luna_node_t *cond;
-    if (!(cond = expr(self))) return NULL;
-    luna_block_node_t *block = luna_block_node_new();
-    luna_vec_push(block->stmts, luna_node(node));
-    node = (luna_node_t *) luna_while_node_new(negate, cond, block);
-  }
-
-  return node;
-}
-
-/*
- * if_expr
+ * not_expr
  */
 
 static luna_node_t *
 expr(luna_parser_t *self) {
   luna_node_t *node;
   debug("expr");
-  if (!(node = if_expr(self))) return NULL;
+  if (!(node = not_expr(self))) return NULL;
   return node;
 }
 
