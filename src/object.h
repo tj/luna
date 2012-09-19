@@ -10,9 +10,6 @@
 
 #include "hash.h"
 
-// TODO: consider pointer for immediate values
-// TODO: inherit
-
 /*
  * Check if `val` is the given type.
  */
