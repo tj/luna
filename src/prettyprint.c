@@ -248,7 +248,7 @@ visit_call(luna_visitor_t *self, luna_call_node_t * node) {
   ++indents;
   INDENT;
   visit((luna_node_t *) node->expr);
-  if (node->args) {
+  if (luna_vec_length(node->args->vec)) {
     printf("\n");
     INDENT;
     luna_vec_each(node->args->vec, {

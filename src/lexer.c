@@ -340,7 +340,7 @@ luna_scan(luna_lexer_t *self) {
             ? token(OP_OR_ASSIGN)
             : (undo, token(OP_OR));
         default:
-          return undo, token(OP_BIT_OR);
+          return undo, token(OP_PIPE);
       }
     case '<':
       switch (next) {

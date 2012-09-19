@@ -36,6 +36,10 @@ luna_block_node_new() {
   return self;
 }
 
+/*
+ * Alloc and initialize a new args node.
+ */
+
 luna_args_node_t *
 luna_args_node_new() {
   luna_args_node_t *self = malloc(sizeof(luna_args_node_t));
@@ -122,7 +126,8 @@ luna_call_node_new(luna_node_t *expr) {
   if (unlikely(!self)) return NULL;
   self->base.type = LUNA_NODE_CALL;
   self->expr = expr;
-  self->args = NULL;
+  self->args = luna_args_node_new();
+  if (unlikely(!self->args)) return NULL;
   return self;
 }
 

@@ -464,14 +464,16 @@ bitwise_xor_expr(luna_parser_t *self) {
  */
 
 static luna_node_t *
-bitwise_or_expr(luna_parser_t *self) {
+pipe_expr(luna_parser_t *self) {
   luna_node_t *node, *right;
-  debug("bitwise_or_expr");
+  debug("pipe_expr");
   if (!(node = bitwise_xor_expr(self))) return NULL;
-  while (accept(OP_BIT_OR)) {
+  while (accept(OP_PIPE)) {
     context("| operation");
-    if (right = bitwise_xor_expr(self)) {
-      node = (luna_node_t *) luna_binary_op_node_new(LUNA_TOKEN_OP_BIT_OR, node, right);
+    if (right = call_expr(self)) {
+      if (right->type != LUNA_NODE_CALL) return error("invalid pipe");
+      luna_vec_push(((luna_call_node_t *) right)->args->vec, luna_node(node));
+      node = (luna_node_t *) right;
     } else {
       return error("missing right-hand expression");
     }
@@ -480,17 +482,17 @@ bitwise_or_expr(luna_parser_t *self) {
 }
 
 /*
- * bitwise_or_expr ('&&' bitwise_or_expr)*
+ * pipe_expr ('&&' pipe_expr)*
  */
 
 static luna_node_t *
 logical_and_expr(luna_parser_t *self) {
   luna_node_t *node, *right;
   debug("logical_and_expr");
-  if (!(node = bitwise_or_expr(self))) return NULL;
+  if (!(node = pipe_expr(self))) return NULL;
   while (accept(OP_AND)) {
     context("&& operation");
-    if (right = bitwise_or_expr(self)) {
+    if (right = pipe_expr(self)) {
       node = (luna_node_t *) luna_binary_op_node_new(LUNA_TOKEN_OP_AND, node, right);
     } else {
       return error("missing right-hand expression");
@@ -568,7 +570,7 @@ function_expr(luna_parser_t *self) {
     context("function");
 
     // '|' expr
-    if (accept(OP_BIT_OR)) {
+    if (accept(OP_PIPE)) {
       luna_node_t *node;
       if (!(node = expr(self))) return NULL;
       return (luna_node_t *) luna_function_node_new_from_expr(node, params);
@@ -670,7 +672,6 @@ call_expr(luna_parser_t *self) {
   // function_expr?
   if (is(COLON) && !self->in_args) {
     if (!call) call = luna_call_node_new(node);
-    if (!call->args) call->args = luna_args_node_new();
     luna_node_t *fn = function_expr(self);
     if (!fn) return NULL;
     luna_vec_push(call->args->vec, luna_node(fn));
