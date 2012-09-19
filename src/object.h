@@ -9,7 +9,6 @@
 #define __LUNA_OBJECT__
 
 #include "hash.h"
-#include "list.h"
 
 // TODO: consider pointer for immediate values
 // TODO: inherit
@@ -25,7 +24,6 @@
  */
 
 #define luna_is_node(val) luna_object_is(val, NODE)
-#define luna_is_list(val) luna_object_is(val, LIST)
 #define luna_is_array(val) luna_object_is(val, ARRAY)
 #define luna_is_object(val) luna_object_is(val, OBJECT)
 #define luna_is_string(val) luna_object_is(val, STRING)

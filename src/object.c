@@ -7,7 +7,6 @@
 
 #include "object.h"
 #include "hash.h"
-#include "list.h"
 #include "internal.h"
 
 /*
