@@ -473,6 +473,7 @@ pipe_expr(luna_parser_t *self) {
     if (right = call_expr(self)) {
       if (right->type != LUNA_NODE_CALL) return error("invalid pipe");
       luna_call_node_t *call = (luna_call_node_t *) right;
+      // TODO: use lists and lpush
       luna_vec_push(call->args->vec, luna_node(node));
       node = (luna_node_t *) right;
     } else {
