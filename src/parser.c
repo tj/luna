@@ -472,7 +472,8 @@ pipe_expr(luna_parser_t *self) {
     context("| operation");
     if (right = call_expr(self)) {
       if (right->type != LUNA_NODE_CALL) return error("invalid pipe");
-      luna_vec_push(((luna_call_node_t *) right)->args->vec, luna_node(node));
+      luna_call_node_t *call = (luna_call_node_t *) right;
+      luna_vec_push(call->args->vec, luna_node(node));
       node = (luna_node_t *) right;
     } else {
       return error("missing right-hand expression");
