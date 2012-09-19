@@ -682,6 +682,7 @@ call_expr(luna_parser_t *self) {
 
 /*
  *   logical_or_expr
+ * | 'let' call_expr '=' not_expr
  * | call_expr '=' not_expr
  * | call_expr '+=' not_expr
  * | call_expr '-=' not_expr
@@ -694,18 +695,33 @@ static luna_node_t *
 assignment_expr(luna_parser_t *self) {
   luna_token op;
   luna_node_t *node, *right;
+  int let = 0;
+
+  // let?
+  if (accept(LET)) let = 1;
+
   debug("assignment_expr");
   if (!(node = logical_or_expr(self))) return NULL;
 
-  if ( accept(OP_ASSIGN)
-    || accept(OP_PLUS_ASSIGN)
+  // =
+  if (accept(OP_ASSIGN)) {
+    op = prev->type;
+    context("assignment");
+    if (!(right = not_expr(self))) return NULL;
+    luna_binary_op_node_t *ret = luna_binary_op_node_new(op, node, right);
+    ret->let = let;
+    return (luna_node_t *) ret;
+  }
+
+  // compound
+  if ( accept(OP_PLUS_ASSIGN)
     || accept(OP_MINUS_ASSIGN)
     || accept(OP_DIV_ASSIGN)
     || accept(OP_MUL_ASSIGN)
     || accept(OP_OR_ASSIGN)
     || accept(OP_AND_ASSIGN)) {
     op = prev->type;
-    context("assignment");
+    context("compoound assignment");
     if (!(right = not_expr(self))) return NULL;
     return (luna_node_t *) luna_binary_op_node_new(op, node, right);
   }

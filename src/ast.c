@@ -167,6 +167,7 @@ luna_binary_op_node_new(luna_token op, luna_node_t *left, luna_node_t *right) {
   self->op = op;
   self->left = left;
   self->right = right;
+  self->let = 0;
   return self;
 }
 

@@ -24,13 +24,13 @@ static int indents = 0;
  */
 
 static char escapes[] = {
-    'a'
-  , 'b'
-  , 't'
-  , 'n'
-  , 'v'
-  , 'f'
-  , 'r'
+  'a',
+  'b',
+  't',
+  'n',
+  'v',
+  'f',
+  'r'
 };
 
 /*
@@ -175,7 +175,11 @@ visit_unary_op(luna_visitor_t *self, luna_unary_op_node_t *node) {
 
 static void
 visit_binary_op(luna_visitor_t *self, luna_binary_op_node_t *node) {
-  printf("(%s ", luna_token_type_string(node->op));
+  if (node->let) {
+    printf("(let %s ", luna_token_type_string(node->op));
+  } else {
+    printf("(%s ", luna_token_type_string(node->op));
+  }
   visit(node->left);
   printf(" ");
   visit(node->right);

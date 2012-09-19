@@ -108,6 +108,7 @@ typedef struct {
   luna_token op;
   luna_node_t *left;
   luna_node_t *right;
+  int let;
 } luna_binary_op_node_t;
 
 /*
