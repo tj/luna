@@ -740,7 +740,7 @@ not_expr(luna_parser_t *self) {
   if (accept(OP_LNOT)) {
     luna_node_t *expr;
     if (!(expr = not_expr(self))) return NULL;
-    return (luna_node_t *) luna_unary_op_node_new(prev->type, expr, 0);
+    return (luna_node_t *) luna_unary_op_node_new(LUNA_TOKEN_OP_LNOT, expr, 0);
   }
   return assignment_expr(self);
 }
