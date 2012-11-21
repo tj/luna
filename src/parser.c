@@ -560,8 +560,8 @@ function_params(luna_parser_t *self) {
     } else {
       param = luna_node((luna_node_t *) luna_decl_node_new(id, type, NULL));
     }
-    luna_vec_push(params, param);
 
+    luna_vec_push(params, param);
   } while (accept(COMMA));
 
   return params;
