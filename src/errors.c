@@ -30,11 +30,11 @@ luna_report_error(luna_parser_t *parser) {
     err = buf;
   } 
 
-  fprintf(stderr
-    , "luna(%s:%d). %s error in %s, %s.\n"
-    , lex->filename
-    , lex->lineno
-    , type
-    , parser->ctx
-    , err);
+  fprintf(stderr,
+    "luna(%s:%d). %s error in %s, %s.\n",
+    lex->filename,
+    lex->lineno,
+    type,
+    parser->ctx,
+    err);
 }
