@@ -72,8 +72,6 @@ operator                |  associativity
 = += -= /= *= ||= &&=   |  right
 not                     |  right
 ,                       |  left
-if unless               |  left
-while until
 ```
 
 ## Dependencies
