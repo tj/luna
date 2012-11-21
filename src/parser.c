@@ -543,16 +543,22 @@ function_params(luna_parser_t *self) {
 
   do {
     // id
-    if (!accept(ID)) return error("missing identifier");
+    if (!is(ID)) return error("missing identifier");
+    const char *id = next->value.as_string;
+
+    // ':' id
+    if (!accept(COLON)) return error("missing parameter type");
+    if (!is(ID)) return error("missing parameter type name");
+    const char *type = next->value.as_string;
 
     // ('=' expr)?
     luna_object_t *param;
     if (accept(OP_ASSIGN)) {
       luna_node_t *val = expr(self);
       if (!val) return NULL;
-      param = luna_node((luna_node_t *) luna_decl_node_new(prev->value.as_string, NULL, val));
+      param = luna_node((luna_node_t *) luna_decl_node_new(id, type, val));
     } else {
-      param = luna_node((luna_node_t *) luna_decl_node_new(prev->value.as_string, NULL, NULL));
+      param = luna_node((luna_node_t *) luna_decl_node_new(id, type, NULL));
     }
     luna_vec_push(params, param);
 
