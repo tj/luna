@@ -2,3 +2,11 @@
 def greet() {
 
 }
+
+def greet(name) {
+  
+}
+
+def greet(first, last) {
+  
+}
