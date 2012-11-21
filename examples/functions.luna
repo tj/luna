@@ -3,10 +3,18 @@ def greet() {
   ret "hello"
 }
 
+def greet():string {
+  ret "hello"
+}
+
 def greet(name:string) {
   ret "hello " + name
 }
 
 def greet(first:string, last:string) {
+  ret "hello " + first + " " + last
+}
+
+def greet(first:string, last:string):string {
   ret "hello " + first + " " + last
 }

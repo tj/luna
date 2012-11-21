@@ -792,13 +792,14 @@ expr_stmt(luna_parser_t *self) {
 }
 
 /*
- * 'def' id '(' args? ')' block
+ * 'def' id '(' args? ')' (':' id)? block
  */
 
 static luna_node_t *
 function_stmt(luna_parser_t *self) {
   luna_block_node_t *body;
   luna_vec_t *params;
+  const char *type = NULL;
   debug("function_stmt");
   context("function statement");
 
@@ -819,9 +820,15 @@ function_stmt(luna_parser_t *self) {
   // ')'
   if (!accept(RPAREN)) return error("missing closing ')'");
 
+  // (':' id)?
+  if (accept(COLON)) {
+    if (!is(ID)) return error("missing type after ':'");
+    type = next->value.as_string;
+  }
+
   // block
   if (body = block(self)) {
-    return (luna_node_t *) luna_function_node_new(name, body, params);
+    return (luna_node_t *) luna_function_node_new(name, type, body, params);
   }
 
   return NULL;

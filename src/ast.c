@@ -206,16 +206,17 @@ luna_hash_node_new() {
 
 /*
  * Alloc and initialize a new function node with the given `name`,
- * `block` of statements and `params`.
+ * `type`, `block` of statements and `params`.
  */
 
 luna_function_node_t *
-luna_function_node_new(const char *name, luna_block_node_t *block, luna_vec_t *params) {
+luna_function_node_new(const char *name, const char *type, luna_block_node_t *block, luna_vec_t *params) {
   luna_function_node_t *self = malloc(sizeof(luna_function_node_t));
   if (unlikely(!self)) return NULL;
   self->base.type = LUNA_NODE_FUNCTION;
   self->params = params;
   self->block = block;
+  self->type = type;
   self->name = name;
   return self;
 }
