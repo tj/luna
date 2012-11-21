@@ -139,13 +139,9 @@ visit_id(luna_visitor_t *self, luna_id_node_t *node) {
 
 static void
 visit_decl(luna_visitor_t *self, luna_decl_node_t *node) {
-  if (node->val) {
-    printf("(decl %s ", node->name);
-    visit(node->val);
-    printf(")");
-  } else {
-    printf("(decl %s)", node->name);
-  }
+  printf("(decl %s:%s", node->name, node->type ? node->type : "");
+  if (node->val) visit(node->val);
+  printf(")");
 }
 
 /*
