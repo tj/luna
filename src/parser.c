@@ -777,7 +777,7 @@ expr_stmt(luna_parser_t *self) {
   
   if (!(node = expr(self))) return NULL;
 
-  if (!(accept(NEWLINE) || is(OUTDENT) || is(EOS))) {
+  if (!(accept(NEWLINE) || is(RPAREN) || is(EOS))) {
     return error("missing newline");
   }
 
@@ -900,7 +900,7 @@ stmt(luna_parser_t *self) {
 }
 
 /*
- * INDENT ws (stmt ws)+ OUTDENT
+ * '{' ws (stmt ws)+ '}'
  */
 
 static luna_block_node_t *
@@ -908,7 +908,7 @@ block(luna_parser_t *self) {
   debug("block");
   luna_node_t *node;
   luna_block_node_t *block = luna_block_node_new();
-  if (!accept(INDENT)) return error("block expected");
+  if (!accept(LBRACE)) return error("{ expected");
   whitespace(self);
   do {
     if (node = stmt(self)) {
@@ -917,7 +917,7 @@ block(luna_parser_t *self) {
       return NULL;
     }
     whitespace(self);
-  } while (!accept(OUTDENT));
+  } while (!accept(RBRACE));
   return block;
 }
 
