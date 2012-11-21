@@ -4,7 +4,7 @@ OBJ = ${SRC:.c=.o}
 
 CC = gcc
 PREFIX = /usr/local
-CFLAGS = -std=c99 -g -O0 -Wno-parentheses -Wno-switch-enum
+CFLAGS = -std=c99 -g -O0 -Wno-parentheses -Wno-switch-enum -Wno-unused-value
 CFLAGS += -I deps
 
 # linenoise
