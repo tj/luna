@@ -1,12 +1,12 @@
 
 def greet() {
-
+  ret "hello"
 }
 
 def greet(name) {
-  
+  ret "hello " + name
 }
 
 def greet(first, last) {
-  
+  ret "hello " + first + " " + last
 }
