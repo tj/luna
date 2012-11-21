@@ -550,9 +550,9 @@ function_params(luna_parser_t *self) {
     if (accept(OP_ASSIGN)) {
       luna_node_t *val = expr(self);
       if (!val) return NULL;
-      param = luna_node((luna_node_t *) luna_decl_node_new(prev->value.as_string, val));
+      param = luna_node((luna_node_t *) luna_decl_node_new(prev->value.as_string, NULL, val));
     } else {
-      param = luna_node((luna_node_t *) luna_decl_node_new(prev->value.as_string, NULL));
+      param = luna_node((luna_node_t *) luna_decl_node_new(prev->value.as_string, NULL, NULL));
     }
     luna_vec_push(params, param);
 
