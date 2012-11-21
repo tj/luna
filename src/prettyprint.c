@@ -134,17 +134,17 @@ visit_id(luna_visitor_t *self, luna_id_node_t *node) {
 }
 
 /*
- * Visit param `node`.
+ * Visit decl `node`.
  */
 
 static void
-visit_param(luna_visitor_t *self, luna_param_node_t *node) {
+visit_decl(luna_visitor_t *self, luna_decl_node_t *node) {
   if (node->val) {
-    printf("(param %s ", node->name);
+    printf("(decl %s ", node->name);
     visit(node->val);
     printf(")");
   } else {
-    printf("(param %s)", node->name);
+    printf("(decl %s)", node->name);
   }
 }
 
@@ -377,7 +377,7 @@ luna_prettyprint(luna_node_t *node) {
     .visit_array = visit_array,
     .visit_while = visit_while,
     .visit_block = visit_block,
-    .visit_param = visit_param,
+    .visit_decl = visit_decl,
     .visit_float = visit_float,
     .visit_string = visit_string,
     .visit_return = visit_return,

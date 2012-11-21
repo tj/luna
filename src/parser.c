@@ -538,6 +538,7 @@ function_params(luna_parser_t *self) {
   luna_vec_t *params = luna_vec_new();
   debug("params");
   context("function params");
+
   if (!is(ID)) return params;
 
   do {
@@ -549,9 +550,9 @@ function_params(luna_parser_t *self) {
     if (accept(OP_ASSIGN)) {
       luna_node_t *val = expr(self);
       if (!val) return NULL;
-      param = luna_node((luna_node_t *) luna_param_node_new(prev->value.as_string, val));
+      param = luna_node((luna_node_t *) luna_decl_node_new(prev->value.as_string, val));
     } else {
-      param = luna_node((luna_node_t *) luna_param_node_new(prev->value.as_string, NULL));
+      param = luna_node((luna_node_t *) luna_decl_node_new(prev->value.as_string, NULL));
     }
     luna_vec_push(params, param);
 

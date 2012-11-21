@@ -90,14 +90,14 @@ luna_id_node_new(const char *val) {
 }
 
 /*
- * Alloc and initialize a new param node with the given `name`.
+ * Alloc and initialize a new declaration node with the given `name`.
  */
 
-luna_param_node_t *
-luna_param_node_new(const char *name, luna_node_t *val) {
-  luna_param_node_t *self = malloc(sizeof(luna_param_node_t));
+luna_decl_node_t *
+luna_decl_node_new(const char *name, luna_node_t *val) {
+  luna_decl_node_t *self = malloc(sizeof(luna_decl_node_t));
   if (unlikely(!self)) return NULL;
-  self->base.type = LUNA_NODE_PARAM;
+  self->base.type = LUNA_NODE_DECL;
   self->name = name;
   self->val = val;
   return self;
