@@ -785,6 +785,39 @@ expr_stmt(luna_parser_t *self) {
 }
 
 /*
+ * 'def' id '(' args? ')' block
+ */
+
+static luna_node_t *
+function_stmt(luna_parser_t *self) {
+  luna_block_node_t *body;
+  luna_vec_t *params;
+  debug("function_stmt");
+  context("function statement");
+
+  // 'def'
+  if (!accept(DEF)) return NULL;
+
+  // id '('
+  if (!accept(ID)) return error("missing function name");
+  if (!accept(LPAREN)) return error("missing opening '('");
+
+  // params?
+  if (!(params = function_params(self))) return NULL;
+  context("function");
+
+  // ')'
+  if (!accept(RPAREN)) return error("missing closing ')'");
+
+  // block
+  if (body = block(self)) {
+    return (luna_node_t *) luna_function_node_new(body, params);
+  }
+
+  return NULL;
+}
+
+/*
  *  ('if' | 'unless') expr block
  *  ('else' 'if' block)*
  *  ('else' block)?
@@ -886,6 +919,7 @@ return_stmt(luna_parser_t *self) {
  *   if_stmt
  * | while_stmt
  * | return_stmt
+ * | function_stmt
  * | expr_stmt
  */
 
@@ -896,6 +930,7 @@ stmt(luna_parser_t *self) {
   if (is(IF) || is(UNLESS)) return if_stmt(self);
   if (is(WHILE) || is(UNTIL)) return while_stmt(self);
   if (is(RETURN)) return return_stmt(self);
+  if (is(DEF)) return function_stmt(self);
   return expr_stmt(self);
 }
 

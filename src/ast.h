@@ -20,6 +20,7 @@
   n(BLOCK) \
   n(EXPR_STMT) \
   n(RETURN) \
+  n(DEF) \
   n(IF) \
   n(WHILE) \
   n(FOR) \
