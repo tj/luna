@@ -581,12 +581,12 @@ function_expr(luna_parser_t *self) {
     if (accept(OP_PIPE)) {
       luna_node_t *node;
       if (!(node = expr(self))) return NULL;
-      return (luna_node_t *) luna_function_node_new_from_expr(node, params);
+      //return (luna_node_t *) luna_function_node_new_from_expr(node, params);
     }
 
     // block
     if (body = block(self)) {
-      return (luna_node_t *) luna_function_node_new(body, params);
+      //return (luna_node_t *) luna_function_node_new(body, params);
     }
   }
 
@@ -798,8 +798,11 @@ function_stmt(luna_parser_t *self) {
   // 'def'
   if (!accept(DEF)) return NULL;
 
-  // id '('
-  if (!accept(ID)) return error("missing function name");
+  // id
+  if (!is(ID)) return error("missing function name");
+  const char *name = next->value.as_string;
+
+  // '('
   if (!accept(LPAREN)) return error("missing opening '('");
 
   // params?
@@ -811,7 +814,7 @@ function_stmt(luna_parser_t *self) {
 
   // block
   if (body = block(self)) {
-    return (luna_node_t *) luna_function_node_new(body, params);
+    return (luna_node_t *) luna_function_node_new(name, body, params);
   }
 
   return NULL;
