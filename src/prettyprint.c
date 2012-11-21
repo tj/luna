@@ -254,9 +254,8 @@ visit_call(luna_visitor_t *self, luna_call_node_t * node) {
     });
 
     luna_hash_each(node->args->hash, {
-      printf(": ", slot);
+      printf(" %s: ", slot);
       visit((luna_node_t *) val->value.as_pointer);
-      printf(" ");
     });
   }
   --indents;
