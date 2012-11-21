@@ -1,7 +1,0 @@
-
-Vector add =: v
-  @x += v x
-  @y += v y
-
-Vector dot =: v
-  ret @x * v x + @y * v y
