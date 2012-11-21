@@ -24,8 +24,6 @@ typedef struct {
   char *error;
   int stash;
   int lineno;
-  int indents;
-  int outdents;
   off_t offset;
   char *source;
   const char *filename;

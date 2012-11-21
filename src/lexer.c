@@ -57,8 +57,6 @@ luna_lexer_init(luna_lexer_t *self, char *source, const char *filename) {
   self->error = NULL;
   self->source = source;
   self->filename = filename;
-  self->indents = 0;
-  self->outdents = 0;
   self->lineno = 1;
   self->offset = 0;
 }
@@ -74,16 +72,6 @@ hex(const char c) {
   if (c >= 'a' && c <= 'f') return c - 'a' + 10;
   if (c >= 'A' && c <= 'F') return c - 'A' + 10;
   return -1;
-}
-
-/*
- * Perform an outdent.
- */
-
-static int
-outdent(luna_lexer_t *self) {
-  --self->outdents;
-  return token(OUTDENT);
 }
 
 /*
@@ -252,9 +240,6 @@ luna_scan(luna_lexer_t *self) {
   int c;
   token(ILLEGAL);
 
-  // deferred outdents
-  if (self->outdents) return outdent(self);
-
   // scan
   scan:
   switch (c = next) {
@@ -345,10 +330,6 @@ luna_scan(luna_lexer_t *self) {
     case '\'':
       return scan_string(self, c);
     case 0:
-      if (self->indents) {
-        --self->indents;
-        return token(OUTDENT);
-      }
       token(EOS);
       return 0;
     default:
