@@ -1,21 +1,8 @@
 
-Array first =: n
-  if n
-    ret self slice(0, n)
-  else
-    ret self at(n)
+def first(v:vec) {
+  ret vec[0]
+}
 
-Array sum =:
-  ret self reduce: sum, n
-    ret sum + n
-
-Array min =:
-  ret self reduce: min, n
-    ret n if n < min
-    ret min
-
-Array max =:
-  ret self reduce: max, n
-    ret n if n > max
-    ret max
-
+def first(v:vec, n:int) {
+  ret slice(vec, 0, n)
+}

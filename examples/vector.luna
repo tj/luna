@@ -1,25 +1,37 @@
 
-Vector =: x, y
-  vec = {}
-  mixin(vec, Vector)
-  vec x = x || 0.0
-  vec y = y || 0.0
-  ret vec
+type vec_t {
+  x:int
+  y:int
+}
 
-Vector add =: v
-  self x += v x
-  self y += v y
+def vector(x:int, y:int) {
+  ret vect_t:{
+    x: x
+    y: y
+  }
+}
 
-Vector sub =: v
-  self x -= v x
-  self y -= v y
+def add(a:vec_t, b:vec_t) {
+  ret vec_t:{
+    x: a x + b x
+    y: a y + b y
+  }
+}
 
-Vector dot =: v
-  ret self x * v x + self y * v y
+def sub(a:vec_t, b:vec_t) {
+  ret vec_t:{
+    x: a x - b x
+    y: a y - b y
+  }
+}
 
-Vector clone =:
-  ret Vector(self x, self y)
+def dot(a:vect_t, b:vect_t) {
+  ret a x * b x + a y * b y
+}
 
-Vector clear =:
-  self x = 0.0
-  self y = 0.0
+def clone(v:vect_t) {
+  ret vect_t: {
+    x: v x
+    y: v y
+  }
+}

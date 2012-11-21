@@ -16,10 +16,6 @@
 #define LUNA_BUF_SIZE 1024
 #endif
 
-#ifndef LUNA_MAX_INDENTS
-#define LUNA_MAX_INDENTS 32
-#endif
-
 /*
  * Lexer struct.
  */
@@ -28,9 +24,6 @@ typedef struct {
   char *error;
   int stash;
   int lineno;
-  int indent_stack[LUNA_MAX_INDENTS];
-  int indents;
-  int outdents;
   off_t offset;
   char *source;
   const char *filename;

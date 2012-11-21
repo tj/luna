@@ -530,7 +530,7 @@ logical_or_expr(luna_parser_t *self) {
 }
 
 /*
- * (id ('=' expr)? (',' id ('=' expr)?)*)
+ * (id ':' type ('=' expr)? (',' id ':' type ('=' expr)?)*)
  */
 
 static luna_vec_t *
@@ -538,23 +538,30 @@ function_params(luna_parser_t *self) {
   luna_vec_t *params = luna_vec_new();
   debug("params");
   context("function params");
+
   if (!is(ID)) return params;
 
   do {
     // id
-    if (!accept(ID)) return error("missing identifier");
+    if (!is(ID)) return error("missing identifier");
+    const char *id = next->value.as_string;
+
+    // ':' id
+    if (!accept(COLON)) return error("missing parameter type");
+    if (!is(ID)) return error("missing parameter type name");
+    const char *type = next->value.as_string;
 
     // ('=' expr)?
     luna_object_t *param;
     if (accept(OP_ASSIGN)) {
       luna_node_t *val = expr(self);
       if (!val) return NULL;
-      param = luna_node((luna_node_t *) luna_param_node_new(prev->value.as_string, val));
+      param = luna_node((luna_node_t *) luna_decl_node_new(id, type, val));
     } else {
-      param = luna_node((luna_node_t *) luna_param_node_new(prev->value.as_string, NULL));
+      param = luna_node((luna_node_t *) luna_decl_node_new(id, type, NULL));
     }
-    luna_vec_push(params, param);
 
+    luna_vec_push(params, param);
   } while (accept(COMMA));
 
   return params;
@@ -581,12 +588,12 @@ function_expr(luna_parser_t *self) {
     if (accept(OP_PIPE)) {
       luna_node_t *node;
       if (!(node = expr(self))) return NULL;
-      return (luna_node_t *) luna_function_node_new_from_expr(node, params);
+      //return (luna_node_t *) luna_function_node_new_from_expr(node, params);
     }
 
     // block
     if (body = block(self)) {
-      return (luna_node_t *) luna_function_node_new(body, params);
+      //return (luna_node_t *) luna_function_node_new(body, params);
     }
   }
 
@@ -777,11 +784,54 @@ expr_stmt(luna_parser_t *self) {
   
   if (!(node = expr(self))) return NULL;
 
-  if (!(accept(NEWLINE) || is(OUTDENT) || is(EOS))) {
+  if (!(accept(NEWLINE) || is(RPAREN) || is(EOS))) {
     return error("missing newline");
   }
 
   return node;
+}
+
+/*
+ * 'def' id '(' args? ')' (':' id)? block
+ */
+
+static luna_node_t *
+function_stmt(luna_parser_t *self) {
+  luna_block_node_t *body;
+  luna_vec_t *params;
+  const char *type = NULL;
+  debug("function_stmt");
+  context("function statement");
+
+  // 'def'
+  if (!accept(DEF)) return NULL;
+
+  // id
+  if (!is(ID)) return error("missing function name");
+  const char *name = next->value.as_string;
+
+  // '('
+  if (!accept(LPAREN)) return error("missing opening '('");
+
+  // params?
+  if (!(params = function_params(self))) return NULL;
+  context("function");
+
+  // ')'
+  if (!accept(RPAREN)) return error("missing closing ')'");
+
+  // (':' id)?
+  if (accept(COLON)) {
+    if (!is(ID)) return error("missing type after ':'");
+    type = next->value.as_string;
+  }
+
+  // block
+  if (body = block(self)) {
+    return (luna_node_t *) luna_function_node_new(name, type, body, params);
+  }
+
+  return NULL;
 }
 
 /*
@@ -886,6 +936,7 @@ return_stmt(luna_parser_t *self) {
  *   if_stmt
  * | while_stmt
  * | return_stmt
+ * | function_stmt
  * | expr_stmt
  */
 
@@ -896,11 +947,12 @@ stmt(luna_parser_t *self) {
   if (is(IF) || is(UNLESS)) return if_stmt(self);
   if (is(WHILE) || is(UNTIL)) return while_stmt(self);
   if (is(RETURN)) return return_stmt(self);
+  if (is(DEF)) return function_stmt(self);
   return expr_stmt(self);
 }
 
 /*
- * INDENT ws (stmt ws)+ OUTDENT
+ * '{' ws (stmt ws)+ '}'
  */
 
 static luna_block_node_t *
@@ -908,16 +960,14 @@ block(luna_parser_t *self) {
   debug("block");
   luna_node_t *node;
   luna_block_node_t *block = luna_block_node_new();
-  if (!accept(INDENT)) return error("block expected");
+  if (!accept(LBRACE)) return error("{ expected");
   whitespace(self);
+  if (accept(RBRACE)) return block;
   do {
-    if (node = stmt(self)) {
-      luna_vec_push(block->stmts, luna_node(node));
-    } else {
-      return NULL;
-    }
+    if (!(node = stmt(self))) return NULL;
+    luna_vec_push(block->stmts, luna_node(node));
     whitespace(self);
-  } while (!accept(OUTDENT));
+  } while (!accept(RBRACE));
   return block;
 }
 

@@ -20,6 +20,7 @@
   n(BLOCK) \
   n(EXPR_STMT) \
   n(RETURN) \
+  n(DEF) \
   n(IF) \
   n(WHILE) \
   n(FOR) \
@@ -29,7 +30,7 @@
   n(BOOL) \
   n(NULL) \
   n(ID) \
-  n(PARAM) \
+  n(DECL) \
   n(CALL) \
   n(ARGS) \
   n(INT) \
@@ -139,14 +140,15 @@ typedef struct {
 } luna_id_node_t;
 
 /*
- * Luna param node.
+ * Luna declaration node.
  */
 
 typedef struct {
   luna_node_t base;
   const char *name;
+  const char *type;
   luna_node_t *val;
-} luna_param_node_t;
+} luna_decl_node_t;
 
 /*
  * Luna string node.
@@ -191,6 +193,8 @@ typedef struct {
 
 typedef struct {
   luna_node_t base;
+  const char *type;
+  const char *name;
   luna_block_node_t *block;
   luna_vec_t *params;
 } luna_function_node_t;
@@ -237,7 +241,7 @@ luna_block_node_t *
 luna_block_node_new();
 
 luna_function_node_t *
-luna_function_node_new(luna_block_node_t *block, luna_vec_t *params);
+luna_function_node_new(const char *name, const char *type, luna_block_node_t *block, luna_vec_t *params);
 
 luna_function_node_t *
 luna_function_node_new_from_expr(luna_node_t *expr, luna_vec_t *params);
@@ -257,8 +261,8 @@ luna_binary_op_node_new(luna_token op, luna_node_t *left, luna_node_t *right);
 luna_id_node_t *
 luna_id_node_new(const char *val);
 
-luna_param_node_t *
-luna_param_node_new(const char *name, luna_node_t *val);
+luna_decl_node_t *
+luna_decl_node_new(const char *name, const char *type, luna_node_t *val);
 
 luna_int_node_t *
 luna_int_node_new(int val);

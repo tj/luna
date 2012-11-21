@@ -90,14 +90,16 @@ luna_id_node_new(const char *val) {
 }
 
 /*
- * Alloc and initialize a new param node with the given `name`.
+ * Alloc and initialize a new declaration node with the
+ * given `name`, `type`, and `val`.
  */
 
-luna_param_node_t *
-luna_param_node_new(const char *name, luna_node_t *val) {
-  luna_param_node_t *self = malloc(sizeof(luna_param_node_t));
+luna_decl_node_t *
+luna_decl_node_new(const char *name, const char *type, luna_node_t *val) {
+  luna_decl_node_t *self = malloc(sizeof(luna_decl_node_t));
   if (unlikely(!self)) return NULL;
-  self->base.type = LUNA_NODE_PARAM;
+  self->base.type = LUNA_NODE_DECL;
+  self->type = type;
   self->name = name;
   self->val = val;
   return self;
@@ -203,16 +205,19 @@ luna_hash_node_new() {
 }
 
 /*
- * Alloc and initialize a new function node with the given `block`.
+ * Alloc and initialize a new function node with the given `name`,
+ * `type`, `block` of statements and `params`.
  */
 
 luna_function_node_t *
-luna_function_node_new(luna_block_node_t *block, luna_vec_t *params) {
+luna_function_node_new(const char *name, const char *type, luna_block_node_t *block, luna_vec_t *params) {
   luna_function_node_t *self = malloc(sizeof(luna_function_node_t));
   if (unlikely(!self)) return NULL;
   self->base.type = LUNA_NODE_FUNCTION;
   self->params = params;
   self->block = block;
+  self->type = type;
+  self->name = name;
   return self;
 }
 

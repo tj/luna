@@ -57,9 +57,6 @@ luna_lexer_init(luna_lexer_t *self, char *source, const char *filename) {
   self->error = NULL;
   self->source = source;
   self->filename = filename;
-  self->indent_stack[0] = 0;
-  self->indents = 0;
-  self->outdents = 0;
   self->lineno = 1;
   self->offset = 0;
 }
@@ -78,42 +75,15 @@ hex(const char c) {
 }
 
 /*
- * Perform an outdent.
- */
-
-static int
-outdent(luna_lexer_t *self) {
-  --self->outdents;
-  return token(OUTDENT);
-}
-
-/*
- * Scan newline, and determine if we have
- * an indentation.
+ * Scan newline.
  */
 
 static int
 scan_newline(luna_lexer_t *self) {
   int curr = 0;
-  int prev = self->indent_stack[self->indents];
-
   ++self->lineno;
-
   while (accept(' ')) ++curr;
-
-  if (curr > prev) {
-    token(INDENT);
-    self->indent_stack[++self->indents] = curr;
-  } else if (curr < prev) {
-    while (self->indent_stack[self->indents] > curr) {
-      ++self->outdents;
-      --self->indents;
-    }
-    outdent(self);
-  } else {
-    token(NEWLINE);
-  }
-
+  token(NEWLINE);
   return 1;
 }
 
@@ -136,6 +106,7 @@ scan_ident(luna_lexer_t *self, int c) {
   // TODO: refactor this lameness with length checks etc
   if (0 == strcmp("if", buf)) return token(IF); 
   else if (0 == strcmp("else", buf)) return token(ELSE); 
+  else if (0 == strcmp("def", buf)) return token(DEF); 
   else if (0 == strcmp("let", buf)) return token(LET); 
   else if (0 == strcmp("unless", buf)) return token(UNLESS); 
   else if (0 == strcmp("while", buf)) return token(WHILE); 
@@ -153,8 +124,8 @@ scan_ident(luna_lexer_t *self, int c) {
 
 static int
 hex_literal(luna_lexer_t *self) {
-  int a = hex(next)
-    , b = hex(next);
+  int a = hex(next);
+  int b = hex(next);
   if (a > -1 && b > -1) return a << 4 | b;
   error("string hex literal \\x contains invalid digits");
   return -1;
@@ -270,9 +241,6 @@ luna_scan(luna_lexer_t *self) {
   int c;
   token(ILLEGAL);
 
-  // deferred outdents
-  if (self->outdents) return outdent(self);
-
   // scan
   scan:
   switch (c = next) {
@@ -291,9 +259,6 @@ luna_scan(luna_lexer_t *self) {
     case '~': return token(OP_BIT_NOT);
     case '?': return token(QMARK);
     case ':': return token(COLON);
-    case '@':
-      self->tok.value.as_string = "self";
-      return token(ID);
     case '+':
       switch (next) {
         case '+': return token(OP_INCR);
@@ -363,10 +328,6 @@ luna_scan(luna_lexer_t *self) {
     case '\'':
       return scan_string(self, c);
     case 0:
-      if (self->indents) {
-        --self->indents;
-        return token(OUTDENT);
-      }
       token(EOS);
       return 0;
     default:

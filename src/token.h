@@ -16,12 +16,11 @@
   t(ILLEGAL, "illegal") \
   t(EOS, "end-of-source") \
   t(NEWLINE, "newline") \
-  t(INDENT, "indent") \
-  t(OUTDENT, "outdent") \
   t(ID, "id") \
   t(INT, "int") \
   t(FLOAT, "float") \
   t(STRING, "string") \
+  t(DEF, "def") \
   t(WHILE, "while") \
   t(UNTIL, "until") \
   t(IF, "if") \
