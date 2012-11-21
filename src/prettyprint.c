@@ -272,7 +272,7 @@ visit_call(luna_visitor_t *self, luna_call_node_t * node) {
 
 static void
 visit_function(luna_visitor_t *self, luna_function_node_t * node) {
-  printf("(function");
+  printf("(function %s", node->name);
   ++indents;
   luna_vec_each(node->params, {
     printf("\n");
