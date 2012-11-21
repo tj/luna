@@ -945,12 +945,10 @@ block(luna_parser_t *self) {
   luna_block_node_t *block = luna_block_node_new();
   if (!accept(LBRACE)) return error("{ expected");
   whitespace(self);
+  if (accept(RBRACE)) return block;
   do {
-    if (node = stmt(self)) {
-      luna_vec_push(block->stmts, luna_node(node));
-    } else {
-      return NULL;
-    }
+    if (!(node = stmt(self))) return NULL;
+    luna_vec_push(block->stmts, luna_node(node));
     whitespace(self);
   } while (!accept(RBRACE));
   return block;
