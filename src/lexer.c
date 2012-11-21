@@ -123,8 +123,8 @@ scan_ident(luna_lexer_t *self, int c) {
 
 static int
 hex_literal(luna_lexer_t *self) {
-  int a = hex(next)
-    , b = hex(next);
+  int a = hex(next);
+  int b = hex(next);
   if (a > -1 && b > -1) return a << 4 | b;
   error("string hex literal \\x contains invalid digits");
   return -1;
