@@ -146,6 +146,7 @@ typedef struct {
 typedef struct {
   luna_node_t base;
   const char *name;
+  const char *type;
   luna_node_t *val;
 } luna_decl_node_t;
 
@@ -260,7 +261,7 @@ luna_id_node_t *
 luna_id_node_new(const char *val);
 
 luna_decl_node_t *
-luna_decl_node_new(const char *name, luna_node_t *val);
+luna_decl_node_new(const char *name, const char *type, luna_node_t *val);
 
 luna_int_node_t *
 luna_int_node_new(int val);
