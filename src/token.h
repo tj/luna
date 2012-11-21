@@ -16,8 +16,6 @@
   t(ILLEGAL, "illegal") \
   t(EOS, "end-of-source") \
   t(NEWLINE, "newline") \
-  t(INDENT, "indent") \
-  t(OUTDENT, "outdent") \
   t(ID, "id") \
   t(INT, "int") \
   t(FLOAT, "float") \
