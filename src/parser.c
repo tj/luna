@@ -530,7 +530,7 @@ logical_or_expr(luna_parser_t *self) {
 }
 
 /*
- * (id ('=' expr)? (',' id ('=' expr)?)*)
+ * (id ':' type ('=' expr)? (',' id ':' type ('=' expr)?)*)
  */
 
 static luna_vec_t *
