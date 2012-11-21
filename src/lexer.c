@@ -57,7 +57,6 @@ luna_lexer_init(luna_lexer_t *self, char *source, const char *filename) {
   self->error = NULL;
   self->source = source;
   self->filename = filename;
-  self->indent_stack[0] = 0;
   self->indents = 0;
   self->outdents = 0;
   self->lineno = 1;
@@ -88,32 +87,15 @@ outdent(luna_lexer_t *self) {
 }
 
 /*
- * Scan newline, and determine if we have
- * an indentation.
+ * Scan newline.
  */
 
 static int
 scan_newline(luna_lexer_t *self) {
   int curr = 0;
-  int prev = self->indent_stack[self->indents];
-
   ++self->lineno;
-
   while (accept(' ')) ++curr;
-
-  if (curr > prev) {
-    token(INDENT);
-    self->indent_stack[++self->indents] = curr;
-  } else if (curr < prev) {
-    while (self->indent_stack[self->indents] > curr) {
-      ++self->outdents;
-      --self->indents;
-    }
-    outdent(self);
-  } else {
-    token(NEWLINE);
-  }
-
+  token(NEWLINE);
   return 1;
 }
 
