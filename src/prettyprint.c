@@ -103,6 +103,7 @@ visit_block(luna_visitor_t *self, luna_block_node_t *node) {
     if (i) printf("\n");
     INDENT;
     visit((luna_node_t *) val->value.as_pointer);
+    if (!indents) printf("\n");
   });
 }
 
