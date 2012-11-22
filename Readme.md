@@ -75,6 +75,19 @@ def sum(v:vec): int {
 
   Because no such construct exists in Luna you're free to "extend" these types elsewhere simply by defining functions that act on those types, without polluting "global" classes or objects, removing a layer of indirection, as it's often not clear where these additions came from, and they regularly conflict.
 
+## Method sugar
+
+  As previously mention Luna has no concept of classes, methods, or prototypes. As it may increase readability in many cases, you may invoke functions as if they were methods with some syntactic sugar. For example the following would be equivalent:
+
+```ruby
+nums = [1,2,3]
+
+sum(nums)
+// => 6
+
+nums.sum()
+// => 6
+```
 
 ## Operator precedence
 
