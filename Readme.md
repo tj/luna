@@ -111,8 +111,8 @@ stdout(grep(cat('urls.txt'), 'https://'))
 
 ```ruby
 a = get('http://google.com') | grep('<title>') &
-b = get('http://likeaboss.com')| grep('<title>') &
-c = get('http://cuteoverload.com')| grep('<title>') &
+b = get('http://likeaboss.com') | grep('<title>') &
+c = get('http://cuteoverload.com') | grep('<title>') &
 res = join(a, b, c)
 ```
 
