@@ -75,7 +75,7 @@ def sum(v:vec): int {
 
   Because no such construct exists in Luna you're free to "extend" these types elsewhere simply by defining functions that act on those types, without polluting "global" classes or objects, removing a layer of indirection, as it's often not clear where these additions came from, and they regularly conflict.
 
-## Method sugar
+## Method syntactic sugar
 
   As previously mention Luna has no concept of classes, methods, or prototypes. As it may increase readability in many cases, you may invoke functions as if they were methods with some syntactic sugar. For example the following would be equivalent:
 
@@ -87,6 +87,20 @@ sum(nums)
 
 nums.sum()
 // => 6
+```
+
+## Function composition sugar
+
+  Another important bit of syntactic sugar is the function composition operator `|`. With this you may string together function calls as pipes, and through the power of generators and coroutines, they may behave as such. 
+
+```ruby
+cat('urls.txt') | grep('https://') | stdout
+```
+
+  Is functionally equivalent to:
+
+```ruby
+stdout(grep(cat('urls.txt'), 'https://'))
 ```
 
 ## Operator precedence
