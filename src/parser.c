@@ -827,6 +827,7 @@ function_stmt(luna_parser_t *self) {
   }
 
   // block
+  whitespace(self);
   if (body = block(self)) {
     return (luna_node_t *) luna_function_node_new(name, type, body, params);
   }
