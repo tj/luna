@@ -8,7 +8,8 @@
   - fast!
   - small (~2000 SLOC)
   - simple, elegant, explicit
-  - static + inferred typing
+  - small learning curve
+  - statically typed with inference
   - high concurrency out of the box
   - small embeddable / hackable core
   - ...
