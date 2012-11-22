@@ -10,6 +10,7 @@
   - simple, elegant, explicit
   - small learning curve
   - statically typed with inference
+  - light-weight threads via coroutines
   - high concurrency out of the box
   - small embeddable / hackable core
   - ...
