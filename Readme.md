@@ -105,14 +105,12 @@ stdout(grep(cat('urls.txt'), 'https://'))
 
 ## Operator precedence
 
- Operator precedence from highest to lowest, note "sp" is used
- for slot access in the table below, however this is simply a space (' ')
- in Luna.
+ Operator precedence from highest to lowest:
 
 ```
 operator                |  associativity
 ------------------------|---------------
-[ ] ( ) sp              |  left
+[ ] ( ) .               |  left
 ++ --                   |  right
 ! ~ + -                 |  right
 * / %                   |  left
