@@ -103,6 +103,21 @@ cat('urls.txt') | grep('https://') | stdout
 stdout(grep(cat('urls.txt'), 'https://'))
 ```
 
+## Fork / join
+
+  More often than not you want to perform several tasks in parallel, and "join" their results. For this luna provides the `&` postfix operator, together with the
+  function composition operator your scripts become just as expressive as shell
+  scripts:
+
+```ruby
+a = get('http://google.com') | grep('<title>') &
+b = get('http://likeaboss.com')| grep('<title>') &
+c = get('http://cuteoverload.com')| grep('<title>') &
+res = join(a, b, c)
+```
+
+  This wraps each statement in a coroutine which may run independently. 
+
 ## Operator precedence
 
  Operator precedence from highest to lowest:
