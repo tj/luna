@@ -144,6 +144,28 @@ not                     |  right
 ,                       |  left
 ```
 
+## luna(1)
+
+```
+
+  Usage: luna [options] [file]
+  
+  Options:
+  
+    -A, --ast       output ast to stdout
+    -T, --tokens    output tokens to stdout
+    -h, --help      output help information
+    -V, --version   output luna version
+  
+  Examples:
+  
+    $ luna - < some.luna
+    $ luna some.luna
+    $ luna some
+    $ luna
+
+```
+
 ## License 
 
   MIT
