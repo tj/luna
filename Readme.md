@@ -144,8 +144,6 @@ not                     |  right
 ,                       |  left
 ```
 
-  TODO: fill me out...
-
 ## License 
 
   MIT
