@@ -1,16 +1,16 @@
 
   ![Luna programming language](http://f.cl.ly/items/3K2A3k1k3p2s0M3B3j1F/logo.png)
 
- Luna is an expressive, minimalistic, elegant programming language implemented in C. With cooperative thread concurrency at its core, async I/O, and influences derived from languages such as Lua, io, Python, and Ruby. Luna favours unification and minimalism over minor obscure conveniences, providing the true convenience of a simple effective language. This includes omitting features which facilitate magic such as getters/setters, method_missing etc. This project is _very_ much a work in progress, as I explore the wonderful world of VMs! feel free to join.
+ Luna is an expressive, minimalistic, elegant programming language implemented in C. With cooperative thread concurrency at its core, async I/O, and influences derived from languages such as Lua, io, Rust, Ruby, and C. Luna favours unification and minimalism over minor obscure conveniences, providing the true convenience of a simple effective language. This includes omitting features which facilitate magic such as getters/setters, method_missing etc. This project is _very_ much a work in progress, as I explore the wonderful world of VMs! feel free to join.
 
 ## Goals
 
   - fast!
   - small (~2000 SLOC)
   - simple, elegant, explicit
-  - reflection capabilities
+  - static + inferred typing
   - high concurrency out of the box
-  - small embeddable core
+  - small embeddable / hackable core
   - ...
 
 ## Build
@@ -43,7 +43,7 @@
   - ◦ website
   - ◦ context threading
 
-## Operator Precedence Table
+## Operator precedence
 
  Operator precedence from highest to lowest, note "sp" is used
  for slot access in the table below, however this is simply a space (' ')
@@ -71,7 +71,7 @@ not                     |  right
 ,                       |  left
 ```
 
-  TODO: fill me out..,
+  TODO: fill me out...
 
 ## License 
 
