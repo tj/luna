@@ -61,6 +61,18 @@ def greet(name:str): str {
 }
 ```
 
+## Multiple dispatch
+
+  Luna plans to provide multiple dispatch support. This will drastically cut down on verbosity and fragmentation. For example suppose you have a `vec_sum(v)` function, in Luna you would simply create a `sum(v)` function:
+
+```ruby
+def sum(v:vec): int {
+  ...
+}
+```
+
+  Thanks to the typing system Luna can choose the correct function to invoke for the given parameters. This technique addresses another fundamental problem of many languages, fragmentation and delocalization. For example it is often tempting to extend native prototypes or classes provided by the host language, such as `Array#sum()`. Because no such construct exists in Luna you're free to "extend" these types elsewhere simply by defining functions that act on those types, without polluting "global" classes or objects, removing a layer of indirection, as it's often not clear where these additions came from, and they regularly conflict.
+
 ## Operator precedence
 
  Operator precedence from highest to lowest, note "sp" is used
