@@ -9,6 +9,7 @@
 #define __LUNA_LEXER__
 
 #include <stdio.h>
+#include <sys/types.h>
 #include <sys/stat.h>
 #include "token.h"
 
