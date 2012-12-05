@@ -32,7 +32,7 @@ static int tokens = 0;
 
 static void
 usage() {
-  fprintf(stderr, 
+  fprintf(stderr,
     "\n  Usage: luna [options] [file]"
     "\n"
     "\n  Options:"
@@ -44,7 +44,7 @@ usage() {
     "\n"
     "\n  Examples:"
     "\n"
-    "\n    $ luna - < some.luna"
+    "\n    $ luna < some.luna"
     "\n    $ luna some.luna"
     "\n    $ luna some"
     "\n    $ luna"
@@ -154,7 +154,7 @@ main(int argc, const char **argv){
     }
     fprintf(stderr, "error reading %s:\n\n  %s\n\n", orig, strerror(errno));
     exit(1);
-  }    
+  }
 
   // parse the input
   luna_lexer_t lex;
