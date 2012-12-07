@@ -63,7 +63,7 @@ luna_lexer_init(luna_lexer_t *self, char *source, const char *filename) {
 
 /*
  * Convert hex digit `c` to a base 10 int,
- * returning -1 on failure. 
+ * returning -1 on failure.
  */
 
 static int
@@ -104,16 +104,17 @@ scan_ident(luna_lexer_t *self, int c) {
 
   buf[len++] = 0;
   // TODO: refactor this lameness with length checks etc
-  if (0 == strcmp("if", buf)) return token(IF); 
-  else if (0 == strcmp("else", buf)) return token(ELSE); 
-  else if (0 == strcmp("def", buf)) return token(DEF); 
-  else if (0 == strcmp("let", buf)) return token(LET); 
-  else if (0 == strcmp("unless", buf)) return token(UNLESS); 
-  else if (0 == strcmp("while", buf)) return token(WHILE); 
-  else if (0 == strcmp("until", buf)) return token(UNTIL); 
-  else if (0 == strcmp("for", buf)) return token(FOR); 
-  else if (0 == strcmp("ret", buf)) return token(RETURN); 
-  else if (0 == strcmp("not", buf)) return token(OP_LNOT); 
+  if (0 == strcmp("if", buf)) return token(IF);
+  else if (0 == strcmp("else", buf)) return token(ELSE);
+  else if (0 == strcmp("def", buf)) return token(DEF);
+  else if (0 == strcmp("end", buf)) return token(END);
+  else if (0 == strcmp("let", buf)) return token(LET);
+  else if (0 == strcmp("unless", buf)) return token(UNLESS);
+  else if (0 == strcmp("while", buf)) return token(WHILE);
+  else if (0 == strcmp("until", buf)) return token(UNTIL);
+  else if (0 == strcmp("for", buf)) return token(FOR);
+  else if (0 == strcmp("ret", buf)) return token(RETURN);
+  else if (0 == strcmp("not", buf)) return token(OP_LNOT);
   self->tok.value.as_string = strdup(buf); // TODO: remove
   return 1;
 }
@@ -158,7 +159,7 @@ scan_string(luna_lexer_t *self, int quote) {
             if (-1 == (c = hex_literal(self)))
               return 0;
         }
-        break; 
+        break;
     }
     buf[len++] = c;
   }

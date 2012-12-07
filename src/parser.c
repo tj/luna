@@ -953,7 +953,7 @@ stmt(luna_parser_t *self) {
 }
 
 /*
- * '{' ws (stmt ws)+ '}'
+ * ws (stmt ws)+ 'end'
  */
 
 static luna_block_node_t *
@@ -961,14 +961,13 @@ block(luna_parser_t *self) {
   debug("block");
   luna_node_t *node;
   luna_block_node_t *block = luna_block_node_new();
-  if (!accept(LBRACE)) return error("{ expected");
   whitespace(self);
-  if (accept(RBRACE)) return block;
+  if (accept(END)) return block;
   do {
     if (!(node = stmt(self))) return NULL;
     luna_vec_push(block->stmts, luna_node(node));
     whitespace(self);
-  } while (!accept(RBRACE));
+  } while (!accept(END));
   return block;
 }
 

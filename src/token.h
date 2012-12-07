@@ -28,6 +28,7 @@
   t(ELSE, "else") \
   t(FOR, "for") \
   t(LET, "let") \
+  t(END, "end") \
   t(RETURN, "return") \
   t(LBRACE, "{") \
   t(RBRACE, "}") \

@@ -50,17 +50,17 @@
   Luna is statically typed, however mostly optional thanks to type inference. Some declarations such as function parameters _must_ specify a type: 
 
 ```ruby
-def greet(name:str) {
+def greet(name:str)
   ret "Hello " + name
-}
+end
 ```
 
   Types that can be properly inferred may be, for example function return types as seen above. When fully-qualified the same function would look like this:
 
 ```ruby
-def greet(name:str): str {
+def greet(name:str): str
   ret "Hello " + name
-}
+end
 ```
 
 ## Function overloading
@@ -68,9 +68,9 @@ def greet(name:str): str {
   Luna plans to provide multiple dispatch support. This will drastically cut down on verbosity and fragmentation. For example suppose you have a `vec_sum(v)` function, in Luna you would simply create a `sum(v)` function:
 
 ```ruby
-def sum(v:vec): int {
+def sum(v:vec): int
   ...
-}
+end
 ```
 
   Thanks to the typing system Luna can choose the correct function to invoke for the given parameters. This technique addresses another fundamental problem of many languages, fragmentation and delocalization. For example it is often tempting to extend native prototypes or classes provided by the host language, such as `Array#sum()`.

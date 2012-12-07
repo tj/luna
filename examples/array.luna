@@ -1,8 +1,8 @@
 
-def first(v:vec) {
+def first(v:vec)
   ret vec[0]
-}
+end
 
-def first(v:vec, n:int) {
+def first(v:vec, n:int)
   ret slice(vec, 0, n)
-}
+end
