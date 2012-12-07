@@ -161,7 +161,7 @@ not                     |  right
   
   Examples:
   
-    $ luna - < some.luna
+    $ luna < some.luna
     $ luna some.luna
     $ luna some
     $ luna

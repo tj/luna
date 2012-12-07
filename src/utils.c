@@ -5,10 +5,12 @@
 // Copyright (c) 2012 TJ Holowaychuk <tj@vision-media.ca>
 //
 
+#include <assert.h>
 #include <fcntl.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
+#include <string.h>
 #include "utils.h"
 
 /*
@@ -41,4 +43,27 @@ file_read(const char *filename) {
   if (size != len) return NULL;
 
   return buf;
+}
+
+/*
+ * Read `stream` until EOF.
+ */
+
+char *
+read_until_eof(FILE *stream) {
+  // alloc
+  off_t len = 0;
+  char buf[1024];
+  char *str = malloc(1);
+  assert(str);
+  
+  // read
+  while (!feof(stream)) {
+    size_t n = fread(buf, 1, 1024, stream);
+    len += strlen(buf);
+    str = realloc(str, len);
+    strcat(str, buf);
+  }
+  
+  return str;
 }

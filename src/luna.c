@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <string.h>
+#include <unistd.h>
 #include <sys/stat.h>
 #include "linenoise.h"
 #include "luna.h"
@@ -30,7 +31,7 @@ static int tokens = 0;
  * Output usage information.
  */
 
-static void
+void
 usage() {
   fprintf(stderr,
     "\n  Usage: luna [options] [file]"
@@ -58,7 +59,7 @@ usage() {
  * Output luna version.
  */
 
-static void
+void
 version() {
   printf("%s\n", LUNA_VERSION);
   exit(0);
@@ -68,7 +69,7 @@ version() {
  * Line-noise REPL.
  */
 
-static void
+void
 repl() {
   char *line;
   while(line = linenoise("luna> ")) {
@@ -125,6 +126,43 @@ parse_args(int *argc, const char **argv) {
 }
 
 /*
+ * Evaluate `source` with the given
+ * `path` name and return status.
+ */
+
+int
+eval(char *source, const char *path) {
+  // parse the input
+  luna_lexer_t lex;
+  luna_lexer_init(&lex, source, path);
+  luna_parser_t parser;
+  luna_parser_init(&parser, &lex);
+  luna_block_node_t *root;
+  
+  // --tokens
+  if (tokens) {
+    while (luna_scan(&lex)) {
+      printf("  \e[90m%d : \e[m", lex.lineno);
+      luna_token_inspect(&lex.tok);
+    }
+    return 0;
+  }
+  
+  // oh noes!
+  if (!(root = luna_parse(&parser))) {
+    luna_report_error(&parser);
+    return 1;
+  }
+  
+  // --ast
+  if (ast) {
+    luna_prettyprint((luna_node_t *) root);
+  }
+  
+  return 0;
+}
+
+/*
  * Parse arguments and scan from stdin (for now).
  */
 
@@ -137,10 +175,16 @@ main(int argc, const char **argv){
   // parse arguments
   argv = parse_args(&argc, argv);
 
+  // eval stdin
+  if (1 == argc && !isatty(0)) {
+    source = read_until_eof(stdin);
+    return eval(source, "stdin");
+  }
+
   // REPL
   if (1 == argc) repl();
 
-  // read
+  // eval file
   orig = path = argv[1];
   read:
   if (!(source = file_read(path))) {
@@ -156,33 +200,5 @@ main(int argc, const char **argv){
     exit(1);
   }
 
-  // parse the input
-  luna_lexer_t lex;
-  luna_lexer_init(&lex, source, path);
-  luna_parser_t parser;
-  luna_parser_init(&parser, &lex);
-  luna_block_node_t *root;
-
-  // --tokens
-  if (tokens) {
-    while (luna_scan(&lex)) {
-      printf("  \e[90m%d : \e[m", lex.lineno);
-      luna_token_inspect(&lex.tok);
-    }
-    exit(0);
-  }
-
-  // oh noes!
-  if (!(root = luna_parse(&parser))) {
-    luna_report_error(&parser);
-    exit(1);
-  }
-  
-  // --ast
-  if (ast) {
-    luna_prettyprint((luna_node_t *) root);
-    exit(0);
-  }
-
-  return 0;
+  return eval(source, path);
 }
