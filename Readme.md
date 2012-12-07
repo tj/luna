@@ -85,10 +85,10 @@ end
 nums = [1,2,3]
 
 sum(nums)
-// => 6
+# => 6
 
 nums.sum()
-// => 6
+# => 6
 ```
 
 ## Function composition sugar
