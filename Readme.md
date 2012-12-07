@@ -50,7 +50,7 @@
   Luna is statically typed, however mostly optional thanks to type inference. Some declarations such as function parameters _must_ specify a type: 
 
 ```ruby
-def greet(name:str)
+def greet(name:string)
   ret "Hello " + name
 end
 ```
@@ -58,7 +58,7 @@ end
   Types that can be properly inferred may be, for example function return types as seen above. When fully-qualified the same function would look like this:
 
 ```ruby
-def greet(name:str): str
+def greet(name:string): string
   ret "Hello " + name
 end
 ```
