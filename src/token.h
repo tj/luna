@@ -44,6 +44,7 @@
   t(OP_DOT, ".") \
   t(OP_LNOT, "not") \
   t(OP_NOT, "!") \
+  t(OP_FORK, "&") \
   t(OP_PLUS, "+") \
   t(OP_INCR, "++") \
   t(OP_MINUS, "-") \
@@ -67,7 +68,7 @@
   t(OP_DIV_ASSIGN, "/=") \
   t(OP_AND_ASSIGN, "&&=") \
   t(OP_OR_ASSIGN, "||=") \
-  t(OP_BIT_AND, "&") \
+  t(OP_BIT_AND, "and") \
   t(OP_BIT_XOR, "^") \
   t(OP_BIT_NOT, "~") \
   t(OP_BIT_SHL, "<<") \

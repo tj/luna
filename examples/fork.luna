@@ -1,0 +1,11 @@
+
+a = cat('pets.txt') | grep('tobi') &
+b = cat('users.txt') | grep('tobi') &
+
+delete('/user/1') &
+delete('/user/2') &
+delete('/user/3') &
+
+a = get('http://google.ca') &
+b = get('http://facebook.com') &
+c = get('http://ign.com') &

@@ -114,6 +114,7 @@ scan_ident(luna_lexer_t *self, int c) {
   else if (0 == strcmp("until", buf)) return token(UNTIL);
   else if (0 == strcmp("for", buf)) return token(FOR);
   else if (0 == strcmp("ret", buf)) return token(RETURN);
+  else if (0 == strcmp("and", buf)) return token(OP_BIT_AND);
   else if (0 == strcmp("not", buf)) return token(OP_LNOT);
   self->tok.value.as_string = strdup(buf); // TODO: remove
   return 1;
@@ -297,7 +298,7 @@ luna_scan(luna_lexer_t *self) {
             ? token(OP_AND_ASSIGN)
             : (undo, token(OP_AND));
         default:
-          return undo, token(OP_BIT_AND);
+          return undo, token(OP_FORK);
       }
     case '|':
       switch (next) {

@@ -420,7 +420,7 @@ equality_expr(luna_parser_t *self) {
 }
 
 /*
- * equality_expr ('&' equality_expr)*
+ * equality_expr ('and' equality_expr)*
  */
 
 static luna_node_t *
@@ -510,7 +510,7 @@ logical_and_expr(luna_parser_t *self) {
 }
 
 /*
- * logical_and_expr ('||' logical_and_expr)*
+ * logical_and_expr ('||' logical_and_expr)* '&'?
  */
 
 static luna_node_t *
@@ -518,6 +518,8 @@ logical_or_expr(luna_parser_t *self) {
   luna_node_t *node, *right;
   debug("logical_or_expr");
   if (!(node = logical_and_expr(self))) return NULL;
+
+  // '||'
   while (accept(OP_OR)) {
     context("|| operation");
     if (right = logical_and_expr(self)) {
@@ -526,6 +528,15 @@ logical_or_expr(luna_parser_t *self) {
       return error("missing right-hand expression");
     }
   }
+
+  // '&'
+  if (accept(OP_FORK)) {
+    luna_id_node_t *id = luna_id_node_new("fork");
+    luna_call_node_t *call = luna_call_node_new((luna_node_t *) id);
+    luna_vec_push(call->args->vec, luna_node(node));
+    node = (luna_node_t *) call;
+  }
+
   return node;
 }
 
@@ -762,7 +773,7 @@ not_expr(luna_parser_t *self) {
 }
 
 /*
- * not_expr
+ *  not_expr
  */
 
 static luna_node_t *
