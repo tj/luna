@@ -8,6 +8,8 @@
 #ifndef __LUNA_TOKEN__
 #define __LUNA_TOKEN__
 
+#include <assert.h>
+
 /*
  * Tokens.
  */
@@ -40,7 +42,6 @@
   t(QMARK, "?") \
   t(SEMICOLON, ";") \
   t(COMMA, ",") \
-  t(OP_PIPE, "|") \
   t(OP_DOT, ".") \
   t(OP_LNOT, "not") \
   t(OP_NOT, "!") \
@@ -69,6 +70,7 @@
   t(OP_AND_ASSIGN, "&&=") \
   t(OP_OR_ASSIGN, "||=") \
   t(OP_BIT_AND, "and") \
+  t(OP_BIT_OR, "|") \
   t(OP_BIT_XOR, "^") \
   t(OP_BIT_NOT, "~") \
   t(OP_BIT_SHL, "<<") \
@@ -115,6 +117,7 @@ typedef struct {
 
 static inline const char *
 luna_token_type_string(luna_token type) {
+  assert(type <= LUNA_TOKEN_OP_BIT_SHR);
   return luna_token_strings[type];
 }
 

@@ -79,42 +79,25 @@ end
 
 ## Method syntactic sugar
 
-  As previously mention Luna has no concept of classes, methods, or prototypes. As it may increase readability in many cases, you may invoke functions as if they were methods with some syntactic sugar. For example the following would be equivalent:
+  As previously mention Luna has no concept of classes, methods, or prototypes. To increase readability you may invoke functions as if they were methods. For example the following would be equivalent:
 
 ```ruby
-nums = [1,2,3]
-
-sum(nums)
-# => 6
-
-nums.sum()
-# => 6
+cat('urls.txt').grep('https://').print()
 ```
-
-## Function composition sugar
-
-  Another important bit of syntactic sugar is the function composition operator `|`. With this you may string together function calls as pipes, and through the power of generators and coroutines, they may behave as such. 
 
 ```ruby
-cat('urls.txt') | grep('https://') | stdout
+print(grep(cat('urls.txt'), 'https://'))
 ```
-
-  Is functionally equivalent to:
-
-```ruby
-stdout(grep(cat('urls.txt'), 'https://'))
-```
+  
 
 ## Fork / join
 
-  More often than not you want to perform several tasks in parallel, and "join" their results. For this luna provides the `&` postfix operator, together with the
-  function composition operator your scripts become just as expressive as shell
-  scripts:
+  More often than not you want to perform several tasks in parallel, and "join" their results. For this luna provides the `&` postfix operator, which is syntax sugar for wrapping the expression in a `fork()` function call:
 
 ```ruby
-a = get('http://google.com') | grep('<title>') &
-b = get('http://likeaboss.com') | grep('<title>') &
-c = get('http://cuteoverload.com') | grep('<title>') &
+a = get('http://google.com').grep('<title>') &
+b = get('http://likeaboss.com').grep('<title>') &
+c = get('http://cuteoverload.com').grep('<title>') &
 res = join(a, b, c)
 ```
 

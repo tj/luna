@@ -464,24 +464,14 @@ bitwise_xor_expr(luna_parser_t *self) {
  */
 
 static luna_node_t *
-pipe_expr(luna_parser_t *self) {
+bitswise_or_expr(luna_parser_t *self) {
   luna_node_t *node, *right;
-  debug("pipe_expr");
+  debug("bitswise_or_expr");
   if (!(node = bitwise_xor_expr(self))) return NULL;
-  while (accept(OP_PIPE)) {
+  while (accept(OP_BIT_OR)) {
     context("| operation");
-    if (right = call_expr(self)) {
-      if (right->type != LUNA_NODE_CALL && right->type != LUNA_NODE_ID) return error("invalid pipe");
-      luna_call_node_t *call;
-      if (right->type == LUNA_NODE_ID) {
-        luna_id_node_t *id = (luna_id_node_t *) right;
-        call = luna_call_node_new((luna_node_t *) id);
-      } else {
-        call = (luna_call_node_t *) right;
-      }
-      // TODO: use lists and lpush
-      luna_vec_push(call->args->vec, luna_node(node));
-      node = (luna_node_t *) call;
+    if (right = bitwise_xor_expr(self)) {
+      node = (luna_node_t *) luna_binary_op_node_new(LUNA_TOKEN_OP_BIT_OR, node, right);
     } else {
       return error("missing right-hand expression");
     }
@@ -490,17 +480,17 @@ pipe_expr(luna_parser_t *self) {
 }
 
 /*
- * pipe_expr ('&&' pipe_expr)*
+ * bitswise_or_expr ('&&' bitswise_or_expr)*
  */
 
 static luna_node_t *
 logical_and_expr(luna_parser_t *self) {
   luna_node_t *node, *right;
   debug("logical_and_expr");
-  if (!(node = pipe_expr(self))) return NULL;
+  if (!(node = bitswise_or_expr(self))) return NULL;
   while (accept(OP_AND)) {
     context("&& operation");
-    if (right = pipe_expr(self)) {
+    if (right = bitswise_or_expr(self)) {
       node = (luna_node_t *) luna_binary_op_node_new(LUNA_TOKEN_OP_AND, node, right);
     } else {
       return error("missing right-hand expression");
@@ -579,8 +569,7 @@ function_params(luna_parser_t *self) {
 }
 
 /*
- *   ':' params? block
- * | ':' params? '|' expr
+ * ':' params? block
  */
 
 static luna_node_t *
@@ -595,13 +584,6 @@ function_expr(luna_parser_t *self) {
     if (!(params = function_params(self))) return NULL;
     context("function");
 
-    // '|' expr
-    if (accept(OP_PIPE)) {
-      luna_node_t *node;
-      if (!(node = expr(self))) return NULL;
-      //return (luna_node_t *) luna_function_node_new_from_expr(node, params);
-    }
-
     // block
     if (body = block(self)) {
       //return (luna_node_t *) luna_function_node_new(body, params);
@@ -612,7 +594,8 @@ function_expr(luna_parser_t *self) {
 }
 
 /*
- * (primary_expr | function_expr) call_expr*
+ *   primary_expr
+ * | primary_expr call_expr
  */
 
 static luna_node_t *
@@ -620,9 +603,8 @@ slot_access_expr(luna_parser_t * self) {
   luna_node_t *node;
   debug("slot_access_expr");
 
-  // (primary_expr | function_expr)
+  // primary_expr
   node = primary_expr(self);
-  if (!node) node = function_expr(self);
   if (!node) return NULL;
 
   // id*
@@ -668,8 +650,9 @@ call_args(luna_parser_t *self) {
 }
 
 /*
- *   slot_access_expr '(' args? ')' function_expr?
- * | slot_access_expr function_expr?
+ *   slot_access_expr '(' args? ')'
+ * | slot_access_expr '.' call_expr
+ * | slot_access_expr
  */
 
 static luna_node_t *
@@ -695,13 +678,18 @@ call_expr(luna_parser_t *self) {
     node = (luna_node_t *) call;
   }
 
-  // function_expr?
-  if (is(COLON) && !self->in_args) {
-    if (!call) call = luna_call_node_new(node);
-    luna_node_t *fn = function_expr(self);
-    if (!fn) return NULL;
-    luna_vec_push(call->args->vec, luna_node(fn));
-    node = (luna_node_t *) call;
+  // '.' call_expr
+  if (accept(OP_DOT)) {
+    // TODO: verify slot access or call
+    luna_node_t *expr = call_expr(self);
+
+    if (LUNA_NODE_CALL == expr->type) {
+      luna_call_node_t *call = (luna_call_node_t *) expr;
+      luna_vec_push(call->args->vec, luna_node(node));
+      node = call;
+    } else {
+      node = (luna_node_t *) luna_slot_node_new(node, expr);
+    }
   }
 
   return node;

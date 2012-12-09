@@ -1,6 +1,6 @@
 
-a = cat('pets.txt') | grep('tobi') &
-b = cat('users.txt') | grep('tobi') &
+a = cat('pets.txt').grep('tobi') &
+b = cat('users.txt').grep('tobi') &
 
 delete('/user/1') &
 delete('/user/2') &
