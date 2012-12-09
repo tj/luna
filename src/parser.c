@@ -686,7 +686,7 @@ call_expr(luna_parser_t *self) {
     if (LUNA_NODE_CALL == expr->type) {
       luna_call_node_t *call = (luna_call_node_t *) expr;
       luna_vec_push(call->args->vec, luna_node(node));
-      node = call;
+      node = (luna_node_t *) call;
     } else {
       node = (luna_node_t *) luna_slot_node_new(node, expr);
     }
