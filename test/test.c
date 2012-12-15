@@ -216,7 +216,7 @@ test_hash_remove() {
  */
 
 static int
-valid_slot(char *slot) {
+valid_slot(const char *slot) {
   return 0 == strcmp("one", slot)
     || 0 == strcmp("two", slot)
     || 0 == strcmp("three", slot)
@@ -244,17 +244,17 @@ test_hash_iteration() {
   luna_hash_set(obj, "four", &three);
   luna_hash_set(obj, "five", &three);
 
-  char *slots[luna_hash_size(obj)];
+  const char *slots[luna_hash_size(obj)];
   int i = 0;
   luna_hash_each_slot(obj, { slots[i++] = slot; });
   for (int i = 0; i < 5; ++i) assert(valid_slot(slots[i]));
 
-  char *slots2[luna_hash_size(obj)];
+  const char *slots2[luna_hash_size(obj)];
   i = 0;
   luna_hash_each_slot(obj, slots2[i++] = slot);
   for (int i = 0; i < 5; ++i) assert(valid_slot(slots2[i]));
 
-  char *slots3[luna_hash_size(obj)];
+  const char *slots3[luna_hash_size(obj)];
   i = 0;
   luna_hash_each(obj, slots3[i++] = slot);
   for (int i = 0; i < 5; ++i) assert(valid_slot(slots3[i]));
