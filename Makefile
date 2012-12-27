@@ -1,5 +1,5 @@
 
-SRC = $(shell find src/*.c)
+SRC = $(wildcard src/*.c)
 OBJ = ${SRC:.c=.o}
 
 CC = gcc
