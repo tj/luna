@@ -15,14 +15,18 @@
   - small embeddable / hackable core
   - ...
 
+## Community
+
+  - Join us in #luna-lang on freenode
+
 ## Build
 
  To build Luna, simply run:
- 
+
     $ make
 
  Check out the help:
- 
+
     $ ./luna --help
 
 ## Status
@@ -47,7 +51,7 @@
 
 ## Typing
 
-  Luna is statically typed, however mostly optional thanks to type inference. Some declarations such as function parameters _must_ specify a type: 
+  Luna is statically typed, however mostly optional thanks to type inference. Some declarations such as function parameters _must_ specify a type:
 
 ```ruby
 def greet(name:string)
@@ -88,7 +92,7 @@ cat('urls.txt').grep('https://').print()
 ```ruby
 print(grep(cat('urls.txt'), 'https://'))
 ```
-  
+
 
 ## Fork / join
 
@@ -101,7 +105,7 @@ c = get('http://cuteoverload.com').grep('<title>') &
 res = join(a, b, c)
 ```
 
-  This wraps each statement in a coroutine which may run independently. 
+  This wraps each statement in a coroutine which may run independently.
 
 ## Operator precedence
 
@@ -134,16 +138,16 @@ not                     |  right
 ```
 
   Usage: luna [options] [file]
-  
+
   Options:
-  
+
     -A, --ast       output ast to stdout
     -T, --tokens    output tokens to stdout
     -h, --help      output help information
     -V, --version   output luna version
-  
+
   Examples:
-  
+
     $ luna < some.luna
     $ luna some.luna
     $ luna some
@@ -151,7 +155,7 @@ not                     |  right
 
 ```
 
-## License 
+## License
 
   MIT
 
