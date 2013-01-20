@@ -169,7 +169,7 @@ not                     |  right
 
 ## Join Us
 
-IRC: #luna-lang@irc.freenode.net
+IRC: #luna-lang @ irc.freenode.net
 
 ## License 
 
