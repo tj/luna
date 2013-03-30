@@ -13,10 +13,6 @@
   - small embeddable / hackable core
   - ...
 
-## Community
-
-  - Join us in #luna-lang on freenode
-
 ## Build
 
  To build Luna, simply run:
@@ -153,7 +149,7 @@ not                     |  right
 
 ```
 
-## Join Us
+## Community
 
  - __irc__: #luna-lang on irc.freenode.net
 
