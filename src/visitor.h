@@ -2,7 +2,7 @@
 //
 // visitor.h
 //
-// Copyright (c) 2011 TJ Holowaychuk <tj@vision-media.ca>
+// Copyright (c) 2013 TJ Holowaychuk <tj@vision-media.ca>
 //
 
 #ifndef __LUNA_VISITOR__
@@ -21,6 +21,7 @@
  */
 
 typedef struct luna_visitor {
+  void *data;
   void (* visit_block)(struct luna_visitor *self, luna_block_node_t *node);
   void (* visit_id)(struct luna_visitor *self, luna_id_node_t *node);
   void (* visit_int)(struct luna_visitor *self, luna_int_node_t *node);

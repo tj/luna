@@ -2,7 +2,7 @@
 //
 // luna.c
 //
-// Copyright (c) 2011 TJ Holowaychuk <tj@vision-media.ca>
+// Copyright (c) 2013 TJ Holowaychuk <tj@vision-media.ca>
 //
 
 #include <stdio.h>
@@ -18,6 +18,8 @@
 #include "errors.h"
 #include "utils.h"
 #include "prettyprint.h"
+#include "codegen.h"
+#include "vm.h"
 
 // --ast
 
@@ -80,7 +82,7 @@ repl() {
       luna_parser_t parser;
       luna_parser_init(&parser, &lex);
       luna_block_node_t *root;
-  
+
       // oh noes!
       if (!(root = luna_parse(&parser))) {
         luna_report_error(&parser);
@@ -138,7 +140,7 @@ eval(char *source, const char *path) {
   luna_parser_t parser;
   luna_parser_init(&parser, &lex);
   luna_block_node_t *root;
-  
+
   // --tokens
   if (tokens) {
     while (luna_scan(&lex)) {
@@ -147,18 +149,24 @@ eval(char *source, const char *path) {
     }
     return 0;
   }
-  
+
   // oh noes!
   if (!(root = luna_parse(&parser))) {
     luna_report_error(&parser);
     return 1;
   }
-  
+
   // --ast
   if (ast) {
     luna_prettyprint((luna_node_t *) root);
+    return 1;
   }
-  
+
+  // evaluate
+  luna_vm_t *vm = luna_gen((luna_node_t *) root);
+  luna_object_t *obj = luna_eval(vm);
+  luna_object_inspect(obj);
+
   return 0;
 }
 

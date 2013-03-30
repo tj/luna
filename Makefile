@@ -2,7 +2,7 @@
 SRC = $(wildcard src/*.c)
 OBJ = ${SRC:.c=.o}
 
-CC = gcc
+CC = clang
 PREFIX = /usr/local
 CFLAGS = -std=c99 -g -O0 -Wno-parentheses -Wno-switch-enum -Wno-unused-value
 CFLAGS += -Wno-switch

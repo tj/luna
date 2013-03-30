@@ -2,7 +2,7 @@
 //
 // state.c
 //
-// Copyright (c) 2011 TJ Holowaychuk <tj@vision-media.ca>
+// Copyright (c) 2013 TJ Holowaychuk <tj@vision-media.ca>
 //
 
 #include "state.h"
