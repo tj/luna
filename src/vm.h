@@ -86,6 +86,26 @@ typedef struct {
 
 #define C(i) ((i) & 0xff)
 
+/*
+ * Register n.
+ */
+
+#define R(n) registers[n]
+
+/*
+ * Constant n.
+ */
+
+#define K(n) vm->main->constants[(n) - 32]
+
+/*
+ * Register or constant.
+ */
+
+// TODO: MSB
+#define RK(n) \
+   ((n) < 32 ? R(n) : K(n))
+
 // protoypes
 
 luna_object_t *
