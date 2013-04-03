@@ -39,66 +39,36 @@ luna_dump(luna_vm_t *vm) {
   int registers[32] = {0};
 
   for (;;) {
-    switch (OP(i = *ip++)) {
-      // LOADK
-      case LUNA_OP_LOADK:
-        printf("loadk %d %d; %d\n", A(i), B(i), K(B(i)));
-        break;
-
-      // LOADB
-      case LUNA_OP_LOADB:
-        printf("loadb %d %d; %d\n", A(i), B(i), K(B(i)));
-        break;
-
-      // ADD
-      case LUNA_OP_ADD:
-        printf("add %d %d %d; %d %d\n", A(i), B(i), C(i), RK(B(i)), RK(C(i)));
-        break;
-
-      // SUB
-      case LUNA_OP_SUB:
-        printf("sub %d %d %d; %d %d\n", A(i), B(i), C(i), RK(B(i)), RK(C(i)));
-        break;
-
-      // DIV
-      case LUNA_OP_DIV:
-        printf("div %d %d %d; %d %d\n", A(i), B(i), C(i), RK(B(i)), RK(C(i)));
-        break;
-
-      // MUL
-      case LUNA_OP_MUL:
-        printf("mul %d %d %d; %d %d\n", A(i), B(i), C(i), RK(B(i)), RK(C(i)));
-        break;
-
-      // MOD
-      case LUNA_OP_MOD:
-        printf("mod %d %d %d; %d %d\n", A(i), B(i), C(i), RK(B(i)), RK(C(i)));
-        break;
-
-      // NEGATE
-      case LUNA_OP_NEGATE:
-
-        break;
-
-      // LT
-      case LUNA_OP_LT:
-        printf("lt %d %d; %d %d\n", B(i), C(i), RK(B(i)), RK(C(i)));
-        break;
-
-      // LTE
-      case LUNA_OP_LTE:
-        printf("lte %d %d; %d %d\n", B(i), C(i), RK(B(i)), RK(C(i)));
-        break;
-
-      // JMP
-      case LUNA_OP_JMP:
-        printf("jmp %d\n", B(i));
-        break;
-
-      // HALT
+    i = *ip++;
+    printf("%10s ", luna_op_strings[OP(i)]);
+    switch (OP(i)) {
+      // -
       case LUNA_OP_HALT:
-        printf("halt\n");
+        printf("\n");
         return;
+
+      // op : sBx
+      case LUNA_OP_JMP:
+        printf("%d\n", B(i));
+        break;
+
+      // op : R(A) RK(B)
+      case LUNA_OP_LOADK:
+      case LUNA_OP_LOADB:
+        printf("%d %d; %d\n", A(i), B(i), K(B(i)));
+        break;
+
+      // op : R(A) RK(B) RK(C)
+      case LUNA_OP_ADD:
+      case LUNA_OP_SUB:
+      case LUNA_OP_DIV:
+      case LUNA_OP_MUL:
+      case LUNA_OP_MOD:
+      case LUNA_OP_POW:
+      case LUNA_OP_LT:
+      case LUNA_OP_LTE:
+        printf("%d %d %d; %d %d\n", A(i), B(i), C(i), RK(B(i)), RK(C(i)));
+        break;
     }
   }
 }

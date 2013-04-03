@@ -22,7 +22,7 @@ luna: $(OBJ)
 
 %.o: %.c
 	@$(CC) -c $(CFLAGS) $< -o $@
-	@echo CC $@
+	@printf "\e[36mCC\e[90m %s\e[0m\n" $@
 
 test: test_runner
 	@./$<

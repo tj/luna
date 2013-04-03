@@ -12,26 +12,46 @@
  * Opcodes.
  */
 
+#define LUNA_OP_LIST \
+  o(HALT, "halt") \
+  o(JMP, "jmp") \
+  o(LOADK, "loadk") \
+  o(LOADB, "loadb") \
+  o(MOVE, "move") \
+  o(EQ, "eq") \
+  o(LT, "lt") \
+  o(LTE, "lte") \
+  o(ADD, "add") \
+  o(SUB, "sub") \
+  o(DIV, "div") \
+  o(MUL, "mul") \
+  o(MOD, "mod") \
+  o(POW, "pow") \
+  o(NEGATE, "negate") \
+  o(BIT_SHL, "bshl") \
+  o(BIT_SHR, "bshr") \
+  o(BIT_AND, "band") \
+  o(BIT_OR, "bor") \
+  o(BIT_XOR, "bxor")
+
+/*
+ * Opcodes enum.
+ */
+
 typedef enum {
-  LUNA_OP_HALT,
-  LUNA_OP_JMP,
-  LUNA_OP_LOADK,
-  LUNA_OP_LOADB,
-  LUNA_OP_MOVE,
-  LUNA_OP_EQ,
-  LUNA_OP_LT,
-  LUNA_OP_LTE,
-  LUNA_OP_ADD,
-  LUNA_OP_SUB,
-  LUNA_OP_DIV,
-  LUNA_OP_MUL,
-  LUNA_OP_MOD,
-  LUNA_OP_BIT_SHL,
-  LUNA_OP_BIT_SHR,
-  LUNA_OP_BIT_AND,
-  LUNA_OP_BIT_OR,
-  LUNA_OP_BIT_XOR,
-  LUNA_OP_NEGATE
+#define o(op, str) LUNA_OP_##op,
+LUNA_OP_LIST
+#undef o
 } luna_op_t;
+
+/*
+ * Opcode strings.
+ */
+
+static char *luna_op_strings[] = {
+#define o(op, str) str,
+LUNA_OP_LIST
+#undef o
+};
 
 #endif /* __LUNA_OPCODES_H__ */
