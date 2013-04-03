@@ -12,6 +12,12 @@
 #include "opcodes.h"
 #include "vm.h"
 
+/*
+ * Dump disassembled program to stdout.
+ *
+ * TODO: return a string
+ */
+
 void
 luna_dump(luna_vm_t *vm) {
   luna_instruction_t *ip = vm->main->ip;
