@@ -5,8 +5,8 @@
 // Copyright (c) 2012 TJ Holowaychuk <tj@vision-media.ca>
 //
 
-#ifndef LUNA_DISASM
-#define LUNA_DISASM
+#ifndef __LUNA_DISASM__
+#define __LUNA_DISASM__
 
 #include <stdio.h>
 #include "opcodes.h"
