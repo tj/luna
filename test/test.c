@@ -105,7 +105,7 @@ test_array_at() {
   assert(1 == luna_vec_at(&arr, 0)->value.as_int);
   assert(2 == luna_vec_at(&arr, 1)->value.as_int);
   assert(3 == luna_vec_at(&arr, 2)->value.as_int);
-  
+
   assert(NULL == luna_vec_at(&arr, -1123));
   assert(NULL == luna_vec_at(&arr, 5));
   assert(NULL == luna_vec_at(&arr, 1231231));
@@ -284,7 +284,7 @@ test_string() {
 
   luna_string_t *str = luna_string(&state, "foo bar baz");
   assert(0 == strcmp("foo bar baz", str->val));
-  
+
   str = luna_string(&state, "foo bar baz");
   assert(0 == strcmp("foo bar baz", str->val));
 
@@ -292,34 +292,6 @@ test_string() {
   assert(0 == strcmp("foo", str->val));
 
   assert(2 == kh_size(state.strs));
-}
-
-/*
- * Test luna_object_set().
- */
-
-static void
-test_object_set() {
-  luna_object_t foo = {
-      .type = LUNA_TYPE_INT
-    , .value.as_int = 1
-    , .hash = luna_hash_new() 
-  };
-
-  luna_object_t bar = { .type = LUNA_TYPE_INT, .value.as_int = 2 };
-  luna_object_t baz = { .type = LUNA_TYPE_INT, .value.as_int = 3 };
-
-  assert(0 == luna_object_size(&foo));
-
-  luna_object_set(&foo, "bar", &bar);
-  assert(&bar == luna_object_get(&foo, "bar"));
-
-  assert(1 == luna_object_size(&foo));
-
-  luna_object_set(&foo, "baz", &baz);
-  assert(&baz == luna_object_get(&foo, "baz"));
-
-  assert(2 == luna_object_size(&foo));
 }
 
 /*
@@ -380,10 +352,6 @@ main(int argc, const char **argv){
   test(hash_remove);
   test(hash_iteration);
   test(hash_mixins);
-
-  suite("object");
-  test(object_set);
-  test(object_mixins);
 
   suite("string");
   test(string);
