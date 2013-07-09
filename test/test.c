@@ -295,17 +295,6 @@ test_string() {
 }
 
 /*
- * Test object mixins.
- */
-
-static void
-test_object_mixins() {
-  luna_object_t *num = luna_int_new(11);
-  assert(LUNA_TYPE_INT == num->type);
-  assert(11 == num->value.as_int);
-}
-
-/*
  * Test the given `fn`.
  */
 
