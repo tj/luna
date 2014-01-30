@@ -1,4 +1,3 @@
-
 //
 // lexer.c
 //
@@ -103,20 +102,40 @@ scan_ident(luna_lexer_t *self, int c) {
   undo;
 
   buf[len++] = 0;
-  // TODO: refactor this lameness with length checks etc
-  if (0 == strcmp("if", buf)) return token(IF);
-  else if (0 == strcmp("else", buf)) return token(ELSE);
-  else if (0 == strcmp("def", buf)) return token(DEF);
-  else if (0 == strcmp("end", buf)) return token(END);
-  else if (0 == strcmp("let", buf)) return token(LET);
-  else if (0 == strcmp("unless", buf)) return token(UNLESS);
-  else if (0 == strcmp("while", buf)) return token(WHILE);
-  else if (0 == strcmp("until", buf)) return token(UNTIL);
-  else if (0 == strcmp("for", buf)) return token(FOR);
-  else if (0 == strcmp("ret", buf)) return token(RETURN);
-  else if (0 == strcmp("and", buf)) return token(OP_BIT_AND);
-  else if (0 == strcmp("not", buf)) return token(OP_LNOT);
-  self->tok.value.as_string = strdup(buf); // TODO: remove
+  switch (len-1) {
+    case 2:
+      if (0 == strcmp("if", buf)) return token(IF);
+      else {
+        goto string;
+      }
+    case 3:
+      if (0 == strcmp("for", buf)) return token(FOR);
+      else if (0 == strcmp("def", buf)) return token(DEF);
+      else if (0 == strcmp("end", buf)) return token(END);
+      else if (0 == strcmp("let", buf)) return token(LET);
+      else if (0 == strcmp("and", buf)) return token(OP_BIT_AND);
+      else if (0 == strcmp("not", buf)) return token(OP_LNOT);
+      else if (0 == strcmp("ret", buf)) return token(RETURN);
+      else {
+        goto string;
+      }
+    case 4:
+      if (0 == strcmp("else", buf)) return token(ELSE);
+      else {
+        goto string;
+      }
+    case 5:
+      if (0 == strcmp("while", buf)) return token(WHILE);
+      else if (0 == strcmp("until", buf)) return token(UNTIL);
+      else {
+        goto string;
+      }
+    default:
+      if (0 == strcmp("unless", buf)) return token(UNLESS);
+  }
+  
+string:
+  self->tok.value.as_string = strdup(buf);
   return 1;
 }
 
