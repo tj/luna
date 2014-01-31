@@ -4,6 +4,7 @@
 // Copyright (c) 2013 TJ Holowaychuk <tj@vision-media.ca>
 //
 
+#include <math.h>
 #include <ctype.h>
 #include <string.h>
 #include <stdlib.h>
@@ -195,8 +196,12 @@ scan_string(luna_lexer_t *self, int quote) {
 
 static int
 scan_number(luna_lexer_t *self, int c) {
-  // TODO: exponential notation
-  int n = 0, type = 0;
+  int n = 0, type = 0, expo = 0, e;
+  int expo_type = 1;
+  /* expo_type: 
+   * 1 -> '+'(default) 
+   * 0 -> '-' 
+   */
   token(INT);
 
   switch (c) {
@@ -229,6 +234,7 @@ scan_number(luna_lexer_t *self, int c) {
   do {
     if ('_' == c) continue;
     else if ('.' == c) goto scan_float;
+    else if ('e' == c || 'E' == c) goto scan_expo;
     n = n * 10 + c - '0';
   } while (isdigit(c = next) || '_' == c || '.' == c);
   undo;
@@ -238,18 +244,36 @@ scan_number(luna_lexer_t *self, int c) {
   // [0-9_]+
 
   scan_float: {
-    int e = 1;
+    e = 1;
     type = 1;
     token(FLOAT);
-    while (isdigit(c = next) || '_' == c) {
+    while (isdigit(c = next) || '_' == c || 'e' == c || 'E' == c) {
       if ('_' == c) continue;
+      else if ('e' == c || 'E' == c) goto scan_expo;
       n = n * 10 + c - '0';
       e *= 10;
     }
     undo;
     self->tok.value.as_float = (float) n / e;
+    return 1;
   }
   
+  // [\+\-]?[0-9]+
+
+  scan_expo: {
+    while (isdigit(c = next) || '+' == c || '-' == c) {
+      if ('-' == c) {
+        expo_type = 0;
+        continue;
+      }
+      expo = expo * 10 + c - '0';
+    }
+
+    undo;
+    if (expo_type == 0) expo *= -1;
+    self->tok.value.as_float = ((float) n / e) * pow(10, expo);
+  }
+
   return 1;
 }
 
