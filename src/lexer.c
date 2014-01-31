@@ -233,6 +233,7 @@ scan_number(luna_lexer_t *self, int c) {
   } while (isdigit(c = next) || '_' == c || '.' == c);
   undo;
   self->tok.value.as_int = n;
+  return 1;
 
   // [0-9_]+
 
@@ -248,7 +249,7 @@ scan_number(luna_lexer_t *self, int c) {
     undo;
     self->tok.value.as_float = (float) n / e;
   }
-
+  
   return 1;
 }
 
