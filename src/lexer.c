@@ -236,7 +236,7 @@ scan_number(luna_lexer_t *self, int c) {
     else if ('.' == c) goto scan_float;
     else if ('e' == c || 'E' == c) goto scan_expo;
     n = n * 10 + c - '0';
-  } while (isdigit(c = next) || '_' == c || '.' == c);
+  } while (isdigit(c = next) || '_' == c || '.' == c || 'e' == c || 'E' == c);
   undo;
   self->tok.value.as_int = n;
   return 1;
@@ -271,7 +271,10 @@ scan_number(luna_lexer_t *self, int c) {
 
     undo;
     if (expo_type == 0) expo *= -1;
-    self->tok.value.as_float = ((float) n / e) * pow(10, expo);
+    if (type == 0)
+      self->tok.value.as_int = n * pow(10, expo);
+    else
+      self->tok.value.as_float = ((float) n / e) * pow(10, expo);
   }
 
   return 1;
