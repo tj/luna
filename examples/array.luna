@@ -1,8 +1,16 @@
 
-def first(v:vec)
-  return vec[0]
-end
+nums = [1 2 3]
 
-def first(v:vec, n:int)
-  return slice(vec, 0, n)
-end
+pets = ['tobi', 'loki', 'jane']
+
+pets = [
+  'tobi'
+  'loki'
+  'jane'
+]
+
+pets = [
+  'tobi',
+  'loki',
+  'jane'
+]
