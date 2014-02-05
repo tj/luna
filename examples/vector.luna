@@ -5,32 +5,32 @@ type vec_t
 end
 
 def vector(x:int, y:int)
-  ret vect_t:{
+  return vect_t:{
     x: x
     y: y
   }
 end
 
 def add(a:vec_t, b:vec_t)
-  ret vec_t:{
+  return vec_t:{
     x: a x + b x
     y: a y + b y
   }
 end
 
 def sub(a:vec_t, b:vec_t)
-  ret vec_t:{
+  return vec_t:{
     x: a x - b x
     y: a y - b y
   }
 end
 
 def dot(a:vect_t, b:vect_t)
-  ret a x * b x + a y * b y
+  return a x * b x + a y * b y
 end
 
 def clone(v:vect_t)
-  ret vect_t: {
+  return vect_t: {
     x: v x
     y: v y
   }

@@ -1,24 +1,24 @@
 
 def greet
-  ret "hello"
+  return "hello"
 end
 
 def greet()
-  ret "hello"
+  return "hello"
 end
 
 def greet():  string
-  ret "hello"
+  return "hello"
 end
 
 def greet(name:string)
-  ret "hello " + name
+  return "hello " + name
 end
 
 def greet(first:string, last:string)
-  ret "hello " + first + " " + last
+  return "hello " + first + " " + last
 end
 
 def greet(first:string, last:string):string
-  ret "hello " + first + " " + last
+  return "hello " + first + " " + last
 end

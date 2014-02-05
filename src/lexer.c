@@ -106,36 +106,27 @@ scan_ident(luna_lexer_t *self, int c) {
   switch (len-1) {
     case 2:
       if (0 == strcmp("if", buf)) return token(IF);
-      else {
-        goto string;
-      }
+      break;
     case 3:
       if (0 == strcmp("for", buf)) return token(FOR);
-      else if (0 == strcmp("def", buf)) return token(DEF);
-      else if (0 == strcmp("end", buf)) return token(END);
-      else if (0 == strcmp("let", buf)) return token(LET);
-      else if (0 == strcmp("and", buf)) return token(OP_BIT_AND);
-      else if (0 == strcmp("not", buf)) return token(OP_LNOT);
-      else if (0 == strcmp("ret", buf)) return token(RETURN);
-      else {
-        goto string;
-      }
+      if (0 == strcmp("def", buf)) return token(DEF);
+      if (0 == strcmp("end", buf)) return token(END);
+      if (0 == strcmp("let", buf)) return token(LET);
+      if (0 == strcmp("and", buf)) return token(OP_BIT_AND);
+      if (0 == strcmp("not", buf)) return token(OP_LNOT);
+      break;
     case 4:
       if (0 == strcmp("else", buf)) return token(ELSE);
-      else {
-        goto string;
-      }
+      break;
     case 5:
       if (0 == strcmp("while", buf)) return token(WHILE);
-      else if (0 == strcmp("until", buf)) return token(UNTIL);
-      else {
-        goto string;
-      }
+      if (0 == strcmp("until", buf)) return token(UNTIL);
+      break;
     default:
+      if (0 == strcmp("return", buf)) return token(RETURN);
       if (0 == strcmp("unless", buf)) return token(UNLESS);
   }
-  
-string:
+
   self->tok.value.as_string = strdup(buf);
   return 1;
 }
@@ -198,9 +189,9 @@ static int
 scan_number(luna_lexer_t *self, int c) {
   int n = 0, type = 0, expo = 0, e;
   int expo_type = 1;
-  /* expo_type: 
-   * 1 -> '+'(default) 
-   * 0 -> '-' 
+  /* expo_type:
+   * 1 -> '+'(default)
+   * 0 -> '-'
    */
   token(INT);
 
@@ -257,7 +248,7 @@ scan_number(luna_lexer_t *self, int c) {
     self->tok.value.as_float = (float) n / e;
     return 1;
   }
-  
+
   // [\+\-]?[0-9]+
 
   scan_expo: {
