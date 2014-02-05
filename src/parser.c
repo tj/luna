@@ -109,15 +109,6 @@ luna_parser_init(luna_parser_t *self, luna_lexer_t *lex) {
 }
 
 /*
- * newline*
- */
-
-static void
-whitespace(luna_parser_t *self) {
-  while (accept(NEWLINE)) ;
-}
-
-/*
  * '(' expr ')'
  */
 
@@ -783,7 +774,7 @@ expr_stmt(luna_parser_t *self) {
 
   if (!(node = expr(self))) return NULL;
 
-  if (!(accept(NEWLINE) || is(RPAREN) || is(EOS))) {
+  if (!(is(RPAREN) || is(EOS))) {
     return error("missing newline");
   }
 
@@ -809,8 +800,6 @@ type_stmt(luna_parser_t *self) {
   type = luna_type_node_new(name);
 
   // type fields
-  whitespace(self);
-
   do {
     // id
     if (!(is(ID))) return error("expecting field");
@@ -822,8 +811,6 @@ type_stmt(luna_parser_t *self) {
     // id
     if (!(is(ID))) return error("expecting field type");
     const char *type = next->value.as_string;
-
-    whitespace(self);
   } while (!accept(END));
 
   return (luna_node_t *) type;
@@ -869,7 +856,6 @@ function_stmt(luna_parser_t *self) {
   }
 
   // block
-  whitespace(self);
   if (body = block(self)) {
     return (luna_node_t *) luna_function_node_new(name, type, body, params);
   }
@@ -965,9 +951,6 @@ return_stmt(luna_parser_t *self) {
 
   // 'return'
   if (!accept(RETURN)) return NULL;
-  if (is(NEWLINE)) {
-    return (luna_node_t *) luna_return_node_new(NULL);
-  }
 
   // 'return' expr
   luna_node_t *node;
@@ -1005,13 +988,14 @@ block(luna_parser_t *self) {
   debug("block");
   luna_node_t *node;
   luna_block_node_t *block = luna_block_node_new();
-  whitespace(self);
+
   if (accept(END)) return block;
+
   do {
     if (!(node = stmt(self))) return NULL;
     luna_vec_push(block->stmts, luna_node(node));
-    whitespace(self);
   } while (!accept(END));
+
   return block;
 }
 
@@ -1023,16 +1007,16 @@ static luna_block_node_t *
 program(luna_parser_t *self) {
   debug("program");
   luna_node_t *node;
-  whitespace(self);
   luna_block_node_t *block = luna_block_node_new();
+
   while (!accept(EOS)) {
     if (node = stmt(self)) {
       luna_vec_push(block->stmts, luna_node(node));
     } else {
       return NULL;
     }
-    whitespace(self);
   }
+
   return block;
 }
 

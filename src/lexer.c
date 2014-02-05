@@ -75,19 +75,6 @@ hex(const char c) {
 }
 
 /*
- * Scan newline.
- */
-
-static int
-scan_newline(luna_lexer_t *self) {
-  int curr = 0;
-  ++self->lineno;
-  while (accept(' ')) ++curr;
-  token(NEWLINE);
-  return 1;
-}
-
-/*
  * Scan identifier.
  */
 
@@ -364,7 +351,9 @@ luna_scan(luna_lexer_t *self) {
       while ((c = next) != '\n' && c) ; undo;
       goto scan;
     case '\n':
-      return scan_newline(self);
+    case '\r':
+      ++self->lineno;
+      goto scan;
     case '"':
     case '\'':
       return scan_string(self, c);

@@ -17,7 +17,6 @@
 #define LUNA_TOKEN_LIST \
   t(ILLEGAL, "illegal") \
   t(EOS, "end-of-source") \
-  t(NEWLINE, "newline") \
   t(ID, "id") \
   t(INT, "int") \
   t(FLOAT, "float") \
