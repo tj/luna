@@ -599,6 +599,7 @@ slot_access_expr(luna_parser_t * self) {
   if (!node) return NULL;
 
   // id*
+  // TODO: replace
   // while (is(ID)) {
   //   luna_node_t *right = call_expr(self);
   //   if (!right) return NULL;
