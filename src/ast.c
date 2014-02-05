@@ -245,6 +245,19 @@ luna_function_node_new_from_expr(luna_node_t *expr, luna_vec_t *params) {
 }
 
 /*
+ * Alloc and initialize a new type noe with the given `name`.
+ */
+
+luna_type_node_t *
+luna_type_node_new(const char *name) {
+  luna_type_node_t *self = malloc(sizeof(luna_type_node_t));
+  if (unlikely(!self)) return NULL;
+  self->base.type = LUNA_NODE_TYPE;
+  self->name = name;
+  return self;
+}
+
+/*
  * Alloc and initialize a new if stmt node, negated for "unless",
  * with required `expr` and `block`.
  */

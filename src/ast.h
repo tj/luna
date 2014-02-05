@@ -302,4 +302,7 @@ luna_return_node_new(luna_node_t *expr);
 luna_args_node_t *
 luna_args_node_new();
 
+luna_type_node_t *
+luna_type_node_new(const char *name);
+
 #endif /* __LUNA_AST__ */

@@ -791,6 +791,45 @@ expr_stmt(luna_parser_t *self) {
 }
 
 /*
+ * 'type' id (id ':' id)*
+ */
+
+static luna_node_t *
+type_stmt(luna_parser_t *self) {
+  debug("type_stmt");
+  context("type statement");
+  luna_type_node_t *type;
+
+  // 'type'
+  if (!accept(TYPE)) return NULL;
+
+  // id
+  if (!is(ID)) return error("missing type name");
+  const char *name = next->value.as_string;
+  type = luna_type_node_new(name);
+
+  // type fields
+  whitespace(self);
+
+  do {
+    // id
+    if (!(is(ID))) return error("expecting field");
+    const char *name = next->value.as_string;
+
+    // ':'
+    if (!accept(COLON)) return error("expecting ':'");
+
+    // id
+    if (!(is(ID))) return error("expecting field type");
+    const char *type = next->value.as_string;
+
+    whitespace(self);
+  } while (!accept(END));
+
+  return (luna_node_t *) type;
+}
+
+/*
  * 'def' id '(' args? ')' (':' id)? block
  */
 
@@ -941,6 +980,7 @@ return_stmt(luna_parser_t *self) {
  * | while_stmt
  * | return_stmt
  * | function_stmt
+ * | type_stmt
  * | expr_stmt
  */
 
@@ -952,6 +992,7 @@ stmt(luna_parser_t *self) {
   if (is(WHILE) || is(UNTIL)) return while_stmt(self);
   if (is(RETURN)) return return_stmt(self);
   if (is(DEF)) return function_stmt(self);
+  if (is(TYPE)) return type_stmt(self);
   return expr_stmt(self);
 }
 
