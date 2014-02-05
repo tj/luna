@@ -599,11 +599,11 @@ slot_access_expr(luna_parser_t * self) {
   if (!node) return NULL;
 
   // id*
-  while (is(ID)) {
-    luna_node_t *right = call_expr(self);
-    if (!right) return NULL;
-    node = (luna_node_t *) luna_slot_node_new(node, right);
-  }
+  // while (is(ID)) {
+  //   luna_node_t *right = call_expr(self);
+  //   if (!right) return NULL;
+  //   node = (luna_node_t *) luna_slot_node_new(node, right);
+  // }
 
   return node;
 }
@@ -620,7 +620,6 @@ call_args(luna_parser_t *self) {
   self->in_args++;
 
   debug("args");
-  context("function arguments");
   do {
     if (node = expr(self)) {
       // TODO: assert string or id
