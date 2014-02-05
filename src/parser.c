@@ -780,7 +780,7 @@ static luna_node_t *
 expr_stmt(luna_parser_t *self) {
   luna_node_t *node;
   debug("expr_stmt");
-  
+
   if (!(node = expr(self))) return NULL;
 
   if (!(accept(NEWLINE) || is(RPAREN) || is(EOS))) {
@@ -810,14 +810,18 @@ function_stmt(luna_parser_t *self) {
   const char *name = next->value.as_string;
 
   // '('
-  if (!accept(LPAREN)) return error("missing opening '('");
+  if (accept(LPAREN)) {
+    // params?
+    if (!(params = function_params(self))) return NULL;
 
-  // params?
-  if (!(params = function_params(self))) return NULL;
+    // ')'
+    context("function");
+    if (!accept(RPAREN)) return error("missing closing ')'");
+  } else {
+    params = luna_vec_new();
+  }
+
   context("function");
-
-  // ')'
-  if (!accept(RPAREN)) return error("missing closing ')'");
 
   // (':' id)?
   if (accept(COLON)) {
@@ -864,7 +868,7 @@ if_stmt(luna_parser_t *self) {
   loop:
   if (accept(ELSE)) {
     luna_block_node_t *body;
-    
+
     // ('else' 'if' block)*
     if (accept(IF)) {
       context("else if statement condition");

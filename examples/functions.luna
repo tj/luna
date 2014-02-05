@@ -1,4 +1,8 @@
 
+def greet
+  ret "hello"
+end
+
 def greet()
   ret "hello"
 end
