@@ -23,6 +23,7 @@
   t(FLOAT, "float") \
   t(STRING, "string") \
   t(DEF, "def") \
+  t(TYPE, "type") \
   t(WHILE, "while") \
   t(UNTIL, "until") \
   t(IF, "if") \

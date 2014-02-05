@@ -117,6 +117,7 @@ scan_ident(luna_lexer_t *self, int c) {
       break;
     case 4:
       if (0 == strcmp("else", buf)) return token(ELSE);
+      if (0 == strcmp("type", buf)) return token(TYPE);
       break;
     case 5:
       if (0 == strcmp("while", buf)) return token(WHILE);
