@@ -39,6 +39,7 @@
   n(ARRAY) \
   n(HASH) \
   n(FUNCTION) \
+  n(TYPE) \
   n(SLOT)
 
 /*
@@ -198,6 +199,16 @@ typedef struct {
   luna_block_node_t *block;
   luna_vec_t *params;
 } luna_function_node_t;
+
+/*
+ * Luna type node.
+ */
+
+typedef struct {
+  luna_node_t base;
+  const char *name;
+  luna_hash_t *types;
+} luna_type_node_t;
 
 /*
  * Luna if stmt node.
