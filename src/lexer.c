@@ -250,10 +250,13 @@ scan_number(luna_lexer_t *self, int c) {
 
     undo;
     if (expo_type == 0) expo *= -1;
-    if (type == 0)
-      self->tok.value.as_int = n * pow(10, expo);
-    else
+    if (type == 0) {
+      expo_type == 1 ?
+        (self->tok.value.as_int = n * pow(10, expo)) :
+        (self->tok.value.as_float = n * pow(10, expo), token(FLOAT));
+    } else {
       self->tok.value.as_float = ((float) n / e) * pow(10, expo);
+    }
   }
 
   return 1;
