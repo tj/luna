@@ -122,7 +122,9 @@ visit_int(luna_visitor_t *self, luna_int_node_t *node) {
 
 static void
 visit_float(luna_visitor_t *self, luna_float_node_t *node) {
-  printf("(float %f)", node->val);
+  node->val < 0.000001 ?
+    printf("(float %e)", node->val):
+    printf("(float %f)", node->val);
 }
 
 /*
