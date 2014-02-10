@@ -1,12 +1,10 @@
+#pragma once
 
 //
 // utils.h
 //
 // Copyright (c) 2012 TJ Holowaychuk <tj@vision-media.ca>
 //
-
-#ifndef __LUNA_UTIL__
-#define __LUNA_UTIL__
 
 #include <sys/stat.h>
 
@@ -18,5 +16,3 @@ file_read(const char *filename);
 
 char *
 read_until_eof(FILE *stream);
-
-#endif

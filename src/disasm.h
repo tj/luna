@@ -1,12 +1,9 @@
-
+#pragma once
 //
 // disasm.h
 //
 // Copyright (c) 2012 TJ Holowaychuk <tj@vision-media.ca>
 //
-
-#ifndef __LUNA_DISASM__
-#define __LUNA_DISASM__
 
 #include <stdio.h>
 #include "opcodes.h"
@@ -58,5 +55,3 @@ luna_dump(luna_vm_t *vm) {
     }
   }
 }
-
-#endif

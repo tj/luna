@@ -1,12 +1,10 @@
+#pragma once
 
 //
 // internal.h
 //
 // Copyright (c) 2013 TJ Holowaychuk <tj@vision-media.ca>
 //
-
-#ifndef __LUNA_INTERNAL__
-#define __LUNA_INTERNAL__
 
 // branch prediction
 
@@ -17,5 +15,3 @@
 #define likely(expr) (expr)
 #define unlikely(expr) (expr)
 #endif
-
-#endif /* __LUNA_INTERNAL__ */

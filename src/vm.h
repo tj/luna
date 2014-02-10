@@ -1,12 +1,10 @@
+#pragma once
 
 //
 // vm.h
 //
 // Copyright (c) 2013 TJ Holowaychuk <tj@vision-media.ca>
 //
-
-#ifndef __LUNA_VM__
-#define __LUNA_VM__
 
 #include <stdint.h>
 #include "ast.h"
@@ -110,5 +108,3 @@ typedef struct {
 
 luna_object_t *
 luna_eval(luna_vm_t *vm);
-
-#endif /* __LUNA_VM__ */
