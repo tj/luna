@@ -1,3 +1,6 @@
+define ccprint
+	@printf '\e[36mCC\e[90m %s\e[0m\n' $1
+endef
 
 SRC = $(wildcard src/*.c)
 OBJ = ${SRC:.c=.o}
@@ -23,7 +26,7 @@ luna: $(OBJ)
 
 %.o: %.c
 	@$(CC) -c $(CFLAGS) $< -o $@
-	@printf "\e[36mCC\e[90m %s\e[0m\n" $@
+	$(call ccprint, $@)
 
 test: test_runner test-parser
 	@./$<
