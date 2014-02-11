@@ -2,6 +2,7 @@ define ccprint
 	@printf '\e[36mCC\e[90m %s\e[0m\n' $1
 endef
 
+SHELL = /bin/bash
 SRC = $(wildcard src/*.c)
 OBJ = ${SRC:.c=.o}
 
