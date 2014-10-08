@@ -11,6 +11,9 @@
 #include "ast.h"
 
 void
+luna_set_prettyprint_func(int (*func)(const char *format, ...));
+
+void
 luna_prettyprint(luna_node_t *node);
 
 #endif /* __LUNA_PP__ */

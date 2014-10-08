@@ -1,13 +1,33 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <stdarg.h>
 #include <assert.h>
 #include <time.h>
+#include "utils.h"
+#include "errors.h"
+#include "lexer.h"
+#include "prettyprint.h"
+#include "parser.h"
 #include "khash.h"
 #include "state.h"
 #include "object.h"
 #include "hash.h"
 #include "vec.h"
+
+
+// print func for prettyprint
+
+char *print_buf;
+
+int
+bprintf(const char *format, ...) {
+  va_list ap;
+  va_start(ap, format);
+  int r = vsprintf(print_buf + strlen(print_buf), format, ap);
+  va_end(ap);
+  return r;
+}
 
 /*
  * Test luna_is_* macros.
@@ -295,6 +315,47 @@ test_string() {
 }
 
 /*
+ * Test parser.
+ */
+
+static void
+_test_parser(const char *source_path, const char *out_path) {
+  luna_lexer_t lexer;
+  luna_parser_t parser;
+  luna_block_node_t *root;
+
+  char *source = file_read(source_path);
+  assert(source != NULL);
+  char *expected = file_read(out_path);
+  assert(expected != NULL);
+
+  luna_lexer_init(&lexer, source, source_path);
+  luna_parser_init(&parser, &lexer);
+
+  if (!(root = luna_parse(&parser))) {
+    luna_report_error(&parser);
+    exit(1);
+  }
+
+  char buf[1024] = {0};
+  print_buf = buf;
+  luna_set_prettyprint_func(bprintf);
+  luna_prettyprint((luna_node_t *) root);
+
+  assert(strcmp(expected, print_buf) == 0);
+}
+
+static void
+test_assign() {
+    _test_parser("test/parser/assign.luna", "test/parser/assign.out");
+}
+
+static void
+test_assign_chain() {
+    _test_parser("test/parser/assign.chain.luna", "test/parser/assign.chain.out");
+}
+
+/*
  * Test the given `fn`.
  */
 
@@ -344,6 +405,10 @@ main(int argc, const char **argv){
 
   suite("string");
   test(string);
+
+  suite("parser");
+  test(assign);
+  test(assign_chain);
 
   printf("\n");
   printf("  \e[90mcompleted in \e[32m%.5fs\e[0m\n", (float) (clock() - start) / CLOCKS_PER_SEC);
