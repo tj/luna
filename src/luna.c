@@ -74,7 +74,7 @@ version() {
 void
 repl() {
   char *line;
-  while(line = linenoise("luna> ")) {
+  while((line = linenoise("luna> "))) {
     if ('\0' != line[0]) {
       // parse the input
       luna_lexer_t lex;
