@@ -49,7 +49,7 @@
 
 ```ruby
 def greet(name:string)
-  ret "Hello " + name
+  return "Hello " + name
 end
 ```
 
@@ -57,7 +57,7 @@ end
 
 ```ruby
 def greet(name:string): string
-  ret "Hello " + name
+  return "Hello " + name
 end
 ```
 
