@@ -1,12 +1,10 @@
+#pragma once
 
 //
 // parser.h
 //
 // Copyright (c) 2013 TJ Holowaychuk <tj@vision-media.ca>
 //
-
-#ifndef __LUNA_PARSER__
-#define __LUNA_PARSER__
 
 #include "lexer.h"
 #include "ast.h"
@@ -32,5 +30,3 @@ luna_parser_init(luna_parser_t *self, luna_lexer_t *lex);
 
 luna_block_node_t *
 luna_parse(luna_parser_t *self);
-
-#endif /* __LUNA_PARSER__ */

@@ -1,12 +1,10 @@
+#pragma once
 
 //
 // token.h
 //
 // Copyright (c) 2013 TJ Holowaychuk <tj@vision-media.ca>
 //
-
-#ifndef __LUNA_TOKEN__
-#define __LUNA_TOKEN__
 
 #include <assert.h>
 
@@ -125,5 +123,3 @@ luna_token_type_string(luna_token type) {
 
 void
 luna_token_inspect(luna_token_t *tok);
-
-#endif /* __LUNA_TOKEN__ */

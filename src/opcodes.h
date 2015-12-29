@@ -1,12 +1,10 @@
+#pragma once
 
 //
 // opcodes.h
 //
 // Copyright (c) 2013 TJ Holowaychuk <tj@vision-media.ca>
 //
-
-#ifndef __LUNA_OPCODES_H__
-#define __LUNA_OPCODES_H__
 
 /*
  * Opcodes.
@@ -53,5 +51,3 @@ static char *luna_op_strings[] = {
 LUNA_OP_LIST
 #undef o
 };
-
-#endif /* __LUNA_OPCODES_H__ */

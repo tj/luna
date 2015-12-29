@@ -1,12 +1,10 @@
+#pragma once
 
 //
 // ast.h
 //
 // Copyright (c) 2013 TJ Holowaychuk <tj@vision-media.ca>
 //
-
-#ifndef __LUNA_AST__
-#define __LUNA_AST__
 
 #include "token.h"
 #include "vec.h"
@@ -304,5 +302,3 @@ luna_args_node_new();
 
 luna_type_node_t *
 luna_type_node_new(const char *name);
-
-#endif /* __LUNA_AST__ */

@@ -1,12 +1,10 @@
+#pragma once
 
 //
 // vec.h
 //
 // Copyright (c) 2013 TJ Holowaychuk <tj@vision-media.ca>
 //
-
-#ifndef __LUNA_VEC__
-#define __LUNA_VEC__
 
 #include "object.h"
 #include "kvec.h"
@@ -71,5 +69,3 @@ typedef kvec_t(luna_object_t *) luna_vec_t;
 
 luna_vec_t *
 luna_vec_new();
-
-#endif /* __LUNA_VEC__ */
