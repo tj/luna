@@ -73,8 +73,9 @@ version() {
 
 void
 repl() {
+  luna_set_prettyprint_func(printf);
   char *line;
-  while(line = linenoise("luna> ")) {
+  while((line = linenoise("luna> "))) {
     if ('\0' != line[0]) {
       // parse the input
       luna_lexer_t lex;
@@ -158,6 +159,7 @@ eval(char *source, const char *path) {
 
   // --ast
   if (ast) {
+    luna_set_prettyprint_func(printf);
     luna_prettyprint((luna_node_t *) root);
     return 1;
   }

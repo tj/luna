@@ -42,6 +42,8 @@ file_read(const char *filename) {
   ssize_t size = read(fd, buf, len);
   if (size != len) return NULL;
 
+  buf[len] = 0;
+
   return buf;
 }
 

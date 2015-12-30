@@ -24,7 +24,7 @@ luna: $(OBJ)
 	@$(CC) -c $(CFLAGS) $< -o $@
 	@printf "\e[36mCC\e[90m %s\e[0m\n" $@
 
-test: test_runner test-parser
+test: test_runner
 	@./$<
 
 test-parser:
