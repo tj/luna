@@ -12,12 +12,20 @@ CFLAGS += -I deps
 
 CFLAGS += -I deps/linenoise
 OBJ += deps/linenoise/linenoise.o
+OBJ += deps/linenoise/utf8.o
 
 TEST_SRC = $(shell find {test,src}/*.c | sed '/luna/d')
 TEST_OBJ = ${TEST_SRC:.c=.o}
 CFLAGS += -I src
 
-luna: $(OBJ)
+# output
+
+OUT = luna
+ifdef SystemRoot
+	OUT = luna.exe
+endif
+
+$(OUT): $(OBJ)
 	$(CC) $^ $(LDFLAGS) -o $@
 
 %.o: %.c

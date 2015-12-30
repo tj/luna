@@ -12,7 +12,7 @@ Line editing with some support for history is a really important feature for com
 
 So what usually happens is either:
 
- * Large programs with configure scripts disabling line editing if readline is not present in the system, or not supporting it at all since readline is GPL licensed and libedit (the BSD clone) is not as known and available as readline is (Readl world example of this problem: Tclsh).
+ * Large programs with configure scripts disabling line editing if readline is not present in the system, or not supporting it at all since readline is GPL licensed and libedit (the BSD clone) is not as known and available as readline is (Real world example of this problem: Tclsh).
  * Smaller programs not using a configure script not supporting line editing at all (A problem we had with Redis-cli for instance).
  
 The result is a pollution of binaries without line editing support.
@@ -25,7 +25,7 @@ Apparently almost every terminal you can happen to use today has some kind of su
 
 Since it's so young I guess there are a few bugs, or the lib may not compile or work with some operating system, but it's a matter of a few weeks and eventually we'll get it right, and there will be no excuses for not shipping command line tools without built-in line editing support.
 
-The library is currently less than 400 lines of code. In order to use it in your project just look at the *example.c* file in the source distribution, it is trivial. Linenoise is BSD code, so you can use both in free software and commercial software.
+The library is currently less than 2000 lines of code. In order to use it in your project just look at the *example.c* file in the source distribution, it is trivial. Linenoise is BSD code, so you can use both in free software and commercial software.
 
 ## Tested with...
 

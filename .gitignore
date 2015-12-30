@@ -5,3 +5,4 @@ testing
 .DS_Store
 test_runner
 test.luna
+*.exe
