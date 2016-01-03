@@ -727,7 +727,7 @@ assignment_expr(luna_parser_t *self) {
     || accept(OP_OR_ASSIGN)
     || accept(OP_AND_ASSIGN)) {
     op = prev->type;
-    context("compoound assignment");
+    context("compound assignment");
     if (!(right = not_expr(self))) return NULL;
     return (luna_node_t *) luna_binary_op_node_new(op, node, right);
   }
