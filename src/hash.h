@@ -5,8 +5,8 @@
 // Copyright (c) 2013 TJ Holowaychuk <tj@vision-media.ca>
 //
 
-#ifndef __LUNA_HASH__
-#define __LUNA_HASH__
+#ifndef LUNA_HASH_H
+#define LUNA_HASH_H
 
 #include "khash.h"
 
@@ -98,4 +98,4 @@ luna_hash_has(khash_t(value) *self, char *key);
 void
 luna_hash_remove(khash_t(value) *self, char *key);
 
-#endif /* __LUNA_HASH__ */
+#endif /* LUNA_HASH_H */

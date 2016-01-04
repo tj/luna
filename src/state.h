@@ -5,8 +5,8 @@
 // Copyright (c) 2013 TJ Holowaychuk <tj@vision-media.ca>
 //
 
-#ifndef __LUNA_STATE__
-#define __LUNA_STATE__
+#ifndef LUNA_STATE_H
+#define LUNA_STATE_H
 
 #include "khash.h"
 
@@ -37,4 +37,4 @@ luna_state_init(luna_state_t *self);
 luna_string_t *
 luna_string(luna_state_t *state, char *val);
 
-#endif /* __LUNA_STATE__ */
+#endif /* LUNA_STATE_H */

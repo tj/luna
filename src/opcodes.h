@@ -5,8 +5,8 @@
 // Copyright (c) 2013 TJ Holowaychuk <tj@vision-media.ca>
 //
 
-#ifndef __LUNA_OPCODES_H__
-#define __LUNA_OPCODES_H__
+#ifndef LUNA_OPCODES_H_H
+#define LUNA_OPCODES_H_H
 
 /*
  * Opcodes.
@@ -54,4 +54,4 @@ LUNA_OP_LIST
 #undef o
 };
 
-#endif /* __LUNA_OPCODES_H__ */
+#endif /* LUNA_OPCODES_H_H */

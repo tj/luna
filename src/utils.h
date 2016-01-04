@@ -5,8 +5,8 @@
 // Copyright (c) 2012 TJ Holowaychuk <tj@vision-media.ca>
 //
 
-#ifndef __LUNA_UTIL__
-#define __LUNA_UTIL__
+#ifndef LUNA_UTIL_H
+#define LUNA_UTIL_H
 
 #include <sys/stat.h>
 

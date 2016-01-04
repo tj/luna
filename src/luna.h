@@ -5,8 +5,8 @@
 // Copyright (c) 2013 TJ Holowaychuk <tj@vision-media.ca>
 //
 
-#ifndef __LUNA__
-#define __LUNA__
+#ifndef LUNA_H
+#define LUNA_H
 
 /*
  * Luna version.
@@ -14,4 +14,4 @@
 
 #define LUNA_VERSION "0.0.1"
 
-#endif /* __LUNA__ */
+#endif /* LUNA_H */

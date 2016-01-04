@@ -5,8 +5,8 @@
 // Copyright (c) 2013 TJ Holowaychuk <tj@vision-media.ca>
 //
 
-#ifndef __LUNA_INTERNAL__
-#define __LUNA_INTERNAL__
+#ifndef LUNA_INTERNAL_H
+#define LUNA_INTERNAL_H
 
 // branch prediction
 
@@ -18,4 +18,4 @@
 #define unlikely(expr) (expr)
 #endif
 
-#endif /* __LUNA_INTERNAL__ */
+#endif /* LUNA_INTERNAL_H */

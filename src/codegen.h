@@ -5,8 +5,8 @@
 // Copyright (c) 2013 TJ Holowaychuk <tj@vision-media.ca>
 //
 
-#ifndef __LUNA_CODE__
-#define __LUNA_CODE__
+#ifndef LUNA_CODE_H
+#define LUNA_CODE_H
 
 #include "ast.h"
 #include "vm.h"
@@ -16,4 +16,4 @@
 luna_vm_t *
 luna_gen(luna_node_t *node);
 
-#endif /* __LUNA_CODE__ */
+#endif /* LUNA_CODE_H */

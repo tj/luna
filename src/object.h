@@ -5,8 +5,8 @@
 // Copyright (c) 2013 TJ Holowaychuk <tj@vision-media.ca>
 //
 
-#ifndef __LUNA_OBJECT__
-#define __LUNA_OBJECT__
+#ifndef LUNA_OBJECT_H
+#define LUNA_OBJECT_H
 
 #include "hash.h"
 
@@ -72,4 +72,4 @@ luna_int_new(int val);
 luna_object_t *
 luna_float_new(float val);
 
-#endif /* __LUNA_OBJECT__ */
+#endif /* LUNA_OBJECT_H */

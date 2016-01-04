@@ -5,8 +5,8 @@
 // Copyright (c) 2013 TJ Holowaychuk <tj@vision-media.ca>
 //
 
-#ifndef __LUNA_VISITOR__
-#define __LUNA_VISITOR__
+#ifndef LUNA_VISITOR_H
+#define LUNA_VISITOR_H
 
 #include "ast.h"
 
@@ -45,4 +45,4 @@ typedef struct luna_visitor {
 void
 luna_visit(luna_visitor_t *self, luna_node_t *node);
 
-#endif /* __LUNA_VISITOR__ */
+#endif /* LUNA_VISITOR_H */

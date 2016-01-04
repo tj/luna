@@ -5,8 +5,8 @@
 // Copyright (c) 2013 TJ Holowaychuk <tj@vision-media.ca>
 //
 
-#ifndef __LUNA_LEXER__
-#define __LUNA_LEXER__
+#ifndef LUNA_LEXER_H
+#define LUNA_LEXER_H
 
 #include <stdio.h>
 #include <sys/types.h>
@@ -40,4 +40,4 @@ luna_scan(luna_lexer_t *self);
 void
 luna_lexer_init(luna_lexer_t *self, char *source, const char *filename);
 
-#endif /* __LUNA_LEXER__ */
+#endif /* LUNA_LEXER_H */
