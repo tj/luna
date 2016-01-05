@@ -35,7 +35,7 @@ $(OUT): $(OBJ)
 test: test_runner
 	@./$<
 
-test-parser:
+test-parser: $(OUT)
 	@sh test/parser.sh
 
 test_runner: $(TEST_OBJ)
