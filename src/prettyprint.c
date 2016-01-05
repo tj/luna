@@ -229,6 +229,23 @@ visit_hash(luna_visitor_t *self, luna_hash_node_t *node) {
 }
 
 /*
+ * Visit subscript `node`.
+ */
+
+static void
+visit_subscript(luna_visitor_t *self, luna_subscript_node_t *node) {
+  print_func("(subscript\n");
+  ++indents;
+  INDENT;
+  visit(node->left);
+  print_func("\n");
+  INDENT;
+  visit(node->right);
+  --indents;
+  print_func(")");
+}
+
+/*
  * Visit slot `node`.
  */
 

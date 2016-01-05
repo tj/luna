@@ -24,54 +24,29 @@
 #endif
 
 /*
- * Accept a token, advancing the lexer.
+ * Advance if the current token is `t`
  */
 
 #ifdef EBUG_PARSER
 #define accept(t) \
-  (peek->type == LUNA_TOKEN_##t \
-    ? (fprintf(stderr, "\e[90maccepted \e[33m%s\e[0m\n", #t), \
-      (self->lb = *self->la, self->la = NULL, &self->lb)) \
+  (is(t)) \
+    ? (fprintf(stderr, "\e[90maccepted \e[33m%s\e[0m\n", #t), next, 1) \
     : 0)
 #else
-#define accept(t) \
-  (peek->type == LUNA_TOKEN_##t \
-    ? (self->lb = *self->la, self->la = NULL, &self->lb) \
-    : 0)
+#define accept(t) (is(t) && next)
 #endif
 
 /*
- * Return the next token.
+ * Consume a token from the lexer
  */
 
-#define advance (luna_scan(self->lex), &self->lex->tok)
+#define next (self->tok = (luna_scan(self->lex), &self->lex->tok))
 
 /*
- * Previous token look-behind.
+ * Check if the current token is `t`.
  */
 
-#define prev (&self->lb)
-
-/*
- * Return the next token, previously peeked token.
- */
-
-#define next \
-  (self->la \
-    ? (self->tmp = self->la, self->la = NULL, self->tmp) \
-    : advance)
-
-/*
- * Single token look-ahead.
- */
-
-#define peek (self->la ? self->la : (self->la = advance))
-
-/*
- * Check if the next token is `t`.
- */
-
-#define is(t) (peek->type == LUNA_TOKEN_##t)
+#define is(t) (self->tok->type == LUNA_TOKEN_##t)
 
 /*
  * Set error context `str`, used in error reporting.
@@ -92,7 +67,7 @@
 
 static luna_block_node_t *block(luna_parser_t *self);
 static luna_node_t *expr(luna_parser_t *self);
-static luna_node_t *call_expr(luna_parser_t *self);
+static luna_node_t *call_expr(luna_parser_t *self, luna_node_t *left);
 static luna_node_t *not_expr(luna_parser_t *self);
 
 /*
@@ -102,7 +77,7 @@ static luna_node_t *not_expr(luna_parser_t *self);
 void
 luna_parser_init(luna_parser_t *self, luna_lexer_t *lex) {
   self->lex = lex;
-  self->la = NULL;
+  self->tok = NULL;
   self->ctx = NULL;
   self->err = NULL;
   self->in_args = 0;
@@ -130,7 +105,7 @@ paren_expr(luna_parser_t *self) {
 int
 arg_list(luna_parser_t *self, luna_array_node_t *arr, luna_token delim) {
   // trailing ','
-  if (delim == peek->type) return 1;
+  if (delim == self->tok->type) return 1;
 
   // expr
   luna_node_t *val;
@@ -170,11 +145,12 @@ array_expr(luna_parser_t *self) {
 int
 hash_pairs(luna_parser_t *self, luna_hash_node_t *hash, luna_token delim) {
   // trailing ','
-  if (delim == peek->type) return 1;
+  if (delim == self->tok->type) return 1;
 
   // id
   if (!is(ID)) return error("hash pair key expected"), 0;
-  char *id = next->value.as_string;
+  char *id = self->tok->value.as_string;
+  next;
 
   // :
   if (!accept(COLON)) return error("hash pair ':' missing"), 0;
@@ -221,7 +197,7 @@ hash_expr(luna_parser_t *self) {
 static luna_node_t *
 primary_expr(luna_parser_t *self) {
   debug("primary_expr");
-  switch (peek->type) {
+  switch (self->tok->type) {
     case LUNA_TOKEN_ID:
       return (luna_node_t *) luna_id_node_new(next->value.as_string);
     case LUNA_TOKEN_INT:
@@ -247,10 +223,10 @@ static luna_node_t *
 pow_expr(luna_parser_t *self) {
   luna_node_t *node, *right;
   debug("pow_expr");
-  if (!(node = call_expr(self))) return NULL;
+  if (!(node = call_expr(self, NULL))) return NULL;
   if (accept(OP_POW)) {
     context("** operation");
-    if (right = call_expr(self)) {
+    if (right = call_expr(self, NULL)) {
       return (luna_node_t *) luna_binary_op_node_new(LUNA_TOKEN_OP_POW, node, right);
     } else {
       return error("missing right-hand expression");
@@ -270,8 +246,9 @@ postfix_expr(luna_parser_t *self) {
   luna_node_t *node;
   debug("postfix_expr");
   if (!(node = pow_expr(self))) return NULL;
-  if (accept(OP_INCR) || accept(OP_DECR)) {
-    return (luna_node_t *) luna_unary_op_node_new(prev->type, node, 1);
+  if (is(OP_INCR) || is(OP_DECR)) {
+    node = (luna_node_t *) luna_unary_op_node_new(self->tok->type, node, 1);
+    next;
   }
   return node;
 }
@@ -289,13 +266,15 @@ postfix_expr(luna_parser_t *self) {
 static luna_node_t *
 unary_expr(luna_parser_t *self) {
   debug("unary_expr");
-  if (accept(OP_INCR)
-    || accept(OP_DECR)
-    || accept(OP_BIT_NOT)
-    || accept(OP_PLUS)
-    || accept(OP_MINUS)
-    || accept(OP_NOT)) {
-    return (luna_node_t *) luna_unary_op_node_new(prev->type, unary_expr(self), 0);
+  if (is(OP_INCR)
+    || is(OP_DECR)
+    || is(OP_BIT_NOT)
+    || is(OP_PLUS)
+    || is(OP_MINUS)
+    || is(OP_NOT)) {
+    luna_token_t *op = self->tok;
+    next;
+    return (luna_node_t *) luna_unary_op_node_new(op->type, unary_expr(self), 0);
   }
   return postfix_expr(self);
 }
@@ -310,8 +289,9 @@ multiplicative_expr(luna_parser_t *self) {
   luna_node_t *node, *right;
   debug("multiplicative_expr");
   if (!(node = unary_expr(self))) return NULL;
-  while (accept(OP_MUL) || accept(OP_DIV) || accept(OP_MOD)) {
-    op = prev->type;
+  while (is(OP_MUL) || is(OP_DIV) || is(OP_MOD)) {
+    op = self->tok->type;
+    next;
     context("multiplicative operation");
     if (right = unary_expr(self)) {
       node = (luna_node_t *) luna_binary_op_node_new(op, node, right);
@@ -332,8 +312,9 @@ additive_expr(luna_parser_t *self) {
   luna_node_t *node, *right;
   debug("additive_expr");
   if (!(node = multiplicative_expr(self))) return NULL;
-  while (accept(OP_PLUS) || accept(OP_MINUS)) {
-    op = prev->type;
+  while (is(OP_PLUS) || is(OP_MINUS)) {
+    op = self->tok->type;
+    next;
     context("additive operation");
     if (right = multiplicative_expr(self)) {
       node = (luna_node_t *) luna_binary_op_node_new(op, node, right);
@@ -354,8 +335,9 @@ shift_expr(luna_parser_t *self) {
   luna_node_t *node, *right;
   debug("shift_expr");
   if (!(node = additive_expr(self))) return NULL;
-  while (accept(OP_BIT_SHL) || accept(OP_BIT_SHR)) {
-    op = prev->type;
+  while (is(OP_BIT_SHL) || is(OP_BIT_SHR)) {
+    op = self->tok->type;
+    next;
     context("shift operation");
     if (right = additive_expr(self)) {
       node = (luna_node_t *) luna_binary_op_node_new(op, node, right);
@@ -376,8 +358,9 @@ relational_expr(luna_parser_t *self) {
   luna_node_t *node, *right;
   debug("relational_expr");
   if (!(node = shift_expr(self))) return NULL;
-  while (accept(OP_LT) || accept(OP_LTE) || accept(OP_GT) || accept(OP_GTE)) {
-    op = prev->type;
+  while (is(OP_LT) || is(OP_LTE) || is(OP_GT) || is(OP_GTE)) {
+    op = self->tok->type;
+    next;
     context("relational operation");
     if (right = shift_expr(self)) {
       node = (luna_node_t *) luna_binary_op_node_new(op, node, right);
@@ -398,8 +381,9 @@ equality_expr(luna_parser_t *self) {
   luna_node_t *node, *right;
   debug("equality_expr");
   if (!(node = relational_expr(self))) return NULL;
-  while (accept(OP_EQ) || accept(OP_NEQ)) {
-    op = prev->type;
+  while (is(OP_EQ) || is(OP_NEQ)) {
+    op = self->tok->type;
+    next;
     context("equality operation");
     if (right = relational_expr(self)) {
       node = (luna_node_t *) luna_binary_op_node_new(op, node, right);
@@ -536,12 +520,15 @@ function_params(luna_parser_t *self) {
   do {
     // id
     if (!is(ID)) return error("missing identifier");
-    const char *id = next->value.as_string;
+    const char *id = self->tok->value.as_string;
+    next;
 
     // ':' id
     if (!accept(COLON)) return error("missing parameter type");
+
     if (!is(ID)) return error("missing parameter type name");
-    const char *type = next->value.as_string;
+    const char *type = self->tok->value.as_string;
+    next;
 
     // ('=' expr)?
     luna_object_t *param;
@@ -590,23 +577,35 @@ function_expr(luna_parser_t *self) {
  */
 
 static luna_node_t *
-slot_access_expr(luna_parser_t * self) {
-  luna_node_t *node;
+slot_access_expr(luna_parser_t *self, luna_node_t *left) {
+  luna_node_t *right;
   debug("slot_access_expr");
 
   // primary_expr
-  node = primary_expr(self);
-  if (!node) return NULL;
+  if (!left) {
+    if (!(left = primary_expr(self))) return NULL;
+  }
 
-  // id*
-  // TODO: replace
-  // while (is(ID)) {
-  //   luna_node_t *right = call_expr(self);
-  //   if (!right) return NULL;
-  //   node = (luna_node_t *) luna_slot_node_new(node, right);
-  // }
+  // subscript
+  if (accept(LBRACK)) {
+    context("subscript");
+    right = expr(self);
+    if (!accept(RBRACK)) return error("missing closing ']'");
+    left = (luna_node_t *) luna_subscript_node_new(left, right);
+    return slot_access_expr(self, left);
+  }
 
-  return node;
+  // field
+  if (accept(OP_DOT)) {
+    if (!is(ID)) return error("expecting identifier");
+    right = (luna_node_t *) luna_id_node_new(self->tok->value.as_string);
+    next;
+
+    left = (luna_node_t *) luna_slot_node_new(left, right);
+    return slot_access_expr(self, left);
+  }
+
+  return left;
 }
 
 /*
@@ -647,43 +646,32 @@ call_args(luna_parser_t *self) {
  */
 
 static luna_node_t *
-call_expr(luna_parser_t *self) {
-  luna_node_t *node;
+call_expr(luna_parser_t *self, luna_node_t *left) {
+  luna_node_t *right;
   luna_call_node_t *call = NULL;
   debug("call_expr");
 
   // slot_access_expr
-  if (!(node = slot_access_expr(self))) return NULL;
+  if (!left) {
+    if (!(left = slot_access_expr(self, NULL))) return NULL;
+  }
 
   // '('
   if (accept(LPAREN)) {
     context("function call");
-    call = luna_call_node_new(node);
+    call = luna_call_node_new(left);
 
     // args? ')'
-    if (!accept(RPAREN)) {
+    if (!is(RPAREN)) {
       call->args = call_args(self);
-      if (!accept(RPAREN)) return error("missing closing ')'");
+      if (!is(RPAREN)) return error("missing closing ')'");
     }
-
-    node = (luna_node_t *) call;
+    next;
+    left = (luna_node_t *) call;
+    return call_expr(self, left);
   }
 
-  // '.' call_expr
-  if (accept(OP_DOT)) {
-    // TODO: verify slot access or call
-    luna_node_t *expr = call_expr(self);
-
-    if (LUNA_NODE_CALL == expr->type) {
-      luna_call_node_t *call = (luna_call_node_t *) expr;
-      luna_vec_push(call->args->vec, luna_node(node));
-      node = (luna_node_t *) call;
-    } else {
-      node = (luna_node_t *) luna_slot_node_new(node, expr);
-    }
-  }
-
-  return node;
+  return left;
 }
 
 /*
@@ -704,14 +692,17 @@ assignment_expr(luna_parser_t *self) {
   int let = 0;
 
   // let?
-  if (accept(LET)) let = 1;
+  if (accept(LET)) {
+    let = 1;
+  }
 
   debug("assignment_expr");
   if (!(node = logical_or_expr(self))) return NULL;
 
   // =
-  if (accept(OP_ASSIGN)) {
-    op = prev->type;
+  if (is(OP_ASSIGN)) {
+    op = self->tok->type;
+    next;
     context("assignment");
     if (!(right = not_expr(self))) return NULL;
     luna_binary_op_node_t *ret = luna_binary_op_node_new(op, node, right);
@@ -720,13 +711,14 @@ assignment_expr(luna_parser_t *self) {
   }
 
   // compound
-  if ( accept(OP_PLUS_ASSIGN)
-    || accept(OP_MINUS_ASSIGN)
-    || accept(OP_DIV_ASSIGN)
-    || accept(OP_MUL_ASSIGN)
-    || accept(OP_OR_ASSIGN)
-    || accept(OP_AND_ASSIGN)) {
-    op = prev->type;
+  if ( is(OP_PLUS_ASSIGN)
+    || is(OP_MINUS_ASSIGN)
+    || is(OP_DIV_ASSIGN)
+    || is(OP_MUL_ASSIGN)
+    || is(OP_OR_ASSIGN)
+    || is(OP_AND_ASSIGN)) {
+    op = self->tok->type;
+    next;
     context("compound assignment");
     if (!(right = not_expr(self))) return NULL;
     return (luna_node_t *) luna_binary_op_node_new(op, node, right);
@@ -774,9 +766,11 @@ expr_stmt(luna_parser_t *self) {
 
   if (!(node = expr(self))) return NULL;
 
-  if (!(is(RPAREN) || is(EOS))) {
+#if 0
+  if (!(accept(RPAREN) || accept(EOS))) {
     return error("missing newline");
   }
+#endif
 
   return node;
 }
@@ -796,21 +790,24 @@ type_stmt(luna_parser_t *self) {
 
   // id
   if (!is(ID)) return error("missing type name");
-  const char *name = next->value.as_string;
+  const char *name = self->tok->value.as_string;
   type = luna_type_node_new(name);
+  next;
 
   // type fields
   do {
     // id
     if (!(is(ID))) return error("expecting field");
-    const char *name = next->value.as_string;
+    const char *name = self->tok->value.as_string;
+    next;
 
     // ':'
     if (!accept(COLON)) return error("expecting ':'");
 
     // id
     if (!(is(ID))) return error("expecting field type");
-    const char *type = next->value.as_string;
+    const char *type = self->tok->value.as_string;
+    next;
   } while (!accept(END));
 
   return (luna_node_t *) type;
@@ -833,7 +830,8 @@ function_stmt(luna_parser_t *self) {
 
   // id
   if (!is(ID)) return error("missing function name");
-  const char *name = next->value.as_string;
+  const char *name = self->tok->value.as_string;
+  next;
 
   // '('
   if (accept(LPAREN)) {
@@ -852,7 +850,8 @@ function_stmt(luna_parser_t *self) {
   // (':' id)?
   if (accept(COLON)) {
     if (!is(ID)) return error("missing type after ':'");
-    type = next->value.as_string;
+    type = self->tok->value.as_string;
+    next;
   }
 
   // block
@@ -876,16 +875,21 @@ if_stmt(luna_parser_t *self) {
   debug("if_stmt");
 
   // ('if' | 'unless')
-  if (!(accept(IF) || accept(UNLESS))) return NULL;
-  int negate = LUNA_TOKEN_UNLESS == prev->type;
+  if (!(is(IF) || is(UNLESS))) return NULL;
+  int negate = LUNA_TOKEN_UNLESS == self->tok->type;
+  next;
 
   // expr
   context("if statement condition");
-  if (!(cond = expr(self))) return NULL;
+  if (!(cond = expr(self))) {
+    return NULL;
+  }
 
   // block
   context("if statement");
-  if (!(body = block(self))) return NULL;
+  if (!(body = block(self))) {
+    return NULL;
+  }
 
   luna_if_node_t *node = luna_if_node_new(negate, cond, body);
 
@@ -925,9 +929,10 @@ while_stmt(luna_parser_t *self) {
   debug("while_stmt");
 
   // ('until' | 'while')
-  if (!(accept(UNTIL) || accept(WHILE))) return NULL;
-  int negate = LUNA_TOKEN_UNTIL == prev->type;
+  if (!(is(UNTIL) || is(WHILE))) return NULL;
+  int negate = LUNA_TOKEN_UNTIL == self->tok->type;
   context("while statement condition");
+  next;
 
   // expr
   if (!(cond = expr(self))) return NULL;
@@ -994,7 +999,7 @@ block(luna_parser_t *self) {
   do {
     if (!(node = stmt(self))) return NULL;
     luna_vec_push(block->stmts, luna_node(node));
-  } while (!accept(END));
+  } while (!accept(END) && !is(ELSE));
 
   return block;
 }
@@ -1009,7 +1014,8 @@ program(luna_parser_t *self) {
   luna_node_t *node;
   luna_block_node_t *block = luna_block_node_new();
 
-  while (!accept(EOS)) {
+  next;
+  while (!is(EOS)) {
     if (node = stmt(self)) {
       luna_vec_push(block->stmts, luna_node(node));
     } else {
