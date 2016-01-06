@@ -5,7 +5,6 @@
 // Copyright (c) 2013 TJ Holowaychuk <tj@vision-media.ca>
 //
 
-#include <stdio.h>
 #include "visitor.h"
 
 /*

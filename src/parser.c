@@ -198,19 +198,29 @@ hash_expr(luna_parser_t *self) {
 static luna_node_t *
 primary_expr(luna_parser_t *self) {
   debug("primary_expr");
-  switch (self->tok->type) {
+  luna_node_t *ret = NULL;
+  luna_token_t *tok = self->tok;
+  switch (tok->type) {
     case LUNA_TOKEN_ID:
-      return (luna_node_t *) luna_id_node_new(next->value.as_string);
+      ret = (luna_node_t *) luna_id_node_new(tok->value.as_string);
+      break;
     case LUNA_TOKEN_INT:
-      return (luna_node_t *) luna_int_node_new(next->value.as_int);
+      ret = (luna_node_t *) luna_int_node_new(tok->value.as_int);
+      break;
     case LUNA_TOKEN_FLOAT:
-      return (luna_node_t *) luna_float_node_new(next->value.as_float);
+      ret = (luna_node_t *) luna_float_node_new(tok->value.as_float);
+      break;
     case LUNA_TOKEN_STRING:
-      return (luna_node_t *) luna_string_node_new(next->value.as_string);
+      ret = (luna_node_t *) luna_string_node_new(tok->value.as_string);
+      break;
     case LUNA_TOKEN_LBRACK:
       return array_expr(self);
     case LUNA_TOKEN_LBRACE:
       return hash_expr(self);
+  }
+  if (ret) {
+    next;
+    return ret;
   }
   return paren_expr(self);
 }
