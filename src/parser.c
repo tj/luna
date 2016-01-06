@@ -22,7 +22,7 @@
 #else
 #define debug(name)
 #endif
-
+ 
 /*
  * Advance if the current token is `t`
  */
@@ -147,6 +147,7 @@ hash_pairs(luna_parser_t *self, luna_hash_node_t *hash, luna_token delim) {
   // trailing ','
   if (delim == self->tok->type) return 1;
 
+  // TODO: accept primary expression maybe?
   // id
   if (!is(ID)) return error("hash pair key expected"), 0;
   char *id = self->tok->value.as_string;
@@ -573,12 +574,14 @@ function_expr(luna_parser_t *self) {
 
 /*
  *   primary_expr
- * | primary_expr call_expr
+ * | primary_expr '[' expr ']' call_expr
+ * | primary_expr '.' id call_expr
  */
 
 static luna_node_t *
 slot_access_expr(luna_parser_t *self, luna_node_t *left) {
   luna_node_t *right;
+
   debug("slot_access_expr");
 
   // primary_expr
@@ -588,21 +591,56 @@ slot_access_expr(luna_parser_t *self, luna_node_t *left) {
 
   // subscript
   if (accept(LBRACK)) {
-    context("subscript");
-    right = expr(self);
+    if (!(right = expr(self))) {
+      return error("missing index in subscript");
+    }
     if (!accept(RBRACK)) return error("missing closing ']'");
     left = (luna_node_t *) luna_subscript_node_new(left, right);
-    return slot_access_expr(self, left);
+    return call_expr(self, left);
   }
 
-  // field
+  // slot
   if (accept(OP_DOT)) {
     if (!is(ID)) return error("expecting identifier");
-    right = (luna_node_t *) luna_id_node_new(self->tok->value.as_string);
+    luna_node_t *id = (luna_node_t *)luna_id_node_new(self->tok->value.as_string);
     next;
 
+    if (is(LPAREN)) {
+      luna_call_node_t *call;
+      luna_vec_t *args_vec;
+      luna_object_t *prev = NULL;
+
+      call = (luna_call_node_t *) call_expr(self, id);
+      if (luna_vec_length(call->args->vec) > 0) {
+
+        // re-organize call arguments (issue #47)
+        args_vec = luna_vec_new();
+        luna_vec_each(call->args->vec, {
+          if (i == 0) {
+            luna_vec_push(args_vec, luna_node(left));
+          } else {
+            luna_vec_push(args_vec, prev);
+          }
+
+          prev = val;
+        });
+      } else {
+        prev = luna_node(left);
+        args_vec = call->args->vec;
+      }
+
+      // add last argument
+      luna_vec_push(args_vec, prev);
+
+      // TODO: free the old arguments vector
+      call->args->vec = args_vec;
+      return (luna_node_t *)call;
+    } else {
+      right = id;
+    }
+
     left = (luna_node_t *) luna_slot_node_new(left, right);
-    return slot_access_expr(self, left);
+    return call_expr(self, left);
   }
 
   return left;
@@ -641,7 +679,6 @@ call_args(luna_parser_t *self) {
 
 /*
  *   slot_access_expr '(' args? ')'
- * | slot_access_expr '.' call_expr
  * | slot_access_expr
  */
 
@@ -668,10 +705,9 @@ call_expr(luna_parser_t *self, luna_node_t *left) {
     }
     next;
     left = (luna_node_t *) call;
-    return call_expr(self, left);
   }
 
-  return left;
+  return slot_access_expr(self, left);
 }
 
 /*

@@ -29,6 +29,7 @@ luna_visit(luna_visitor_t *self, luna_node_t *node) {
     case LUNA_NODE_INT: VISIT(int);
     case LUNA_NODE_FLOAT: VISIT(float);
     case LUNA_NODE_STRING: VISIT(string);
+    case LUNA_NODE_SUBSCRIPT: VISIT(subscript);
     case LUNA_NODE_SLOT: VISIT(slot);
     case LUNA_NODE_CALL: VISIT(call);
     case LUNA_NODE_IF: VISIT(if);
