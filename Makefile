@@ -35,9 +35,6 @@ $(OUT): $(OBJ)
 test: test_runner
 	@./$<
 
-test-parser: $(OUT)
-	@sh test/parser.sh
-
 test_runner: $(TEST_OBJ)
 	$(CC) $^ -o $@
 
@@ -50,4 +47,4 @@ uninstall:
 clean:
 	rm -f luna test_runner $(OBJ) $(TEST_OBJ)
 
-.PHONY: clean test test-parser install uninstall
+.PHONY: clean test install uninstall
