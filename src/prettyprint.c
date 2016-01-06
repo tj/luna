@@ -234,7 +234,6 @@ visit_hash(luna_visitor_t *self, luna_hash_node_t *node) {
 
 static void
 visit_subscript(luna_visitor_t *self, luna_subscript_node_t *node) {
-  puts("lajhsdkjasd");
   print_func("(subscript\n");
   ++indents;
   INDENT;
@@ -407,7 +406,8 @@ luna_prettyprint(luna_node_t *node) {
     .visit_return = visit_return,
     .visit_function = visit_function,
     .visit_unary_op = visit_unary_op,
-    .visit_binary_op = visit_binary_op
+    .visit_binary_op = visit_binary_op,
+    .visit_subscript = visit_subscript
   };
 
   luna_visit(&visitor, node);
