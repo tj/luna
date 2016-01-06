@@ -579,9 +579,7 @@ function_expr(luna_parser_t *self) {
  */
 
 static luna_node_t *
-slot_access_expr(luna_parser_t *self, luna_node_t *left) {
-  luna_node_t *right;
-
+slot_access_expr(luna_parser_t *self, luna_node_t *left) { 
   debug("slot_access_expr");
 
   // primary_expr
@@ -591,6 +589,8 @@ slot_access_expr(luna_parser_t *self, luna_node_t *left) {
 
   // subscript
   if (accept(LBRACK)) {
+    luna_node_t *right;
+
     if (!(right = expr(self))) {
       return error("missing index in subscript");
     }
@@ -600,7 +600,7 @@ slot_access_expr(luna_parser_t *self, luna_node_t *left) {
   }
 
   // slot
-  if (accept(OP_DOT)) {
+  while (accept(OP_DOT)) {
     if (!is(ID)) return error("expecting identifier");
     luna_node_t *id = (luna_node_t *)luna_id_node_new(self->tok->value.as_string);
     next;
@@ -634,13 +634,13 @@ slot_access_expr(luna_parser_t *self, luna_node_t *left) {
 
       // TODO: free the old arguments vector
       call->args->vec = args_vec;
-      return (luna_node_t *)call;
+      left = (luna_node_t *)call;
+
     } else {
-      right = id;
+      left = (luna_node_t *) luna_slot_node_new(left, id);
     }
 
-    left = (luna_node_t *) luna_slot_node_new(left, right);
-    return call_expr(self, left);
+    left = call_expr(self, left);
   }
 
   return left;
@@ -685,6 +685,7 @@ call_args(luna_parser_t *self) {
 static luna_node_t *
 call_expr(luna_parser_t *self, luna_node_t *left) {
   luna_node_t *right;
+  luna_node_t *prev = left;
   luna_call_node_t *call = NULL;
   debug("call_expr");
 
@@ -707,7 +708,11 @@ call_expr(luna_parser_t *self, luna_node_t *left) {
     left = (luna_node_t *) call;
   }
 
-  return slot_access_expr(self, left);
+  if (prev) {
+    return left;
+  } else {
+    return slot_access_expr(self, left);
+  }
 }
 
 /*
