@@ -134,6 +134,20 @@ luna_call_node_new(luna_node_t *expr) {
 }
 
 /*
+ * Alloc and initialize subscript node with `left` and `right`.
+ */
+ 
+luna_subscript_node_t *
+luna_subscript_node_new(luna_node_t *left, luna_node_t *right) {
+  luna_subscript_node_t *self = malloc(sizeof(luna_subscript_node_t));
+  if (unlikely(!self)) return NULL;
+  self->base.type = LUNA_NODE_SUBSCRIPT;
+  self->left = left;
+  self->right = right;
+  return self;
+}
+
+/*
  * Alloc and initialize slot access node with `left` and `right`.
  */
 

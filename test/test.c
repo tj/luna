@@ -347,12 +347,17 @@ _test_parser(const char *source_path, const char *out_path) {
 
 static void
 test_assign() {
-    _test_parser("test/parser/assign.luna", "test/parser/assign.out");
+  _test_parser("test/parser/assign.luna", "test/parser/assign.out");
 }
 
 static void
 test_assign_chain() {
-    _test_parser("test/parser/assign.chain.luna", "test/parser/assign.chain.out");
+  _test_parser("test/parser/assign.chain.luna", "test/parser/assign.chain.out");
+}
+
+static void
+test_subscript() {
+  _test_parser("test/parser/subscript.luna", "test/parser/subscript.out");
 }
 
 /*
@@ -409,6 +414,7 @@ main(int argc, const char **argv){
   suite("parser");
   test(assign);
   test(assign_chain);
+  test(subscript);
 
   printf("\n");
   printf("  \e[90mcompleted in \e[32m%.5fs\e[0m\n", (float) (clock() - start) / CLOCKS_PER_SEC);
