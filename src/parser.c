@@ -584,8 +584,9 @@ function_expr(luna_parser_t *self) {
 
 /*
  *   primary_expr
- * | primary_expr '[' expr ']' call_expr
- * | primary_expr '.' id call_expr
+ * | primary_expr '[' expr ']'
+ * | primary_expr '.' id
+ * | primary_expr '.' call_expr
  */
 
 static luna_node_t *
@@ -604,6 +605,7 @@ slot_access_expr(luna_parser_t *self, luna_node_t *left) {
     if (!(right = expr(self))) {
       return error("missing index in subscript");
     }
+    context("subscript");
     if (!accept(RBRACK)) return error("missing closing ']'");
     left = (luna_node_t *) luna_subscript_node_new(left, right);
     return call_expr(self, left);
@@ -611,6 +613,7 @@ slot_access_expr(luna_parser_t *self, luna_node_t *left) {
 
   // slot
   while (accept(OP_DOT)) {
+    context("slot access");
     if (!is(ID)) return error("expecting identifier");
     luna_node_t *id = (luna_node_t *)luna_id_node_new(self->tok->value.as_string);
     next;
@@ -718,8 +721,13 @@ call_expr(luna_parser_t *self, luna_node_t *left) {
     left = (luna_node_t *) call;
   }
 
-  if (prev) {
+  if (is(OP_DOT) && prev) {
+    // stop here if the there was a previous left-hand expression
+    // and the current token is '.' because we're
+    // probably inside the loop in slot_access_expr
     return left;
+  } else if (is(LPAREN)) {
+    return call_expr(self, left);
   } else {
     return slot_access_expr(self, left);
   }
