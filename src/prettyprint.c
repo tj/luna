@@ -218,10 +218,11 @@ static void
 visit_hash(luna_visitor_t *self, luna_hash_node_t *node) {
   print_func("(hash\n");
   ++indents;
-  luna_hash_each(node->vals, {
+  luna_vec_each(node->pairs, {
     INDENT;
-    print_func("%s: ", slot);
-    visit((luna_node_t *) val->value.as_pointer);
+    visit(((luna_hash_pair_node_t *)val->value.as_pointer)->key);
+    print_func(": ");
+    visit(((luna_hash_pair_node_t *)val->value.as_pointer)->val);
     print_func("\n");
   });
   --indents;

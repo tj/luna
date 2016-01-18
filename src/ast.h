@@ -37,6 +37,7 @@
   n(FLOAT) \
   n(STRING) \
   n(ARRAY) \
+  n(HASH_PAIR) \
   n(HASH) \
   n(FUNCTION) \
   n(TYPE) \
@@ -181,12 +182,21 @@ typedef struct {
 } luna_array_node_t;
 
 /*
+ * Luna hash pair node.
+ */
+typedef struct {
+  luna_node_t base;
+  luna_node_t *key;
+  luna_node_t *val;
+} luna_hash_pair_node_t;
+
+/*
  * Luna hash node.
  */
 
 typedef struct {
   luna_node_t base;
-  luna_hash_t *vals;
+  luna_vec_t *pairs;
 } luna_hash_node_t;
 
 /*
@@ -297,6 +307,9 @@ luna_float_node_new(float val);
 
 luna_array_node_t *
 luna_array_node_new();
+
+luna_hash_pair_node_t *
+luna_hash_pair_node_new();
 
 luna_hash_node_t *
 luna_hash_node_new();

@@ -147,19 +147,16 @@ hash_pairs(luna_parser_t *self, luna_hash_node_t *hash, luna_token delim) {
   // trailing ','
   if (delim == self->tok->type) return 1;
 
-  // TODO: accept primary expression maybe?
-  // id
-  if (!is(ID)) return error("hash pair key expected"), 0;
-  char *id = self->tok->value.as_string;
-  next;
+  luna_hash_pair_node_t *pair = luna_hash_pair_node_new();
+  if (!(pair->key = expr(self))) return 0;
 
   // :
   if (!accept(COLON)) return error("hash pair ':' missing"), 0;
 
   // expr
-  luna_node_t *val;
-  if (!(val = expr(self))) return 0;
-  luna_hash_set(hash->vals, id, luna_node(val));
+  if (!(pair->val = expr(self))) return 0;
+
+  luna_vec_push(hash->pairs, luna_node((luna_node_t *)pair));
 
   // ',' hash_pairs
   if (accept(COMMA)) {
