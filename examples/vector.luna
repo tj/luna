@@ -1,4 +1,3 @@
-
 type vec_t
   x:int
   y:int

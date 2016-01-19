@@ -282,6 +282,7 @@ luna_type_node_new(const char *name) {
   if (unlikely(!self)) return NULL;
   self->base.type = LUNA_NODE_TYPE;
   self->name = name;
+  self->types = luna_hash_new();
   return self;
 }
 

@@ -183,6 +183,20 @@ hash_expr(luna_parser_t *self) {
 }
 
 /*
+ * id
+ */
+static luna_node_t *
+type_expr(luna_parser_t *self) {
+  debug("type_expr");
+  if (!is(ID)) return NULL;
+
+  luna_node_t *ret = (luna_node_t *) luna_id_node_new(self->tok->value.as_string);
+  next;
+
+  return ret;
+}
+
+/*
  *   id
  * | int
  * | float
@@ -852,18 +866,19 @@ type_stmt(luna_parser_t *self) {
 
   // type fields
   do {
+    luna_node_t *field_type;
     // id
     if (!(is(ID))) return error("expecting field");
-    const char *name = self->tok->value.as_string;
+    char *name = self->tok->value.as_string;
     next;
 
     // ':'
     if (!accept(COLON)) return error("expecting ':'");
 
     // id
-    if (!(is(ID))) return error("expecting field type");
-    const char *type = self->tok->value.as_string;
-    next;
+    if (!(field_type = type_expr(self))) return error("expecting field type");
+    luna_hash_set(type->types, name, luna_node(field_type));
+
   } while (!accept(END));
 
   return (luna_node_t *) type;

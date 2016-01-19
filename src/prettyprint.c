@@ -312,6 +312,24 @@ visit_function(luna_visitor_t *self, luna_function_node_t * node) {
 }
 
 /*
+ * Visit `type` node.
+ */
+
+static void
+visit_type(luna_visitor_t *self, luna_type_node_t *node) {
+  print_func("(type %s", node->name);
+  ++indents;
+  luna_hash_each(node->types, {
+    print_func("\n");
+    INDENT;
+    print_func("%s: ", slot);
+    visit((luna_node_t *) val->value.as_pointer);
+  });
+  --indents;
+  print_func(")");
+}
+
+/*
  * Visit `while` node.
  */
 
@@ -408,7 +426,8 @@ luna_prettyprint(luna_node_t *node) {
     .visit_function = visit_function,
     .visit_unary_op = visit_unary_op,
     .visit_binary_op = visit_binary_op,
-    .visit_subscript = visit_subscript
+    .visit_subscript = visit_subscript,
+    .visit_type = visit_type
   };
 
   luna_visit(&visitor, node);
