@@ -10,8 +10,8 @@
 
 #include <sys/stat.h>
 
-off_t
-file_size(const char *filename);
+size_t
+file_size(FILE *handle);
 
 char *
 file_read(const char *filename);

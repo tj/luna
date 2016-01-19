@@ -158,16 +158,14 @@ eval(char *source, const char *path) {
   }
 
   // --ast
-  if (ast) {
-    luna_set_prettyprint_func(printf);
-    luna_prettyprint((luna_node_t *) root);
-    return 1;
-  }
+  luna_set_prettyprint_func(printf);
+  luna_prettyprint((luna_node_t *) root);
+  return 1;
 
   // evaluate
-  luna_vm_t *vm = luna_gen((luna_node_t *) root);
-  luna_object_t *obj = luna_eval(vm);
-  luna_object_inspect(obj);
+  // luna_vm_t *vm = luna_gen((luna_node_t *) root);
+  // luna_object_t *obj = luna_eval(vm);
+  // luna_object_inspect(obj);
 
   return 0;
 }

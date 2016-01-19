@@ -17,11 +17,13 @@
  * Return the filesize of `filename` or -1.
  */
 
-off_t
-file_size(const char *filename) {
-  struct stat s;
-  if (stat(filename, &s) < 0) return -1;
-  return s.st_size;
+size_t
+file_size(FILE *stream) {
+  size_t size = 0;
+  fseek(stream, 0, SEEK_END);
+  size = ftell(stream);
+  rewind(stream);
+  return size;
 }
 
 /*
@@ -30,20 +32,16 @@ file_size(const char *filename) {
 
 char *
 file_read(const char *filename) {
-  off_t len = file_size(filename);
-  if (len < 0) return NULL;
+  FILE *fh = fopen(filename, "r");
+  size_t len = file_size(fh);
 
   char *buf = malloc(len + 1);
   if (!buf) return NULL;
 
-  int fd = open(filename, O_RDONLY);
-  if (fd < 0) return NULL;
+  size_t read = fread(buf, sizeof(char), len, fh);
 
-  ssize_t size = read(fd, buf, len);
-  if (size != len) return NULL;
-
+  fclose(fh);
   buf[len] = 0;
-
   return buf;
 }
 

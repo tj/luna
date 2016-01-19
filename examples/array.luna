@@ -1,13 +1,6 @@
-
-nums = [1 2 3]
+nums = [1, 2, 3]
 
 pets = ['tobi', 'loki', 'jane']
-
-pets = [
-  'tobi'
-  'loki'
-  'jane'
-]
 
 pets = [
   'tobi',

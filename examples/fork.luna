@@ -1,4 +1,3 @@
-
 a = cat('pets.txt').grep('tobi') &
 b = cat('users.txt').grep('tobi') &
 

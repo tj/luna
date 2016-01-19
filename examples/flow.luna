@@ -1,9 +1,9 @@
 
-pets = ['tobi', 'loki', 'jane']
+let pets = ['tobi', 'loki', 'jane']
 
-if pets length
-  stdout puts('Pets: ' + pets length)
-  while pets length
-    stdout puts(pets shift())
+if pets.length
+  stdout.puts('Pets: ' + pets.length)
+  while pets.length
+    stdout.puts(pets.shift())
   end
 end
