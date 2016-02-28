@@ -1,0 +1,15 @@
+# declaration
+
+let a: int = 2
+let a: int
+let a = 2
+
+type foo
+  a, b: int
+  c: float
+end
+
+def new_foo(c: foo, a, b: int, c: float)
+  let local = a
+  return nil
+end

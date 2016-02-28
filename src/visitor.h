@@ -42,6 +42,7 @@ typedef struct luna_visitor {
   // TODO: discover why the program crashes if i put this somewhere else
   void (* visit_subscript)(struct luna_visitor *self, luna_subscript_node_t *node);
   void (* visit_type)(struct luna_visitor *self, luna_type_node_t *node);
+  void ( *visit_let)(struct luna_visitor *self, luna_let_node_t *node);
 } luna_visitor_t;
 
 // protos

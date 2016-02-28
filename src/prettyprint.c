@@ -150,9 +150,44 @@ visit_id(luna_visitor_t *self, luna_id_node_t *node) {
 
 static void
 visit_decl(luna_visitor_t *self, luna_decl_node_t *node) {
-  print_func("(decl %s:%s", node->name, node->type ? node->type : "");
-  if (node->val) visit(node->val);
+  print_func("(decl");
+  indents++;
+  luna_vec_each(node->vec, {
+    print_func("\n");
+    INDENT;
+    visit((luna_node_t *) val->value.as_pointer);
+  });
+
+  if (node->type) {
+    print_func("\n");
+    INDENT;
+    print_func(": ");
+    visit(node->type);
+  }
+
   print_func(")");
+  indents--;
+}
+
+/*
+ * Visit let `node`.
+ */
+
+static void
+visit_let(luna_visitor_t *self, luna_let_node_t *node) {
+  print_func("(let\n");
+  indents++;
+  INDENT;
+  visit(node->decl);
+
+  if (node->val) {
+    print_func("\n");
+    INDENT;
+    print_func(" = ");
+    visit(node->val);
+  }
+  print_func(")");
+  indents--;
 }
 
 /*
@@ -319,10 +354,9 @@ static void
 visit_type(luna_visitor_t *self, luna_type_node_t *node) {
   print_func("(type %s", node->name);
   ++indents;
-  luna_hash_each(node->types, {
+  luna_vec_each(node->fields, {
     print_func("\n");
     INDENT;
-    print_func("%s: ", slot);
     visit((luna_node_t *) val->value.as_pointer);
   });
   --indents;
@@ -420,6 +454,7 @@ luna_prettyprint(luna_node_t *node) {
     .visit_while = visit_while,
     .visit_block = visit_block,
     .visit_decl = visit_decl,
+    .visit_let = visit_let,
     .visit_float = visit_float,
     .visit_string = visit_string,
     .visit_return = visit_return,

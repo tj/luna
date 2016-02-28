@@ -31,6 +31,7 @@
   n(NULL) \
   n(ID) \
   n(DECL) \
+  n(LET) \
   n(CALL) \
   n(ARGS) \
   n(INT) \
@@ -158,10 +159,19 @@ typedef struct {
 
 typedef struct {
   luna_node_t base;
-  const char *name;
-  const char *type;
-  luna_node_t *val;
+  luna_vec_t *vec;
+  luna_node_t *type;
 } luna_decl_node_t;
+
+/*
+ * Luna let node.
+ */
+
+typedef struct {
+  luna_node_t base;
+  luna_node_t *decl;
+  luna_node_t *val;
+} luna_let_node_t;
 
 /*
  * Luna string node.
@@ -228,7 +238,7 @@ typedef struct {
 typedef struct {
   luna_node_t base;
   const char *name;
-  luna_hash_t *types;
+  luna_vec_t *fields;
 } luna_type_node_t;
 
 /*
@@ -297,7 +307,10 @@ luna_id_node_t *
 luna_id_node_new(const char *val);
 
 luna_decl_node_t *
-luna_decl_node_new(const char *name, const char *type, luna_node_t *val);
+luna_decl_node_new(luna_vec_t *vec, luna_node_t *type);
+
+luna_let_node_t *
+luna_let_node_new(luna_node_t *decl, luna_node_t *val);
 
 luna_int_node_t *
 luna_int_node_new(int val);

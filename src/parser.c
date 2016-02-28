@@ -6,6 +6,7 @@
 //
 
 #include <stdio.h>
+#include <stdbool.h>
 #include "prettyprint.h"
 #include "parser.h"
 #include "vec.h"
@@ -185,6 +186,7 @@ hash_expr(luna_parser_t *self) {
 /*
  * id
  */
+
 static luna_node_t *
 type_expr(luna_parser_t *self) {
   debug("type_expr");
@@ -194,6 +196,47 @@ type_expr(luna_parser_t *self) {
   next;
 
   return ret;
+}
+
+/*
+ * id (',' id)* ':' type_expr
+ */
+
+static luna_node_t *
+decl_expr(luna_parser_t *self, bool need_type) {
+  debug("decl_expr");
+  context("declaration");
+
+  if (!is(ID)) return NULL;
+
+  luna_vec_t *vec = luna_vec_new();
+  while (is(ID)) {
+    // id
+    luna_node_t *id = (luna_node_t *) luna_id_node_new(self->tok->value.as_string);
+    luna_vec_push(vec, luna_node(id));
+    next;
+
+    // ','
+    if (!accept(COMMA)) {
+      break;
+    }
+  }
+
+  // ':'
+  if (!accept(COLON)) {
+    if (need_type) {
+      return error("expecting type");
+    } else {
+      return (luna_node_t *) luna_decl_node_new(vec, NULL);
+    }
+  }
+
+  luna_node_t *type = type_expr(self);
+  if (!type) {
+    return error("expecting type");
+  }
+
+  return (luna_node_t *) luna_decl_node_new(vec, type);
 }
 
 /*
@@ -540,26 +583,17 @@ function_params(luna_parser_t *self) {
   if (!is(ID)) return params;
 
   do {
-    // id
-    if (!is(ID)) return error("missing identifier");
-    const char *id = self->tok->value.as_string;
-    next;
-
-    // ':' id
-    if (!accept(COLON)) return error("missing parameter type");
-
-    if (!is(ID)) return error("missing parameter type name");
-    const char *type = self->tok->value.as_string;
-    next;
+    luna_node_t *decl = decl_expr(self, true);
+    if (!decl) return NULL;
 
     // ('=' expr)?
     luna_object_t *param;
     if (accept(OP_ASSIGN)) {
       luna_node_t *val = expr(self);
       if (!val) return NULL;
-      param = luna_node((luna_node_t *) luna_decl_node_new(id, type, val));
+      param = luna_node((luna_node_t *) luna_binary_op_node_new(LUNA_TOKEN_OP_ASSIGN, decl, val));
     } else {
-      param = luna_node((luna_node_t *) luna_decl_node_new(id, type, NULL));
+      param = luna_node((luna_node_t *) decl);
     }
 
     luna_vec_push(params, param);
@@ -744,6 +778,26 @@ call_expr(luna_parser_t *self, luna_node_t *left) {
   }
 }
 
+static luna_node_t *
+let_expr(luna_parser_t *self) {
+  // let already consumed
+  luna_node_t *decl = decl_expr(self, false);
+  luna_node_t *val = NULL;
+
+  context("let expression");
+  if (!decl) {
+    return error("expecting declaration");
+  }
+
+  // '='
+  if (accept(OP_ASSIGN)) {
+    val = expr(self);
+    if (!val) return error("expecting declaration initializer");
+  }
+
+  return (luna_node_t *) luna_let_node_new(decl, val);
+}
+
 /*
  *   logical_or_expr
  * | 'let' call_expr '=' not_expr
@@ -759,12 +813,9 @@ static luna_node_t *
 assignment_expr(luna_parser_t *self) {
   luna_token op;
   luna_node_t *node, *right;
-  int let = 0;
 
   // let?
-  if (accept(LET)) {
-    let = 1;
-  }
+  if (accept(LET)) return let_expr(self);
 
   debug("assignment_expr");
   if (!(node = logical_or_expr(self))) return NULL;
@@ -776,7 +827,6 @@ assignment_expr(luna_parser_t *self) {
     context("assignment");
     if (!(right = not_expr(self))) return NULL;
     luna_binary_op_node_t *ret = luna_binary_op_node_new(op, node, right);
-    ret->let = let;
     return (luna_node_t *) ret;
   }
 
@@ -846,7 +896,7 @@ expr_stmt(luna_parser_t *self) {
 }
 
 /*
- * 'type' id (id ':' id)*
+ * 'type' id decl_expr* end
  */
 
 static luna_node_t *
@@ -866,19 +916,10 @@ type_stmt(luna_parser_t *self) {
 
   // type fields
   do {
-    luna_node_t *field_type;
-    // id
-    if (!(is(ID))) return error("expecting field");
-    char *name = self->tok->value.as_string;
-    next;
+    luna_node_t *decl = decl_expr(self, true);
+    if (!decl) return error("expecting field");
 
-    // ':'
-    if (!accept(COLON)) return error("expecting ':'");
-
-    // id
-    if (!(field_type = type_expr(self))) return error("expecting field type");
-    luna_hash_set(type->types, name, luna_node(field_type));
-
+    luna_vec_push(type->fields, luna_node(decl));
   } while (!accept(END));
 
   return (luna_node_t *) type;
