@@ -9,7 +9,23 @@ type foo
   c: float
 end
 
-def new_foo(c: foo, a, b: int, c: float)
-  let local = a
+def bar(f: foo)
   return nil
+end
+
+def add(a, b: int)
+  return a + b
+end
+
+def sub(a, b = 0)
+  return a - b
+end
+
+def repeat(a: string, n = 0)
+  let res: string
+  while n > 0
+    res += a
+    n -= 1
+  end
+  return res
 end

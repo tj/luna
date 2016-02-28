@@ -571,7 +571,7 @@ logical_or_expr(luna_parser_t *self) {
 }
 
 /*
- * (id ':' type ('=' expr)? (',' id ':' type ('=' expr)?)*)
+ * (decl_expr ('=' expr)? (',' decl_expr ('=' expr)?)*)
  */
 
 static luna_vec_t *
@@ -583,8 +583,10 @@ function_params(luna_parser_t *self) {
   if (!is(ID)) return params;
 
   do {
-    luna_node_t *decl = decl_expr(self, true);
+    luna_node_t *decl = decl_expr(self, false);
     if (!decl) return NULL;
+
+    context("function param");
 
     // ('=' expr)?
     luna_object_t *param;
@@ -593,6 +595,10 @@ function_params(luna_parser_t *self) {
       if (!val) return NULL;
       param = luna_node((luna_node_t *) luna_binary_op_node_new(LUNA_TOKEN_OP_ASSIGN, decl, val));
     } else {
+      // if there isn't a value we need a type
+      if (!decl->type) {
+        return error("expecting type");
+      }
       param = luna_node((luna_node_t *) decl);
     }
 
