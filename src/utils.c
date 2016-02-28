@@ -41,7 +41,7 @@ file_read(const char *filename) {
   size_t read = fread(buf, sizeof(char), len, fh);
 
   fclose(fh);
-  buf[len] = 0;
+  buf[read] = 0;
   return buf;
 }
 

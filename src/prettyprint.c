@@ -212,9 +212,16 @@ visit_string(luna_visitor_t *self, luna_string_node_t *node) {
 
 static void
 visit_unary_op(luna_visitor_t *self, luna_unary_op_node_t *node) {
-  int c = node->postfix ? '@' : 0;
-  print_func("(%c%s ", c, luna_token_type_string(node->op));
-  visit(node->expr);
+  print_func("(");
+
+  if (node->postfix) {
+    visit(node->expr);
+    print_func(" %s", luna_token_type_string(node->op));
+  } else {
+    print_func("%s ", luna_token_type_string(node->op));
+    visit(node->expr);
+  }
+
   print_func(")");
 }
 

@@ -49,6 +49,14 @@
 #define error(msg) (self->error = msg, token(ILLEGAL))
 
 /*
+ * True if the lexer should insert a semicolon after `t`.
+ */
+
+#define need_semi(t) \
+  (t == LUNA_TOKEN_ID || t == LUNA_TOKEN_FLOAT || t == LUNA_TOKEN_INT || \
+   t == LUNA_TOKEN_STRING || t == LUNA_TOKEN_RETURN)
+
+/*
  * Initialize lexer with the given `source` and `filename`.
  */
 
@@ -267,7 +275,6 @@ scan_number(luna_lexer_t *self, int c) {
 int
 luna_scan(luna_lexer_t *self) {
   int c;
-  token(ILLEGAL);
 
   // scan
   scan:
@@ -350,8 +357,13 @@ luna_scan(luna_lexer_t *self) {
     case '#':
       while ((c = next) != '\n' && c) ; undo;
       goto scan;
+    case ';':
+      return token(SEMICOLON);
     case '\n':
     case '\r':
+      if (need_semi(self->tok.type)) {
+        return undo, token(SEMICOLON);
+      }
       ++self->lineno;
       goto scan;
     case '"':
@@ -363,6 +375,7 @@ luna_scan(luna_lexer_t *self) {
     default:
       if (isalpha(c) || '_' == c) return scan_ident(self, c);
       if (isdigit(c) || '.' == c) return scan_number(self, c);
+      token(ILLEGAL);
       error("illegal character");
       return 0;
   }

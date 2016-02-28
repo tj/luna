@@ -337,9 +337,9 @@ unary_expr(luna_parser_t *self) {
     || is(OP_PLUS)
     || is(OP_MINUS)
     || is(OP_NOT)) {
-    luna_token_t *op = self->tok;
+    int op = self->tok->type;
     next;
-    return (luna_node_t *) luna_unary_op_node_new(op->type, unary_expr(self), 0);
+    return (luna_node_t *) luna_unary_op_node_new(op, unary_expr(self), 0);
   }
   return postfix_expr(self);
 }
@@ -931,10 +931,16 @@ type_stmt(luna_parser_t *self) {
   type = luna_type_node_new(name);
   next;
 
+  // semicolon might have been inserted here
+  accept(SEMICOLON);
+
   // type fields
   do {
     luna_node_t *decl = decl_expr(self, true);
     if (!decl) return error("expecting field");
+
+    // semicolon might have been inserted here
+    accept(SEMICOLON);
 
     luna_vec_push(type->fields, luna_node(decl));
   } while (!accept(END));
@@ -1013,6 +1019,9 @@ if_stmt(luna_parser_t *self) {
     return NULL;
   }
 
+  // semicolon might have been inserted here
+  accept(SEMICOLON);
+
   // block
   context("if statement");
   if (!(body = block(self))) {
@@ -1030,6 +1039,10 @@ if_stmt(luna_parser_t *self) {
     if (accept(IF)) {
       context("else if statement condition");
       if (!(cond = expr(self))) return NULL;
+
+      // semicolon might have been inserted here
+      accept(SEMICOLON);
+
       context("else if statement");
       if (!(body = block(self))) return NULL;
       luna_vec_push(node->else_ifs, luna_node((luna_node_t *) luna_if_node_new(0, cond, body)));
@@ -1065,6 +1078,9 @@ while_stmt(luna_parser_t *self) {
   // expr
   if (!(cond = expr(self))) return NULL;
   context("while statement");
+
+  // semicolon might have been inserted here
+  accept(SEMICOLON);
 
   // block
   if (!(body = block(self))) return NULL;
@@ -1126,6 +1142,8 @@ block(luna_parser_t *self) {
 
   do {
     if (!(node = stmt(self))) return NULL;
+    accept(SEMICOLON);
+
     luna_vec_push(block->stmts, luna_node(node));
   } while (!accept(END) && !is(ELSE));
 
@@ -1145,6 +1163,7 @@ program(luna_parser_t *self) {
   next;
   while (!is(EOS)) {
     if (node = stmt(self)) {
+      accept(SEMICOLON);
       luna_vec_push(block->stmts, luna_node(node));
     } else {
       return NULL;

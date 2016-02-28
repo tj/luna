@@ -1,7 +1,6 @@
 # declaration
 
-let a = 2
-    b = 5
+let a = 2, b = "foo"
 
 type foo
   a, b: int
@@ -24,7 +23,7 @@ def repeat(a: string, n = 0)
   let res: string
   while n > 0
     res += a
-    n -= 1
+    --n
   end
   return res
 end
