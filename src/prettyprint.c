@@ -175,17 +175,24 @@ visit_decl(luna_visitor_t *self, luna_decl_node_t *node) {
 
 static void
 visit_let(luna_visitor_t *self, luna_let_node_t *node) {
-  print_func("(let\n");
+  print_func("(let");
   indents++;
-  INDENT;
-  visit(node->decl);
 
-  if (node->val) {
+  luna_vec_each(node->vec, {
+    luna_binary_op_node_t *bin = (luna_binary_op_node_t *) val->value.as_pointer;
+
     print_func("\n");
     INDENT;
-    print_func(" = ");
-    visit(node->val);
-  }
+    visit(bin->left);
+
+    if (bin->right) {
+      print_func("\n");
+      INDENT;
+      print_func(" = ");
+      visit(bin->right);
+    }
+  });
+
   print_func(")");
   indents--;
 }

@@ -169,8 +169,7 @@ typedef struct {
 
 typedef struct {
   luna_node_t base;
-  luna_node_t *decl;
-  luna_node_t *val;
+  luna_vec_t *vec;
 } luna_let_node_t;
 
 /*
@@ -310,7 +309,7 @@ luna_decl_node_t *
 luna_decl_node_new(luna_vec_t *vec, luna_node_t *type);
 
 luna_let_node_t *
-luna_let_node_new(luna_node_t *decl, luna_node_t *val);
+luna_let_node_new(luna_vec_t *vec);
 
 luna_int_node_t *
 luna_int_node_new(int val);

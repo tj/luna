@@ -785,28 +785,34 @@ call_expr(luna_parser_t *self, luna_node_t *left) {
 }
 
 /*
- *   'let' decl_expr ('=' expr)
- * | 'let' decl_expr
+ * 'let' decl_expr ('=' expr)? (',' decl_expr ('=' expr)?)*
  */
  
 static luna_node_t *
 let_expr(luna_parser_t *self) {
   // let already consumed
-  luna_node_t *decl = decl_expr(self, false);
-  luna_node_t *val = NULL;
+  luna_vec_t *vec = luna_vec_new();
 
-  context("let expression");
-  if (!decl) {
-    return error("expecting declaration");
-  }
+  do {
+    luna_node_t *decl = decl_expr(self, false);
+    luna_node_t *val = NULL;
 
-  // '='
-  if (accept(OP_ASSIGN)) {
-    val = expr(self);
-    if (!val) return error("expecting declaration initializer");
-  }
+    context("let expression");
+    if (!decl) {
+      return error("expecting declaration");
+    }
 
-  return (luna_node_t *) luna_let_node_new(decl, val);
+    // '='
+    if (accept(OP_ASSIGN)) {
+      val = expr(self);
+      if (!val) return error("expecting declaration initializer");
+    }
+
+    luna_node_t *bin = (luna_node_t *) luna_binary_op_node_new(LUNA_TOKEN_OP_ASSIGN, decl, val);
+    luna_vec_push(vec, luna_node(bin));
+  } while (accept(COMMA));
+
+  return (luna_node_t *) luna_let_node_new(vec);
 }
 
 /*

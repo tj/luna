@@ -110,12 +110,11 @@ luna_decl_node_new(luna_vec_t *vec, luna_node_t *type) {
  */
 
 luna_let_node_t *
-luna_let_node_new(luna_node_t *decl, luna_node_t *val) {
+luna_let_node_new(luna_vec_t *vec) {
   luna_let_node_t *self = malloc(sizeof(luna_let_node_t));
   if (unlikely(!self)) return NULL;
   self->base.type = LUNA_NODE_LET;
-  self->decl = decl;
-  self->val = val;
+  self->vec = vec;
   return self;
 }
 
