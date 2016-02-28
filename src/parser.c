@@ -778,6 +778,11 @@ call_expr(luna_parser_t *self, luna_node_t *left) {
   }
 }
 
+/*
+ *   'let' decl_expr ('=' expr)
+ * | 'let' decl_expr
+ */
+ 
 static luna_node_t *
 let_expr(luna_parser_t *self) {
   // let already consumed
@@ -933,7 +938,7 @@ static luna_node_t *
 function_stmt(luna_parser_t *self) {
   luna_block_node_t *body;
   luna_vec_t *params;
-  const char *type = NULL;
+  luna_node_t *type = NULL;
   debug("function_stmt");
   context("function statement");
 
@@ -961,9 +966,8 @@ function_stmt(luna_parser_t *self) {
 
   // (':' id)?
   if (accept(COLON)) {
-    if (!is(ID)) return error("missing type after ':'");
-    type = self->tok->value.as_string;
-    next;
+    type = type_expr(self);
+    if (!type) return error("missing type after ':'");
   }
 
   // block

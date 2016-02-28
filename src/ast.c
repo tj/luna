@@ -108,7 +108,7 @@ luna_decl_node_new(luna_vec_t *vec, luna_node_t *type) {
  * Alloc and initialize a new let node with the
  * given `decl` and `val`.
  */
- 
+
 luna_let_node_t *
 luna_let_node_new(luna_node_t *decl, luna_node_t *val) {
   luna_let_node_t *self = malloc(sizeof(luna_let_node_t));
@@ -252,7 +252,7 @@ luna_hash_node_new() {
  */
 
 luna_function_node_t *
-luna_function_node_new(const char *name, const char *type, luna_block_node_t *block, luna_vec_t *params) {
+luna_function_node_new(const char *name, luna_node_t *type, luna_block_node_t *block, luna_vec_t *params) {
   luna_function_node_t *self = malloc(sizeof(luna_function_node_t));
   if (unlikely(!self)) return NULL;
   self->base.type = LUNA_NODE_FUNCTION;

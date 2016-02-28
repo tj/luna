@@ -331,8 +331,13 @@ visit_call(luna_visitor_t *self, luna_call_node_t * node) {
 
 static void
 visit_function(luna_visitor_t *self, luna_function_node_t * node) {
-  print_func("(function %s -> %s", node->name, node->type ? node->type : "");
+  print_func("(function %s -> ", node->name);
   ++indents;
+
+  if (node->type) {
+    visit(node->type);
+  }
+
   luna_vec_each(node->params, {
     print_func("\n");
     INDENT;

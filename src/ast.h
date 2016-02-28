@@ -225,8 +225,8 @@ typedef struct {
 
 typedef struct {
   luna_node_t base;
-  const char *type;
   const char *name;
+  luna_node_t *type;
   luna_block_node_t *block;
   luna_vec_t *params;
 } luna_function_node_t;
@@ -283,7 +283,7 @@ luna_block_node_t *
 luna_block_node_new();
 
 luna_function_node_t *
-luna_function_node_new(const char *name, const char *type, luna_block_node_t *block, luna_vec_t *params);
+luna_function_node_new(const char *name, luna_node_t *type, luna_block_node_t *block, luna_vec_t *params);
 
 luna_function_node_t *
 luna_function_node_new_from_expr(luna_node_t *expr, luna_vec_t *params);
