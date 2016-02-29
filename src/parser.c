@@ -817,7 +817,7 @@ let_expr(luna_parser_t *self) {
 
 /*
  *   logical_or_expr
- * | 'let' call_expr '=' not_expr
+ * | let_expr
  * | call_expr '=' not_expr
  * | call_expr '+=' not_expr
  * | call_expr '-=' not_expr
@@ -893,26 +893,6 @@ expr(luna_parser_t *self) {
 }
 
 /*
- * expr (newline)
- */
-
-static luna_node_t *
-expr_stmt(luna_parser_t *self) {
-  luna_node_t *node;
-  debug("expr_stmt");
-
-  if (!(node = expr(self))) return NULL;
-
-#if 0
-  if (!(accept(RPAREN) || accept(EOS))) {
-    return error("missing newline");
-  }
-#endif
-
-  return node;
-}
-
-/*
  * 'type' id decl_expr* end
  */
 
@@ -949,7 +929,7 @@ type_stmt(luna_parser_t *self) {
 }
 
 /*
- * 'def' id '(' args? ')' (':' id)? block
+ * 'def' id '(' args? ')' (':' type_expr)? block
  */
 
 static luna_node_t *
@@ -982,10 +962,13 @@ function_stmt(luna_parser_t *self) {
 
   context("function");
 
-  // (':' id)?
+  // (':' type_expr)?
   if (accept(COLON)) {
     type = type_expr(self);
     if (!type) return error("missing type after ':'");
+
+    // semicolon might have been inserted here
+    accept(SEMICOLON);
   }
 
   // block
@@ -1102,8 +1085,11 @@ return_stmt(luna_parser_t *self) {
   if (!accept(RETURN)) return NULL;
 
   // 'return' expr
-  luna_node_t *node;
-  if (!(node = expr(self))) return NULL;
+  luna_node_t *node = NULL;
+
+  if (!accept(SEMICOLON)) {
+    if (!(node = expr(self))) return NULL;
+  }
   return (luna_node_t *) luna_return_node_new(node);
 }
 
@@ -1113,7 +1099,7 @@ return_stmt(luna_parser_t *self) {
  * | return_stmt
  * | function_stmt
  * | type_stmt
- * | expr_stmt
+ * | expr
  */
 
 static luna_node_t *
@@ -1125,11 +1111,11 @@ stmt(luna_parser_t *self) {
   if (is(RETURN)) return return_stmt(self);
   if (is(DEF)) return function_stmt(self);
   if (is(TYPE)) return type_stmt(self);
-  return expr_stmt(self);
+  return expr(self);
 }
 
 /*
- * ws (stmt ws)+ 'end'
+ * stmt* 'end'
  */
 
 static luna_block_node_t *
@@ -1151,7 +1137,7 @@ block(luna_parser_t *self) {
 }
 
 /*
- * ws (stmt ws)*
+ * stmt*
  */
 
 static luna_block_node_t *
