@@ -360,6 +360,16 @@ test_subscript() {
   _test_parser("test/parser/subscript.luna", "test/parser/subscript.out");
 }
 
+static void
+test_declaration() {
+  _test_parser("test/parser/declaration.luna", "test/parser/declaration.out");
+}
+
+static void
+test_return() {
+  _test_parser("test/parser/return.luna", "test/parser/return.out");
+}
+
 /*
  * Test the given `fn`.
  */
@@ -415,6 +425,8 @@ main(int argc, const char **argv){
   test(assign);
   test(assign_chain);
   test(subscript);
+  test(declaration);
+  test(return);
 
   printf("\n");
   printf("  \e[90mcompleted in \e[32m%.5fs\e[0m\n", (float) (clock() - start) / CLOCKS_PER_SEC);

@@ -1,0 +1,17 @@
+(let
+  (decl
+    (id a)
+    (id b)
+    : (id int)))
+
+(let
+  (decl
+    (id a))
+   = (int 5))
+
+(let
+  (decl
+    (id a)
+    : (id string))
+   = (string 'foo'))
+

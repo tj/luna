@@ -1,0 +1,10 @@
+
+# return without a value
+def foo()
+	return
+end
+
+# return with value
+def bar(): string
+	return "foo"
+end
