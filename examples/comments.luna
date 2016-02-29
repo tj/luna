@@ -4,7 +4,3 @@
 #
 
 foo # bar
-
-def bar(): string
-	return
-end
