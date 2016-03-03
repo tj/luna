@@ -279,69 +279,69 @@ luna_object_t *
 luna_node(luna_node_t *node);
 
 luna_block_node_t *
-luna_block_node_new();
+luna_block_node_new(int lineno);
 
 luna_function_node_t *
-luna_function_node_new(const char *name, luna_node_t *type, luna_block_node_t *block, luna_vec_t *params);
+luna_function_node_new(const char *name, luna_node_t *type, luna_block_node_t *block, luna_vec_t *params, int lineno);
 
 luna_function_node_t *
-luna_function_node_new_from_expr(luna_node_t *expr, luna_vec_t *params);
+luna_function_node_new_from_expr(luna_node_t *expr, luna_vec_t *params, int lineno);
 
 luna_subscript_node_t *
-luna_subscript_node_new(luna_node_t *left, luna_node_t *right);
+luna_subscript_node_new(luna_node_t *left, luna_node_t *right, int lineno);
 
 luna_slot_node_t *
-luna_slot_node_new(luna_node_t *left, luna_node_t *right);
+luna_slot_node_new(luna_node_t *left, luna_node_t *right, int lineno);
 
 luna_call_node_t *
-luna_call_node_new(luna_node_t *expr);
+luna_call_node_new(luna_node_t *expr, int lineno);
 
 luna_unary_op_node_t *
-luna_unary_op_node_new(luna_token op, luna_node_t *expr, int postfix);
+luna_unary_op_node_new(luna_token op, luna_node_t *expr, int postfix, int lineno);
 
 luna_binary_op_node_t *
-luna_binary_op_node_new(luna_token op, luna_node_t *left, luna_node_t *right);
+luna_binary_op_node_new(luna_token op, luna_node_t *left, luna_node_t *right, int lineno);
 
 luna_id_node_t *
-luna_id_node_new(const char *val);
+luna_id_node_new(const char *val, int lineno);
 
 luna_decl_node_t *
-luna_decl_node_new(luna_vec_t *vec, luna_node_t *type);
+luna_decl_node_new(luna_vec_t *vec, luna_node_t *type, int lineno);
 
 luna_let_node_t *
-luna_let_node_new(luna_vec_t *vec);
+luna_let_node_new(luna_vec_t *vec, int lineno);
 
 luna_int_node_t *
-luna_int_node_new(int val);
+luna_int_node_new(int val, int lineno);
 
 luna_float_node_t *
-luna_float_node_new(float val);
+luna_float_node_new(float val, int lineno);
 
 luna_array_node_t *
-luna_array_node_new();
+luna_array_node_new(int lineno);
 
 luna_hash_pair_node_t *
-luna_hash_pair_node_new();
+luna_hash_pair_node_new(int lineno);
 
 luna_hash_node_t *
-luna_hash_node_new();
+luna_hash_node_new(int lineno);
 
 luna_string_node_t *
-luna_string_node_new(const char *val);
+luna_string_node_new(const char *val, int lineno);
 
 luna_if_node_t *
-luna_if_node_new(int negate, luna_node_t *expr, luna_block_node_t *block);
+luna_if_node_new(int negate, luna_node_t *expr, luna_block_node_t *block, int lineno);
 
 luna_while_node_t *
-luna_while_node_new(int negate, luna_node_t *expr, luna_block_node_t *block);
+luna_while_node_new(int negate, luna_node_t *expr, luna_block_node_t *block, int lineno);
 
 luna_return_node_t *
-luna_return_node_new(luna_node_t *expr);
+luna_return_node_new(luna_node_t *expr, int lineno);
 
 luna_args_node_t *
-luna_args_node_new();
+luna_args_node_new(int lineno);
 
 luna_type_node_t *
-luna_type_node_new(const char *name);
+luna_type_node_new(const char *name, int lineno);
 
 #endif /* LUNA_AST_H */

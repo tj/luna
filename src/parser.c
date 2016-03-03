@@ -64,6 +64,12 @@
     ? self->err \
     : str), NULL)
 
+/*
+ * The lexer's current line number.
+ */
+
+#define lineno self->lex->lineno
+
 // forward declarations
 
 static luna_block_node_t *block(luna_parser_t *self);
@@ -128,7 +134,7 @@ arg_list(luna_parser_t *self, luna_array_node_t *arr, luna_token delim) {
 
 static luna_node_t *
 array_expr(luna_parser_t *self) {
-  luna_array_node_t *node = luna_array_node_new();
+  luna_array_node_t *node = luna_array_node_new(lineno);
   debug("array_expr");
 
   if (!accept(LBRACK)) return NULL;
@@ -148,7 +154,7 @@ hash_pairs(luna_parser_t *self, luna_hash_node_t *hash, luna_token delim) {
   // trailing ','
   if (delim == self->tok->type) return 1;
 
-  luna_hash_pair_node_t *pair = luna_hash_pair_node_new();
+  luna_hash_pair_node_t *pair = luna_hash_pair_node_new(lineno);
   if (!(pair->key = expr(self))) return 0;
 
   // :
@@ -173,7 +179,7 @@ hash_pairs(luna_parser_t *self, luna_hash_node_t *hash, luna_token delim) {
 
 static luna_node_t *
 hash_expr(luna_parser_t *self) {
-  luna_hash_node_t *node = luna_hash_node_new();
+  luna_hash_node_t *node = luna_hash_node_new(lineno);
   debug("hash_expr");
 
   if (!accept(LBRACE)) return NULL;
@@ -192,7 +198,7 @@ type_expr(luna_parser_t *self) {
   debug("type_expr");
   if (!is(ID)) return NULL;
 
-  luna_node_t *ret = (luna_node_t *) luna_id_node_new(self->tok->value.as_string);
+  luna_node_t *ret = (luna_node_t *) luna_id_node_new(self->tok->value.as_string, lineno);
   next;
 
   return ret;
@@ -210,9 +216,10 @@ decl_expr(luna_parser_t *self, bool need_type) {
   if (!is(ID)) return NULL;
 
   luna_vec_t *vec = luna_vec_new();
+  int decl_line = lineno;
   while (is(ID)) {
     // id
-    luna_node_t *id = (luna_node_t *) luna_id_node_new(self->tok->value.as_string);
+    luna_node_t *id = (luna_node_t *) luna_id_node_new(self->tok->value.as_string, lineno);
     luna_vec_push(vec, luna_node(id));
     next;
 
@@ -227,7 +234,7 @@ decl_expr(luna_parser_t *self, bool need_type) {
     if (need_type) {
       return error("expecting type");
     } else {
-      return (luna_node_t *) luna_decl_node_new(vec, NULL);
+      return (luna_node_t *) luna_decl_node_new(vec, NULL, decl_line);
     }
   }
 
@@ -236,7 +243,7 @@ decl_expr(luna_parser_t *self, bool need_type) {
     return error("expecting type");
   }
 
-  return (luna_node_t *) luna_decl_node_new(vec, type);
+  return (luna_node_t *) luna_decl_node_new(vec, type, decl_line);
 }
 
 /*
@@ -256,16 +263,16 @@ primary_expr(luna_parser_t *self) {
   luna_token_t *tok = self->tok;
   switch (tok->type) {
     case LUNA_TOKEN_ID:
-      ret = (luna_node_t *) luna_id_node_new(tok->value.as_string);
+      ret = (luna_node_t *) luna_id_node_new(tok->value.as_string, lineno);
       break;
     case LUNA_TOKEN_INT:
-      ret = (luna_node_t *) luna_int_node_new(tok->value.as_int);
+      ret = (luna_node_t *) luna_int_node_new(tok->value.as_int, lineno);
       break;
     case LUNA_TOKEN_FLOAT:
-      ret = (luna_node_t *) luna_float_node_new(tok->value.as_float);
+      ret = (luna_node_t *) luna_float_node_new(tok->value.as_float, lineno);
       break;
     case LUNA_TOKEN_STRING:
-      ret = (luna_node_t *) luna_string_node_new(tok->value.as_string);
+      ret = (luna_node_t *) luna_string_node_new(tok->value.as_string, lineno);
       break;
     case LUNA_TOKEN_LBRACK:
       return array_expr(self);
@@ -287,12 +294,14 @@ primary_expr(luna_parser_t *self) {
 static luna_node_t *
 pow_expr(luna_parser_t *self) {
   luna_node_t *node, *right;
+  int line = lineno;
+
   debug("pow_expr");
   if (!(node = call_expr(self, NULL))) return NULL;
   if (accept(OP_POW)) {
     context("** operation");
     if (right = call_expr(self, NULL)) {
-      return (luna_node_t *) luna_binary_op_node_new(LUNA_TOKEN_OP_POW, node, right);
+      return (luna_node_t *) luna_binary_op_node_new(LUNA_TOKEN_OP_POW, node, right, line);
     } else {
       return error("missing right-hand expression");
     }
@@ -309,10 +318,11 @@ pow_expr(luna_parser_t *self) {
 static luna_node_t *
 postfix_expr(luna_parser_t *self) {
   luna_node_t *node;
+  int line = lineno;
   debug("postfix_expr");
   if (!(node = pow_expr(self))) return NULL;
   if (is(OP_INCR) || is(OP_DECR)) {
-    node = (luna_node_t *) luna_unary_op_node_new(self->tok->type, node, 1);
+    node = (luna_node_t *) luna_unary_op_node_new(self->tok->type, node, 1, line);
     next;
   }
   return node;
@@ -331,6 +341,7 @@ postfix_expr(luna_parser_t *self) {
 static luna_node_t *
 unary_expr(luna_parser_t *self) {
   debug("unary_expr");
+  int line = lineno;
   if (is(OP_INCR)
     || is(OP_DECR)
     || is(OP_BIT_NOT)
@@ -339,7 +350,7 @@ unary_expr(luna_parser_t *self) {
     || is(OP_NOT)) {
     int op = self->tok->type;
     next;
-    return (luna_node_t *) luna_unary_op_node_new(op, unary_expr(self), 0);
+    return (luna_node_t *) luna_unary_op_node_new(op, unary_expr(self), 0, line);
   }
   return postfix_expr(self);
 }
@@ -352,6 +363,7 @@ static luna_node_t *
 multiplicative_expr(luna_parser_t *self) {
   luna_token op;
   luna_node_t *node, *right;
+  int line = lineno;
   debug("multiplicative_expr");
   if (!(node = unary_expr(self))) return NULL;
   while (is(OP_MUL) || is(OP_DIV) || is(OP_MOD)) {
@@ -359,7 +371,7 @@ multiplicative_expr(luna_parser_t *self) {
     next;
     context("multiplicative operation");
     if (right = unary_expr(self)) {
-      node = (luna_node_t *) luna_binary_op_node_new(op, node, right);
+      node = (luna_node_t *) luna_binary_op_node_new(op, node, right, line);
     } else {
       return error("missing right-hand expression");
     }
@@ -375,6 +387,7 @@ static luna_node_t *
 additive_expr(luna_parser_t *self) {
   luna_token op;
   luna_node_t *node, *right;
+  int line = lineno;
   debug("additive_expr");
   if (!(node = multiplicative_expr(self))) return NULL;
   while (is(OP_PLUS) || is(OP_MINUS)) {
@@ -382,7 +395,7 @@ additive_expr(luna_parser_t *self) {
     next;
     context("additive operation");
     if (right = multiplicative_expr(self)) {
-      node = (luna_node_t *) luna_binary_op_node_new(op, node, right);
+      node = (luna_node_t *) luna_binary_op_node_new(op, node, right, line);
     } else {
       return error("missing right-hand expression");
     }
@@ -398,6 +411,7 @@ static luna_node_t *
 shift_expr(luna_parser_t *self) {
   luna_token op;
   luna_node_t *node, *right;
+  int line = lineno;
   debug("shift_expr");
   if (!(node = additive_expr(self))) return NULL;
   while (is(OP_BIT_SHL) || is(OP_BIT_SHR)) {
@@ -405,7 +419,7 @@ shift_expr(luna_parser_t *self) {
     next;
     context("shift operation");
     if (right = additive_expr(self)) {
-      node = (luna_node_t *) luna_binary_op_node_new(op, node, right);
+      node = (luna_node_t *) luna_binary_op_node_new(op, node, right, line);
     } else {
       return error("missing right-hand expression");
     }
@@ -421,6 +435,7 @@ static luna_node_t *
 relational_expr(luna_parser_t *self) {
   luna_token op;
   luna_node_t *node, *right;
+  int line = lineno;
   debug("relational_expr");
   if (!(node = shift_expr(self))) return NULL;
   while (is(OP_LT) || is(OP_LTE) || is(OP_GT) || is(OP_GTE)) {
@@ -428,7 +443,7 @@ relational_expr(luna_parser_t *self) {
     next;
     context("relational operation");
     if (right = shift_expr(self)) {
-      node = (luna_node_t *) luna_binary_op_node_new(op, node, right);
+      node = (luna_node_t *) luna_binary_op_node_new(op, node, right, line);
     } else {
       return error("missing right-hand expression");
     }
@@ -444,6 +459,7 @@ static luna_node_t *
 equality_expr(luna_parser_t *self) {
   luna_token op;
   luna_node_t *node, *right;
+  int line = lineno;
   debug("equality_expr");
   if (!(node = relational_expr(self))) return NULL;
   while (is(OP_EQ) || is(OP_NEQ)) {
@@ -451,7 +467,7 @@ equality_expr(luna_parser_t *self) {
     next;
     context("equality operation");
     if (right = relational_expr(self)) {
-      node = (luna_node_t *) luna_binary_op_node_new(op, node, right);
+      node = (luna_node_t *) luna_binary_op_node_new(op, node, right, line);
     } else {
       return error("missing right-hand expression");
     }
@@ -467,11 +483,12 @@ static luna_node_t *
 bitwise_and_expr(luna_parser_t *self) {
   luna_node_t *node, *right;
   debug("bitwise_and_expr");
+  int line = lineno;
   if (!(node = equality_expr(self))) return NULL;
   while (accept(OP_BIT_AND)) {
     context("& operation");
     if (right = equality_expr(self)) {
-      node = (luna_node_t *) luna_binary_op_node_new(LUNA_TOKEN_OP_BIT_AND, node, right);
+      node = (luna_node_t *) luna_binary_op_node_new(LUNA_TOKEN_OP_BIT_AND, node, right, line);
     } else {
       return error("missing right-hand expression");
     }
@@ -487,11 +504,12 @@ static luna_node_t *
 bitwise_xor_expr(luna_parser_t *self) {
   luna_node_t *node, *right;
   debug("bitwise_xor_expr");
+  int line = lineno;
   if (!(node = bitwise_and_expr(self))) return NULL;
   while (accept(OP_BIT_XOR)) {
     context("^ operation");
     if (right = bitwise_and_expr(self)) {
-      node = (luna_node_t *) luna_binary_op_node_new(LUNA_TOKEN_OP_BIT_XOR, node, right);
+      node = (luna_node_t *) luna_binary_op_node_new(LUNA_TOKEN_OP_BIT_XOR, node, right, line);
     } else {
       return error("missing right-hand expression");
     }
@@ -507,11 +525,12 @@ static luna_node_t *
 bitswise_or_expr(luna_parser_t *self) {
   luna_node_t *node, *right;
   debug("bitswise_or_expr");
+  int line = lineno;
   if (!(node = bitwise_xor_expr(self))) return NULL;
   while (accept(OP_BIT_OR)) {
     context("| operation");
     if (right = bitwise_xor_expr(self)) {
-      node = (luna_node_t *) luna_binary_op_node_new(LUNA_TOKEN_OP_BIT_OR, node, right);
+      node = (luna_node_t *) luna_binary_op_node_new(LUNA_TOKEN_OP_BIT_OR, node, right, line);
     } else {
       return error("missing right-hand expression");
     }
@@ -527,11 +546,12 @@ static luna_node_t *
 logical_and_expr(luna_parser_t *self) {
   luna_node_t *node, *right;
   debug("logical_and_expr");
+  int line = lineno;
   if (!(node = bitswise_or_expr(self))) return NULL;
   while (accept(OP_AND)) {
     context("&& operation");
     if (right = bitswise_or_expr(self)) {
-      node = (luna_node_t *) luna_binary_op_node_new(LUNA_TOKEN_OP_AND, node, right);
+      node = (luna_node_t *) luna_binary_op_node_new(LUNA_TOKEN_OP_AND, node, right, line);
     } else {
       return error("missing right-hand expression");
     }
@@ -546,6 +566,7 @@ logical_and_expr(luna_parser_t *self) {
 static luna_node_t *
 logical_or_expr(luna_parser_t *self) {
   luna_node_t *node, *right;
+  int line = lineno;
   debug("logical_or_expr");
   if (!(node = logical_and_expr(self))) return NULL;
 
@@ -553,7 +574,7 @@ logical_or_expr(luna_parser_t *self) {
   while (accept(OP_OR)) {
     context("|| operation");
     if (right = logical_and_expr(self)) {
-      node = (luna_node_t *) luna_binary_op_node_new(LUNA_TOKEN_OP_OR, node, right);
+      node = (luna_node_t *) luna_binary_op_node_new(LUNA_TOKEN_OP_OR, node, right, line);
     } else {
       return error("missing right-hand expression");
     }
@@ -561,8 +582,8 @@ logical_or_expr(luna_parser_t *self) {
 
   // '&'
   if (accept(OP_FORK)) {
-    luna_id_node_t *id = luna_id_node_new("fork");
-    luna_call_node_t *call = luna_call_node_new((luna_node_t *) id);
+    luna_id_node_t *id = luna_id_node_new("fork", line);
+    luna_call_node_t *call = luna_call_node_new((luna_node_t *) id, line);
     luna_vec_push(call->args->vec, luna_node(node));
     node = (luna_node_t *) call;
   }
@@ -583,6 +604,7 @@ function_params(luna_parser_t *self) {
   if (!is(ID)) return params;
 
   do {
+    int line = lineno;
     luna_node_t *decl = decl_expr(self, false);
     if (!decl) return NULL;
 
@@ -593,7 +615,7 @@ function_params(luna_parser_t *self) {
     if (accept(OP_ASSIGN)) {
       luna_node_t *val = expr(self);
       if (!val) return NULL;
-      param = luna_node((luna_node_t *) luna_binary_op_node_new(LUNA_TOKEN_OP_ASSIGN, decl, val));
+      param = luna_node((luna_node_t *) luna_binary_op_node_new(LUNA_TOKEN_OP_ASSIGN, decl, val, line));
     } else {
       // if there isn't a value we need a type
       if (!decl->type) {
@@ -642,6 +664,7 @@ function_expr(luna_parser_t *self) {
 
 static luna_node_t *
 slot_access_expr(luna_parser_t *self, luna_node_t *left) { 
+  int line = lineno;
   debug("slot_access_expr");
 
   // primary_expr
@@ -658,7 +681,7 @@ slot_access_expr(luna_parser_t *self, luna_node_t *left) {
     }
     context("subscript");
     if (!accept(RBRACK)) return error("missing closing ']'");
-    left = (luna_node_t *) luna_subscript_node_new(left, right);
+    left = (luna_node_t *) luna_subscript_node_new(left, right, line);
     return call_expr(self, left);
   }
 
@@ -666,7 +689,7 @@ slot_access_expr(luna_parser_t *self, luna_node_t *left) {
   while (accept(OP_DOT)) {
     context("slot access");
     if (!is(ID)) return error("expecting identifier");
-    luna_node_t *id = (luna_node_t *)luna_id_node_new(self->tok->value.as_string);
+    luna_node_t *id = (luna_node_t *)luna_id_node_new(self->tok->value.as_string, lineno);
     next;
 
     if (is(LPAREN)) {
@@ -701,7 +724,7 @@ slot_access_expr(luna_parser_t *self, luna_node_t *left) {
       left = (luna_node_t *)call;
 
     } else {
-      left = (luna_node_t *) luna_slot_node_new(left, id);
+      left = (luna_node_t *) luna_slot_node_new(left, id, line);
     }
 
     left = call_expr(self, left);
@@ -717,7 +740,7 @@ slot_access_expr(luna_parser_t *self, luna_node_t *left) {
 luna_args_node_t *
 call_args(luna_parser_t *self) {
   luna_node_t *node;
-  luna_args_node_t *args = luna_args_node_new();
+  luna_args_node_t *args = luna_args_node_new(lineno);
 
   self->in_args++;
 
@@ -751,6 +774,7 @@ call_expr(luna_parser_t *self, luna_node_t *left) {
   luna_node_t *right;
   luna_node_t *prev = left;
   luna_call_node_t *call = NULL;
+  int line = lineno;
   debug("call_expr");
 
   // slot_access_expr
@@ -761,7 +785,7 @@ call_expr(luna_parser_t *self, luna_node_t *left) {
   // '('
   if (accept(LPAREN)) {
     context("function call");
-    call = luna_call_node_new(left);
+    call = luna_call_node_new(left, line);
 
     // args? ')'
     if (!is(RPAREN)) {
@@ -792,8 +816,10 @@ static luna_node_t *
 let_expr(luna_parser_t *self) {
   // let already consumed
   luna_vec_t *vec = luna_vec_new();
+  int let_line = lineno;
 
   do {
+    int line = lineno;
     luna_node_t *decl = decl_expr(self, false);
     luna_node_t *val = NULL;
 
@@ -808,11 +834,11 @@ let_expr(luna_parser_t *self) {
       if (!val) return error("expecting declaration initializer");
     }
 
-    luna_node_t *bin = (luna_node_t *) luna_binary_op_node_new(LUNA_TOKEN_OP_ASSIGN, decl, val);
+    luna_node_t *bin = (luna_node_t *) luna_binary_op_node_new(LUNA_TOKEN_OP_ASSIGN, decl, val, line);
     luna_vec_push(vec, luna_node(bin));
   } while (accept(COMMA));
 
-  return (luna_node_t *) luna_let_node_new(vec);
+  return (luna_node_t *) luna_let_node_new(vec, let_line);
 }
 
 /*
@@ -830,6 +856,7 @@ static luna_node_t *
 assignment_expr(luna_parser_t *self) {
   luna_token op;
   luna_node_t *node, *right;
+  int line = lineno;
 
   // let?
   if (accept(LET)) return let_expr(self);
@@ -843,7 +870,7 @@ assignment_expr(luna_parser_t *self) {
     next;
     context("assignment");
     if (!(right = not_expr(self))) return NULL;
-    luna_binary_op_node_t *ret = luna_binary_op_node_new(op, node, right);
+    luna_binary_op_node_t *ret = luna_binary_op_node_new(op, node, right, line);
     return (luna_node_t *) ret;
   }
 
@@ -858,7 +885,7 @@ assignment_expr(luna_parser_t *self) {
     next;
     context("compound assignment");
     if (!(right = not_expr(self))) return NULL;
-    return (luna_node_t *) luna_binary_op_node_new(op, node, right);
+    return (luna_node_t *) luna_binary_op_node_new(op, node, right, line);
   }
 
   return node;
@@ -871,11 +898,12 @@ assignment_expr(luna_parser_t *self) {
 
 static luna_node_t *
 not_expr(luna_parser_t *self) {
+  int line = lineno;
   debug("not_expr");
   if (accept(OP_LNOT)) {
     luna_node_t *expr;
     if (!(expr = not_expr(self))) return NULL;
-    return (luna_node_t *) luna_unary_op_node_new(LUNA_TOKEN_OP_LNOT, expr, 0);
+    return (luna_node_t *) luna_unary_op_node_new(LUNA_TOKEN_OP_LNOT, expr, 0, line);
   }
   return assignment_expr(self);
 }
@@ -901,6 +929,7 @@ type_stmt(luna_parser_t *self) {
   debug("type_stmt");
   context("type statement");
   luna_type_node_t *type;
+  int line = lineno;
 
   // 'type'
   if (!accept(TYPE)) return NULL;
@@ -908,7 +937,7 @@ type_stmt(luna_parser_t *self) {
   // id
   if (!is(ID)) return error("missing type name");
   const char *name = self->tok->value.as_string;
-  type = luna_type_node_new(name);
+  type = luna_type_node_new(name, line);
   next;
 
   // semicolon might have been inserted here
@@ -937,6 +966,7 @@ function_stmt(luna_parser_t *self) {
   luna_block_node_t *body;
   luna_vec_t *params;
   luna_node_t *type = NULL;
+  int line = lineno;
   debug("function_stmt");
   context("function statement");
 
@@ -973,7 +1003,7 @@ function_stmt(luna_parser_t *self) {
 
   // block
   if (body = block(self)) {
-    return (luna_node_t *) luna_function_node_new(name, type, body, params);
+    return (luna_node_t *) luna_function_node_new(name, type, body, params, line);
   }
 
   return NULL;
@@ -989,6 +1019,7 @@ static luna_node_t *
 if_stmt(luna_parser_t *self) {
   luna_node_t *cond;
   luna_block_node_t *body;
+  int line = lineno;
   debug("if_stmt");
 
   // ('if' | 'unless')
@@ -1011,7 +1042,7 @@ if_stmt(luna_parser_t *self) {
     return NULL;
   }
 
-  luna_if_node_t *node = luna_if_node_new(negate, cond, body);
+  luna_if_node_t *node = luna_if_node_new(negate, cond, body, line);
 
   // 'else'
   loop:
@@ -1020,6 +1051,7 @@ if_stmt(luna_parser_t *self) {
 
     // ('else' 'if' block)*
     if (accept(IF)) {
+      int line = lineno;
       context("else if statement condition");
       if (!(cond = expr(self))) return NULL;
 
@@ -1028,7 +1060,7 @@ if_stmt(luna_parser_t *self) {
 
       context("else if statement");
       if (!(body = block(self))) return NULL;
-      luna_vec_push(node->else_ifs, luna_node((luna_node_t *) luna_if_node_new(0, cond, body)));
+      luna_vec_push(node->else_ifs, luna_node((luna_node_t *) luna_if_node_new(0, cond, body, line)));
       goto loop;
     // 'else'
     } else {
@@ -1050,6 +1082,7 @@ static luna_node_t *
 while_stmt(luna_parser_t *self) {
   luna_node_t *cond;
   luna_block_node_t *body;
+  int line = lineno;
   debug("while_stmt");
 
   // ('until' | 'while')
@@ -1068,7 +1101,7 @@ while_stmt(luna_parser_t *self) {
   // block
   if (!(body = block(self))) return NULL;
 
-  return (luna_node_t *) luna_while_node_new(negate, cond, body);
+  return (luna_node_t *) luna_while_node_new(negate, cond, body, line);
 }
 
 /*
@@ -1078,6 +1111,7 @@ while_stmt(luna_parser_t *self) {
 
 static luna_node_t *
 return_stmt(luna_parser_t *self) {
+  int line = lineno;
   debug("return");
   context("return statement");
 
@@ -1090,7 +1124,7 @@ return_stmt(luna_parser_t *self) {
   if (!accept(SEMICOLON)) {
     if (!(node = expr(self))) return NULL;
   }
-  return (luna_node_t *) luna_return_node_new(node);
+  return (luna_node_t *) luna_return_node_new(node, line);
 }
 
 /*
@@ -1122,7 +1156,7 @@ static luna_block_node_t *
 block(luna_parser_t *self) {
   debug("block");
   luna_node_t *node;
-  luna_block_node_t *block = luna_block_node_new();
+  luna_block_node_t *block = luna_block_node_new(lineno);
 
   if (accept(END)) return block;
 
@@ -1144,7 +1178,7 @@ static luna_block_node_t *
 program(luna_parser_t *self) {
   debug("program");
   luna_node_t *node;
-  luna_block_node_t *block = luna_block_node_new();
+  luna_block_node_t *block = luna_block_node_new(lineno);
 
   next;
   while (!is(EOS)) {
