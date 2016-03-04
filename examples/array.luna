@@ -5,5 +5,5 @@ pets = ['tobi', 'loki', 'jane']
 pets = [
   'tobi',
   'loki',
-  'jane'
+  'jane',
 ]

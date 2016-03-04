@@ -747,13 +747,19 @@ call_args(luna_parser_t *self) {
   debug("args");
   do {
     if (node = expr(self)) {
-      // TODO: assert string or id
       if (accept(COLON)) {
+        context("keyword argument");
+
+        if (node->type != LUNA_NODE_STRING && node->type != LUNA_NODE_ID) {
+          return error("expecting string or identifier as key");
+        }
+        
         luna_node_t *val = expr(self);
         const char *str = ((luna_id_node_t *) node)->val;
         luna_hash_set(args->hash, (char *) str, luna_node(val));
+      } else {
+        luna_vec_push(args->vec, luna_node(node));
       }
-      luna_vec_push(args->vec, luna_node(node));
     } else {
       return NULL;
     }
@@ -996,10 +1002,10 @@ function_stmt(luna_parser_t *self) {
   if (accept(COLON)) {
     type = type_expr(self);
     if (!type) return error("missing type after ':'");
-
-    // semicolon might have been inserted here
-    accept(SEMICOLON);
   }
+
+  // semicolon might have been inserted here
+  accept(SEMICOLON);
 
   // block
   if (body = block(self)) {
