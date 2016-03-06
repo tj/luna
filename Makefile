@@ -1,4 +1,8 @@
+define ccprint
+	@printf '\e[36mCC\e[90m %s\e[0m\n' $1
+endef
 
+SHELL = /bin/bash
 SRC = $(wildcard src/*.c)
 OBJ = ${SRC:.c=.o}
 
@@ -7,6 +11,8 @@ PREFIX = /usr/local
 CFLAGS = -std=c99 -g -O0 -Wno-parentheses -Wno-switch-enum -Wno-unused-value
 CFLAGS += -Wno-switch
 CFLAGS += -I deps
+CFLAGS += -D_BSD_SOURCE
+LDFLAGS += -lm
 
 # linenoise
 
@@ -30,7 +36,7 @@ $(OUT): $(OBJ)
 
 %.o: %.c
 	@$(CC) -c $(CFLAGS) $< -o $@
-	@printf "\e[36mCC\e[90m %s\e[0m\n" $@
+	$(call ccprint, $@)
 
 test: test_runner
 	@./$<
