@@ -111,4 +111,7 @@ typedef struct {
 luna_object_t *
 luna_eval(luna_vm_t *vm);
 
+void
+luna_vm_free(luna_vm_t *vm);
+
 #endif /* LUNA_VM_H */
