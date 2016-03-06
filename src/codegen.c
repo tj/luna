@@ -343,11 +343,11 @@ visit_if(luna_visitor_t *self, luna_if_node_t *node) {
 
 luna_vm_t *
 luna_gen(luna_node_t *node) {
-  luna_vm_t *vm = malloc(sizeof(luna_vm_t *));
+  luna_vm_t *vm = malloc(sizeof(luna_vm_t));
   if (!vm) return NULL;
-  vm->main = malloc(sizeof(luna_activation_t *));
+  vm->main = malloc(sizeof(luna_activation_t));
   vm->main->nconstants = 0;
-  vm->main->constants = malloc(1024 * sizeof(int *)); // TODO: vec / objects
+  vm->main->constants = malloc(1024 * sizeof(int)); // TODO: vec / objects
   vm->main->ip = vm->main->code = malloc(64 * 1024);
 
   luna_visitor_t visitor = {
@@ -372,6 +372,8 @@ luna_gen(luna_node_t *node) {
 
   luna_visit(&visitor, node);
   emit(HALT, 0, 0, 0);
-
+  
+  // Reset code so we can free it later
+  vm->main->code = vm->main->ip;
   return vm;
 }
