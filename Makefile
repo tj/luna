@@ -26,7 +26,7 @@ ifdef SystemRoot
 endif
 
 $(OUT): $(OBJ)
-	$(CC) $^ $(LDFLAGS) -o $@
+	$(CC) $^ $(LDFLAGS) -lm -o $@
 
 %.o: %.c
 	@$(CC) -c $(CFLAGS) $< -o $@
