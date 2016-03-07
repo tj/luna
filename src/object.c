@@ -78,3 +78,26 @@ luna_bool_new(bool val) {
   self->value.as_int = val;
   return self;
 }
+
+/*
+ * Allocate a new string object with the given `val`.
+ */
+
+luna_object_t *
+luna_string_new(const char *val) {
+  luna_object_t *self = alloc_object(LUNA_TYPE_STRING);
+  if (unlikely(!self)) return NULL;
+  self->value.as_pointer = strdup(val);
+  return self;
+}
+
+void
+luna_object_free(luna_object_t *self) {
+  switch(self->type) {
+	case LUNA_TYPE_STRING:
+      free(self->value.as_pointer);
+	  break;
+    default: break;
+  }
+  free(self);
+}

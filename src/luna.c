@@ -165,7 +165,7 @@ eval(char *source, const char *path) {
   luna_vm_t *vm = luna_gen((luna_node_t *) root);
   luna_object_t *obj = luna_eval(vm);
   luna_object_inspect(obj);
-  free(obj);
+  luna_object_free(obj);
   luna_vm_free(vm);
   
   return 0;
