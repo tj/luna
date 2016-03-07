@@ -12,7 +12,8 @@ LDFLAGS += -lm
 # MinGW gcc support
 # TODO: improve
 
-ifeq ($(OS),Windows_NT)
+clang = $(shell which clang 2> /dev/null)
+ifeq (, $(clang))
 	CC = gcc
 endif
 
