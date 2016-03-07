@@ -9,6 +9,13 @@ CFLAGS += -Wno-switch
 CFLAGS += -I deps
 LDFLAGS += -lm
 
+# MinGW gcc support
+# TODO: improve
+
+ifeq ($(OS),Windows_NT)
+	CC = gcc
+endif
+
 # deps
 
 CFLAGS += -I deps/linenoise

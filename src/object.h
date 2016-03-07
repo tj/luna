@@ -9,6 +9,7 @@
 #define LUNA_OBJECT_H
 
 #include "hash.h"
+#include <stdbool.h>
 
 /*
  * Check if `val` is the given type.
@@ -71,5 +72,14 @@ luna_int_new(int val);
 
 luna_object_t *
 luna_float_new(float val);
+
+luna_object_t *
+luna_bool_new(bool val);
+
+luna_object_t *
+luna_string_new(const char *val);
+
+void
+luna_object_free(luna_object_t *self);
 
 #endif /* LUNA_OBJECT_H */

@@ -91,3 +91,11 @@ luna_eval(luna_vm_t *vm) {
 end:
   return luna_int_new(R(0));
 }
+
+void
+luna_vm_free(luna_vm_t *vm) {
+  free(vm->main->constants);
+  free(vm->main->code);
+  free(vm->main);
+  free(vm);
+}
