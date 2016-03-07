@@ -8,14 +8,17 @@ CFLAGS = -std=c99 -g -O0 -Wno-parentheses -Wno-switch-enum -Wno-unused-value
 CFLAGS += -Wno-switch
 CFLAGS += -I deps
 
-# linenoise
+# deps
 
 CFLAGS += -I deps/linenoise
 OBJ += deps/linenoise/linenoise.o
 OBJ += deps/linenoise/utf8.o
 
-TEST_SRC = $(shell find {test,src}/*.c | sed '/luna/d')
+# test
+
+TEST_SRC = $(shell find src/*.c test/*.c | sed '/luna/d')
 TEST_OBJ = ${TEST_SRC:.c=.o}
+
 CFLAGS += -I src
 
 # output
