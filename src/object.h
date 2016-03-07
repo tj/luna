@@ -72,4 +72,7 @@ luna_int_new(int val);
 luna_object_t *
 luna_float_new(float val);
 
+luna_object_t *
+luna_bool_new(bool val);
+
 #endif /* LUNA_OBJECT_H */

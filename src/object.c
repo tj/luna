@@ -23,6 +23,9 @@ luna_object_inspect(luna_object_t *self) {
     case LUNA_TYPE_INT:
       printf("%d\n", self->value.as_int);
       break;
+	case LUNA_TYPE_BOOL:
+	  printf("%s\n", self->value.as_int ? "true" : "false");
+	  break;
     default:
       assert(0 && "unhandled");
   }
@@ -61,5 +64,17 @@ luna_float_new(float val) {
   luna_object_t *self = alloc_object(LUNA_TYPE_FLOAT);
   if (unlikely(!self)) return NULL;
   self->value.as_float = val;
+  return self;
+}
+
+/*
+ * Allocate a new bool object with the given `val`.
+ */
+
+luna_object_t *
+luna_bool_new(bool val) {
+  luna_object_t *self = alloc_object(LUNA_TYPE_BOOL);
+  if (unlikely(!self)) return NULL;
+  self->value.as_int = val;
   return self;
 }
