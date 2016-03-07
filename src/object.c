@@ -26,6 +26,9 @@ luna_object_inspect(luna_object_t *self) {
 	case LUNA_TYPE_BOOL:
 	  printf("%s\n", self->value.as_int ? "true" : "false");
 	  break;
+	case LUNA_TYPE_STRING:
+	  printf("%s\n", (char *)self->value.as_pointer);
+	  break;
     default:
       assert(0 && "unhandled");
   }
