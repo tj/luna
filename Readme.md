@@ -42,6 +42,8 @@
   - ◦ VIM / TM / syntaxes
   - ◦ website
   - ◦ context threading
+  
+  **Note:** Luna doesn't run any code yet, it only parses the code and builds an AST. There are still some decisions to be made about certain aspects of the language. If you would like to join and finish designing Luna with the community, check out the [issue tracker](https://github.com/tj/luna/issues) and share your thoughts.
 
 ## Typing
 
