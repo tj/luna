@@ -199,6 +199,15 @@ visit_hash(luna_visitor_t *self, luna_hash_node_t *node) {
 }
 
 /*
+ * Visit subscript `node`.
+ */
+
+static void
+visit_subscript(luna_visitor_t *self, luna_subscript_node_t *node) {
+
+}
+
+/*
  * Visit slot `node`.
  */
 
@@ -338,6 +347,24 @@ visit_if(luna_visitor_t *self, luna_if_node_t *node) {
 }
 
 /*
+ * Visit `type` node.
+ */
+
+static void
+visit_type(luna_visitor_t *self, luna_type_node_t *node) {
+
+}
+
+/*
+ * Visit use `node`.
+ */
+
+static void
+visit_use(luna_visitor_t *self, luna_use_node_t *node) {
+
+}
+
+/*
  * Generate code for the given `node`.
  */
 
@@ -367,7 +394,10 @@ luna_gen(luna_node_t *node) {
     .visit_return = visit_return,
     .visit_function = visit_function,
     .visit_unary_op = visit_unary_op,
-    .visit_binary_op = visit_binary_op
+    .visit_binary_op = visit_binary_op,
+    .visit_subscript = visit_subscript,
+    .visit_type = visit_type,
+    .visit_use = visit_use
   };
 
   luna_visit(&visitor, node);

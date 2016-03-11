@@ -101,8 +101,10 @@ scan_ident(luna_lexer_t *self, int c) {
   switch (len-1) {
     case 2:
       if (0 == strcmp("if", buf)) return token(IF);
+      if (0 == strcmp("as", buf)) return token(AS);
       break;
     case 3:
+      if (0 == strcmp("use", buf)) return token(USE);
       if (0 == strcmp("for", buf)) return token(FOR);
       if (0 == strcmp("def", buf)) return token(DEF);
       if (0 == strcmp("end", buf)) return token(END);

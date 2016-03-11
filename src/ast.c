@@ -367,3 +367,18 @@ luna_return_node_new(luna_node_t *expr, int lineno) {
   self->expr = expr;
   return self;
 }
+
+/*
+ * Alloc and initialize a new use node.
+ */
+
+luna_use_node_t *
+luna_use_node_new(int lineno) {
+  luna_use_node_t *self = malloc(sizeof(luna_use_node_t));
+  if (unlikely(!self)) return NULL;
+  self->base.type = LUNA_NODE_USE;
+  self->base.lineno = lineno;
+  self->module = NULL;
+  self->alias = NULL;
+  return self;
+}

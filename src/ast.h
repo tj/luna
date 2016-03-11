@@ -43,7 +43,8 @@
   n(FUNCTION) \
   n(TYPE) \
   n(SLOT) \
-  n(SUBSCRIPT)
+  n(SUBSCRIPT) \
+  n(USE)
 
 /*
  * Nodes enum.
@@ -273,6 +274,16 @@ typedef struct {
   luna_node_t *expr;
 } luna_return_node_t;
 
+/*
+ * Luna use node.
+ */
+
+typedef struct {
+  luna_node_t base;
+  char *module;
+  char *alias;
+} luna_use_node_t;
+
 // protos
 
 luna_object_t *
@@ -343,5 +354,8 @@ luna_args_node_new(int lineno);
 
 luna_type_node_t *
 luna_type_node_new(const char *name, int lineno);
+
+luna_use_node_t *
+luna_use_node_new(int lineno);
 
 #endif /* LUNA_AST_H */

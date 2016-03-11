@@ -1134,6 +1134,43 @@ return_stmt(luna_parser_t *self) {
 }
 
 /*
+ * 'use' string ('as' id)?
+ */
+
+static luna_node_t *
+use_stmt(luna_parser_t *self) {
+  //puts("asçkdhakjshd");
+
+  int line = lineno;
+  debug("use");
+  context("use statement");
+
+  // 'use'
+  if (!accept(USE)) return NULL;
+  luna_use_node_t *node = luna_use_node_new(line);
+
+  // string
+  if (!is(STRING)) {
+    return error("missing module name");
+  }
+  node->module = self->tok->value.as_string;
+  next;
+
+  // 'as'
+  if (accept(AS)) {
+
+    // id
+    if (!is(ID)) {
+      return error("missing alias name");
+    }
+    node->alias = self->tok->value.as_string;
+    next;
+  }
+
+  return (luna_node_t *) node;
+}
+
+/*
  *   if_stmt
  * | while_stmt
  * | return_stmt
@@ -1151,6 +1188,7 @@ stmt(luna_parser_t *self) {
   if (is(RETURN)) return return_stmt(self);
   if (is(DEF)) return function_stmt(self);
   if (is(TYPE)) return type_stmt(self);
+  if (is(USE)) return use_stmt(self);
   return expr(self);
 }
 

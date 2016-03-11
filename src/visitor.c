@@ -42,5 +42,6 @@ luna_visit(luna_visitor_t *self, luna_node_t *node) {
     case LUNA_NODE_ARRAY: VISIT(array);
     case LUNA_NODE_HASH: VISIT(hash);
     case LUNA_NODE_RETURN: VISIT(return);
+    case LUNA_NODE_USE: VISIT(use);
   }
 }

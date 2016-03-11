@@ -1,0 +1,6 @@
+(use 'foo')
+
+(use 'foo/bar')
+
+(use 'foo' as bar)
+

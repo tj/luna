@@ -1,0 +1,3 @@
+use "foo/bar/module" as mod
+
+print(mod.foo)

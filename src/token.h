@@ -23,6 +23,8 @@
   t(STRING, "string") \
   t(DEF, "def") \
   t(TYPE, "type") \
+  t(USE, "use") \
+  t(AS, "as") \
   t(WHILE, "while") \
   t(UNTIL, "until") \
   t(IF, "if") \

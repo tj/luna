@@ -457,6 +457,19 @@ visit_if(luna_visitor_t *self, luna_if_node_t *node) {
 }
 
 /*
+ * Visit use `node`.
+ */
+
+static void
+visit_use(luna_visitor_t *self, luna_use_node_t *node) {
+  print_func("(use \'%s\'", node->module);
+  if (node->alias) {
+    print_func(" as %s", node->alias);
+  }
+  print_func(")");
+}
+
+/*
  * Pretty-print the given `node` to stdout.
  */
 
@@ -481,7 +494,8 @@ luna_prettyprint(luna_node_t *node) {
     .visit_unary_op = visit_unary_op,
     .visit_binary_op = visit_binary_op,
     .visit_subscript = visit_subscript,
-    .visit_type = visit_type
+    .visit_type = visit_type,
+    .visit_use = visit_use
   };
 
   luna_visit(&visitor, node);

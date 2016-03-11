@@ -370,6 +370,11 @@ test_return() {
   _test_parser("test/parser/return.luna", "test/parser/return.out");
 }
 
+static void
+test_use() {
+  _test_parser("test/parser/use.luna", "test/parser/use.out");
+}
+
 /*
  * Test the given `fn`.
  */
@@ -427,6 +432,7 @@ main(int argc, const char **argv){
   test(subscript);
   test(declaration);
   test(return);
+  test(use);
 
   printf("\n");
   printf("  \e[90mcompleted in \e[32m%.5fs\e[0m\n", (float) (clock() - start) / CLOCKS_PER_SEC);
