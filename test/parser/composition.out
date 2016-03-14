@@ -1,0 +1,8 @@
+(call
+  (id print)
+  (call
+    (id grep)
+    (call
+      (id cat)
+      (string 'pets.txt')) (string 'tobi')))
+

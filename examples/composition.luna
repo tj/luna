@@ -1,2 +1,2 @@
 
-cat('pets.txt').grep('tobi').print()
+cat('pets.txt') | grep('tobi') | print()

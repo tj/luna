@@ -1,0 +1,1 @@
+cat('pets.txt') | grep('tobi') | print()

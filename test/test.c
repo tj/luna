@@ -375,6 +375,11 @@ test_use() {
   _test_parser("test/parser/use.luna", "test/parser/use.out");
 }
 
+static void
+test_composition() {
+  _test_parser("test/parser/composition.luna", "test/parser/composition.out");
+}
+
 /*
  * Test the given `fn`.
  */
@@ -433,6 +438,7 @@ main(int argc, const char **argv){
   test(declaration);
   test(return);
   test(use);
+  test(composition);
 
   printf("\n");
   printf("  \e[90mcompleted in \e[32m%.5fs\e[0m\n", (float) (clock() - start) / CLOCKS_PER_SEC);

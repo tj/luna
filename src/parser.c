@@ -91,6 +91,42 @@ luna_parser_init(luna_parser_t *self, luna_lexer_t *lex) {
 }
 
 /*
+ * Resolve the '|' syntax sugar, add the `left` node as
+ * the first argument of the function call at the `right`.
+ * This procedure modifies the call node in place.
+ */
+
+static void
+compose_call(luna_node_t *left, luna_call_node_t *right) {
+  luna_vec_t *args_vec = NULL;
+  luna_object_t *prev = NULL;
+
+  if (luna_vec_length(right->args->vec) > 0) {
+
+    // re-organize call arguments (issue #47)
+    args_vec = luna_vec_new();
+    luna_vec_each(right->args->vec, {
+      if (i == 0) {
+        luna_vec_push(args_vec, luna_node(left));
+      } else {
+        luna_vec_push(args_vec, prev);
+      }
+
+      prev = val;
+    });
+  } else {
+    prev = luna_node(left);
+    args_vec = right->args->vec;
+  }
+
+  // add last argument
+  luna_vec_push(args_vec, prev);
+
+  // TODO: free the old arguments vector
+  right->args->vec = args_vec;
+}
+
+/*
  * '(' expr ')'
  */
 
@@ -527,7 +563,9 @@ bitswise_or_expr(luna_parser_t *self) {
   debug("bitswise_or_expr");
   int line = lineno;
   if (!(node = bitwise_xor_expr(self))) return NULL;
-  while (accept(OP_BIT_OR)) {
+
+  // TODO: find new token for bitwise or operation
+  while (false) {
     context("| operation");
     if (right = bitwise_xor_expr(self)) {
       node = (luna_node_t *) luna_binary_op_node_new(LUNA_TOKEN_OP_BIT_OR, node, right, line);
@@ -539,7 +577,37 @@ bitswise_or_expr(luna_parser_t *self) {
 }
 
 /*
- * bitswise_or_expr ('&&' bitswise_or_expr)*
+ * bitwise_or_expr ('|' call_expr)*
+ */
+
+static luna_node_t *
+composition_expr(luna_parser_t *self) {
+  luna_node_t *node, *right;
+  debug("bitswise_or_expr");
+  int line = lineno;
+  if (!(node = bitwise_xor_expr(self))) return NULL;
+  while (accept(OP_BIT_OR)) {
+    context("composition");
+    if (right = call_expr(self, NULL)) {
+      luna_vec_t *args_vec;
+      luna_object_t *prev = NULL;
+      context("composition");
+
+      if (right->type != LUNA_NODE_CALL) {
+        return error("missing function call");
+      }
+
+      compose_call(node, (luna_call_node_t *) right);
+      node = right;
+    } else {
+      return error("missing function call");
+    }
+  }
+  return node;
+}
+
+/*
+ * composition_expr ('&&' composition_expr)*
  */
 
 static luna_node_t *
@@ -547,10 +615,10 @@ logical_and_expr(luna_parser_t *self) {
   luna_node_t *node, *right;
   debug("logical_and_expr");
   int line = lineno;
-  if (!(node = bitswise_or_expr(self))) return NULL;
+  if (!(node = composition_expr(self))) return NULL;
   while (accept(OP_AND)) {
     context("&& operation");
-    if (right = bitswise_or_expr(self)) {
+    if (right = composition_expr(self)) {
       node = (luna_node_t *) luna_binary_op_node_new(LUNA_TOKEN_OP_AND, node, right, line);
     } else {
       return error("missing right-hand expression");
@@ -656,10 +724,9 @@ function_expr(luna_parser_t *self) {
 }
 
 /*
- *   primary_expr
- * | primary_expr '[' expr ']'
+ *   primary_expr '[' expr ']'
  * | primary_expr '.' id
- * | primary_expr '.' call_expr
+ * | primary_expr
  */
 
 static luna_node_t *
@@ -686,48 +753,14 @@ slot_access_expr(luna_parser_t *self, luna_node_t *left) {
   }
 
   // slot
-  while (accept(OP_DOT)) {
+  if (accept(OP_DOT)) {
     context("slot access");
     if (!is(ID)) return error("expecting identifier");
     luna_node_t *id = (luna_node_t *)luna_id_node_new(self->tok->value.as_string, lineno);
     next;
 
-    if (is(LPAREN)) {
-      luna_call_node_t *call;
-      luna_vec_t *args_vec;
-      luna_object_t *prev = NULL;
-
-      call = (luna_call_node_t *) call_expr(self, id);
-      if (luna_vec_length(call->args->vec) > 0) {
-
-        // re-organize call arguments (issue #47)
-        args_vec = luna_vec_new();
-        luna_vec_each(call->args->vec, {
-          if (i == 0) {
-            luna_vec_push(args_vec, luna_node(left));
-          } else {
-            luna_vec_push(args_vec, prev);
-          }
-
-          prev = val;
-        });
-      } else {
-        prev = luna_node(left);
-        args_vec = call->args->vec;
-      }
-
-      // add last argument
-      luna_vec_push(args_vec, prev);
-
-      // TODO: free the old arguments vector
-      call->args->vec = args_vec;
-      left = (luna_node_t *)call;
-
-    } else {
-      left = (luna_node_t *) luna_slot_node_new(left, id, line);
-    }
-
-    left = call_expr(self, left);
+    left = (luna_node_t *) luna_slot_node_new(left, id, line);
+    return call_expr(self, left);
   }
 
   return left;
@@ -802,12 +835,7 @@ call_expr(luna_parser_t *self, luna_node_t *left) {
     left = (luna_node_t *) call;
   }
 
-  if (is(OP_DOT) && prev) {
-    // stop here if the there was a previous left-hand expression
-    // and the current token is '.' because we're
-    // probably inside the loop in slot_access_expr
-    return left;
-  } else if (is(LPAREN)) {
+  if (is(LPAREN)) {
     return call_expr(self, left);
   } else {
     return slot_access_expr(self, left);
@@ -1139,7 +1167,6 @@ return_stmt(luna_parser_t *self) {
 
 static luna_node_t *
 use_stmt(luna_parser_t *self) {
-  //puts("asçkdhakjshd");
 
   int line = lineno;
   debug("use");
