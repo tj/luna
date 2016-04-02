@@ -48,7 +48,7 @@ test: test_runner
 	@./$<
 
 test_runner: $(TEST_OBJ)
-	$(CC) $^ -o $@
+	$(CC) $^ $(LDFLAGS) -o $@
 
 install: luna
 	install luna $(PREFIX)/bin
