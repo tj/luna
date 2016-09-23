@@ -58,7 +58,7 @@ read_until_eof(FILE *stream) {
   assert(str);
   
   // read
-  while (!feof(stream)) {
+  while (!feof(stream) && !ferror(stream)) {
     size_t n = fread(buf, 1, 1024, stream);
     len += strlen(buf);
     str = realloc(str, len);
