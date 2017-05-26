@@ -62,7 +62,7 @@ read_until_eof(FILE *stream) {
     size_t n = fread(buf, 1, 1024, stream);
     len += strlen(buf);
     str = realloc(str, len);
-    strcat(str, buf);
+    strncat(str, buf, n);
   }
   
   return str;
